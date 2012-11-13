@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to BATTLESHAPZ</title>
+    <style rel="stylesheet" type="text/css" id="stylesheet">
+        body
+        {
+            background: url('img/carbon.png');
+            background-color:black;
+            font-family:monospace;
+        }
+        
+        #menu
+        {
+            position:absolute;
+            left: 33%;
+            top: 15%;
+            width:33%;
+            min-width:400px;
+            height:33%;
+            min-height:300px;
+            background-color:white;
+            border-radius:8px;
+            box-shadow:
+                0px 0px 20px black,
+                inset 0px 0px 30px black;
+        }
+        
+        #logo
+        {
+            font-size:42px;
+            text-align:center;
+        }
+        
+        a
+        {
+            color:black;
+            font-size:35px;
+            text-decoration:none;
+            top:50%
+            left:50%
+            padding:8px;
+            border:20px;
+        }
+        
+        a:hover
+        {
+            color:white;
+            padding:8px;
+            background-color:#333333;
+            text-decoration:none;
+            font-size:35px;
+            border-radius:8px;
+            border:20px;
+            box-shadow:inset 0px 0px 20px black;
+        }
+        
+        a:visit
+        {
+            color:black;
+            font-size:35px;
+            text-decoration:none;
+            padding:8px;
+            border:20px;
+        }
+    </style>
+    <script>
+        function randomName() {
+            var name1 = {"BATTLE", "BOTTLE", "BITTLE", "BUTTLE", "BETTLE"};
+            var name2 = {"SHIP", "SHAP", "SHOP", "SHEP", "SHUP"};
+            var name3 = {"S", "Z"}
+            
+            return name1[Math.floor((Math.random()*4))
+        }
+    
+        function randomSub() {
+            
+        }
+    </script>
+</head>
+<body>
+    <div id="menu">
+        <h1 id="logo">B0TTLESHAPZ!</h1>
+        <center>
+        <a href="play.html">Play Game</a><br><br><br>
+        <a href="options.html">Options</a>
+        </center>
+    </div>
+</body>
+</html>
