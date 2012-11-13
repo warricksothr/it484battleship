@@ -1,0 +1,26 @@
+++++----++++    |    |                                              |           |      ++++----++++
+++++----++++    |____|          _______  ______  ______  ____     __|__       __|__    ++++----++++
+++++----++++    |    |  |    |  |  |  |  |    |  |    |  |___       |     \/    |      ++++----++++
+++++----++++    |    |  |____|  |     |  |____|_ |    |  ___|  O    |     /\    |      ++++----++++
+
+
+Aaron Willcutt:
+
+
+Blake Grotewold:
+    A graduate student at MNSU, his interests include web development, mobile development, and video games.  
+    His works on this project were:
+        -- the architectural design
+        -- module design
+        -- user interface design
+        -- front-end implimentation
+    www.BlakeGrotewold.com
+
+Drew Short:
+
+
+Jordan Ruedy:
+
+
+Tyler Jackson:
+
