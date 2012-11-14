@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to BATTLESHAPZ</title>
+    <title>Welcome to Battleships</title>
     <style rel="stylesheet" type="text/css" id="stylesheet">
         body
         {
@@ -30,9 +30,33 @@
         {
             font-size:42px;
             text-align:center;
+            padding-top:25px;
         }
         
-        a
+        .rotate
+        {
+        -webkit-transition-duration: 0.8s;
+        -moz-transition-duration: 0.8s;
+        -o-transition-duration: 0.8s;
+        transition-duration: 0.8s;
+     
+        -webkit-transition-property: -webkit-transform;
+        -moz-transition-property: -moz-transform;
+        -o-transition-property: -o-transform;
+        transition-property: transform;
+     
+        overflow:hidden;
+ 
+        }   
+ 
+        .rotate:hover   
+        { 
+            -webkit-transform:rotate(2deg);
+            -moz-transform:rotate(2deg); 
+            -o-transform:rotate(2deg);
+        }
+        
+        .tab
         {
             color:black;
             font-size:35px;
@@ -43,7 +67,7 @@
             border:20px;
         }
         
-        a:hover
+        .tab:hover
         {
             color:white;
             padding:8px;
@@ -55,7 +79,7 @@
             box-shadow:inset 0px 0px 20px black;
         }
         
-        a:visit
+        .tab:visit
         {
             color:black;
             font-size:35px;
@@ -63,28 +87,90 @@
             padding:8px;
             border:20px;
         }
+        
+        #motto
+        {
+            font-size:10px; 
+            padding:10px 40px 10px 0px;
+            text-align:right;
+            -moz-transform:rotate(-5deg);
+            -webkit-transform:rotate(-5deg);
+            -o-transform:-5deg;
+        }
+        
+        #footer
+        {
+            position:absolute;
+            z-index:1;
+            color:#d1d1d1;
+            font-size:10px; 
+            bottom:0%;
+            padding:5px;
+            width:90%;
+            min-width:400px;
+            left:5%;
+            bottom:0%;
+            text-align:center;
+        }
+        
+        #footera
+        {
+            font-size:10px
+            z-index:1;
+            color:#d1d1d1;
+        }
+        
+        #footera:hover
+        {
+            font-size:10px
+            z-index:1;
+            color:#d1d1d1;
+        }
+        
+        #footera:visted
+        {
+            font-size:10px
+            z-index:1;
+            color:#d1d1d1;
+        }
     </style>
     <script>
         function randomName() {
-            var name1 = {"BATTLE", "BOTTLE", "BITTLE", "BUTTLE", "BETTLE"};
-            var name2 = {"SHIP", "SHAP", "SHOP", "SHEP", "SHUP"};
-            var name3 = {"S", "Z"}
+            var name0 = new Array("","","","","","","","#");
+            var name1 = new Array("BATTLE", "BOTTLE", "BITTLE", "BUTTLE", "BETTLE", "847713");
+            var name2 = new Array("SHIP", "SHAP", "SHOP", "SHEP", "SHUP", "5H1P");
+            var name3 = new Array("S", "Z", "5");
+            var name4 = new Array("", "", "", "", "", "?", "!");
             
-            return name1[Math.floor((Math.random()*4))
+            document.write(name0[Math.floor((Math.random()*8))] + name1[Math.floor((Math.random()*6))] + name2[Math.floor((Math.random()*6))] + name3[Math.floor((Math.random()*3))] + name4[Math.floor((Math.random()*7))]);
         }
-    
+        
         function randomSub() {
+            var mottos = new Array("like a barrel of monkeys, but battleships", "now comes in banana flavor", "\'merica!", "deathtothespacebar!!!", "full of vitamin C",  "001110111101101", "hello, world",
+                                   "sweet oogly moogly", "piratebay with limits", "lord vader 2012", "dalt", "humans.txt", "[enter comment]", "one ship to rule them all", "you look sick, are you okay?!", 
+                                   "well read, good sir.", "what you looking at?", "daily double", "cats... everywhere", ".....", "it\'s a game", "now with less violence", "my mom said i could make this", "i\'m married, lady",
+                                   "did you know I can move?", "i\'m a big kid now", "d00d", "so this one time...", "oh yeah", "S3cr3ts3cr3t is my password", "don't cheat!"); 
             
+            document.write(mottos[Math.floor((Math.random()*31))]);
         }
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#menu").draggable( {containment: "body"} );
+        });
     </script>
 </head>
 <body>
     <div id="menu">
-        <h1 id="logo">B0TTLESHAPZ!</h1>
+        <div id="logo" class="rotate"><script>randomName();</script></div>
+        <div id="motto"><script>randomSub();</script></div><br>
         <center>
-        <a href="play.html">Play Game</a><br><br><br>
-        <a href="options.html">Options</a>
+        <a class="tab" href="play.html">Play Game</a><br><br><br>
+        <a class="tab" href="options.html">Options</a>
         </center>
     </div>
+    <div id="footer">to enjoy this game bug-free, please use the <a id="footera" href="https://www.google.com/intl/en/chrome/browser/" target="_blank">Google Chrome</a> browser</div>
 </body>
 </html>
