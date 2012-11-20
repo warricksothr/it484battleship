@@ -1,6 +1,6 @@
 // IT484 Battleship implementation
 /** 
- *      Example ship grid with numbering for reference (x1,y2 to x2,y2)
+ *      Example ship grid with numbering for reference (x1,y1 to x2,y2)
  *      Carrier     :   0,0 to 4,0
  *      Battleship  :   0,1 to 0,4
  *      Cruiser     :   5,4 to 5,6
@@ -63,7 +63,7 @@ function cloneFunction(func)
 {
     var cloneFunc;
     //this is evil, but necessary to duplicate a function as far as I know
-    eval("cloneFunc = " +  func.toString()); // CREATE THE COPY*
+    eval("var cloneFunc = " +  func.toString()); // CREATE THE COPY*
     return cloneFunc;
 }
 
@@ -75,7 +75,7 @@ function placeShipOnGrid(x, y, ship, grid)
     {
         //place the ship vertically
         for (var posY = y; posY < y + ship.length; posY++)
-        {
+        { 
             grid[x][posY] = ship;
         }
     }
@@ -426,8 +426,31 @@ function mode1Ships()
     //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
     regularShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
-        //TODO:implement a regular shot and how it interacts with the grid
-    }
+            regularShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //implement a regular shot and how it interacts with the grid
+
+			if (shotGrid[x][y] ==1 || shotGrid[x][y] ==2)
+	{
+		alert("Cell already targeted");
+	}
+	else if (targetShipGrid[x][y] == "0")
+	{
+		targetShipGrid[x][y].damage = targetShipGrid[x][y].damage + 1;
+		shotGrid[x][y] = 1;
+		return ShotMessages[1];
+	}
+	else if (targetShipGrid[x][y] !== "0")
+	{
+		targetShipGrid[x][y] = 2;
+		shotGrid[x][y] = 2;
+		Ship.damage++;
+		return ShotMessages[2];
+		
+	}
+		
+    };
+    };
     
     //define the ships in mode 1. This array of ships will be coppied onto the grid of each players
     var ships = new Array(
