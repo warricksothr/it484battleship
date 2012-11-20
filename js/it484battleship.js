@@ -60,12 +60,17 @@ function clone(obj)
 
 //clone a specific function
 Function.prototype.clone = function() {
-    var that = this;
-    var temp = function temporary() { return that.apply(this, arguments); };
-    for( key in this ) {
-        temp[key] = this[key];
+    var fct = this;
+    var clone = function() {
+        return fct.apply(this, arguments);
+    };
+    clone.prototype = fct.prototype;
+    for (property in fct) {
+        if (fct.hasOwnProperty(property) && property !== 'prototype') {
+            clone[property] = fct[property];
+        }
     }
-    return temp;
+    return clone;
 };
 
 //this is a player agnostic function for placing a ship on a specific grid
@@ -259,13 +264,13 @@ function Engine()
         if (this.isFirstPlayer)
         {
             message = shot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
-            this.player1ShotHistory.push("" + message);
+            this.player1ShotHistory.push("player1: " + x + "," + y + " " + message);
         }
         //firing logic if this is the second player shooting
         else 
         {
             message = shot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
-            this.player2ShotHistory.push("" + message);
+            this.player2ShotHistory.push("player2: " + x + "," + y + " " + message);
         }
     };
     
@@ -436,26 +441,22 @@ function mode1Ships()
     //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
     regularShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
-            regularShot.fire = function(x, y, targetShipGrid, shotGrid)
+        //implement a regular shot and how it interacts with the grid
+        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
         {
-            //implement a regular shot and how it interacts with the grid
-
-            if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
-            {
-                alert("Cell already targeted");
-            }
-            else if (targetShipGrid[x][y].name === undefined)
-            {
-                shotGrid[x][y] = 1;
-                return ShotMessages[1];
-            }
-            else if (targetShipGrid[x][y].name !== undefined)
-            {
-                targetShipGrid[x][y].damage++;
-                shotGrid[x][y] = 2;
-                return ShotMessages[2];
-            }
-        };
+            alert("Cell already targeted");
+        }
+        else if (targetShipGrid[x][y].name === 0)
+        {
+            shotGrid[x][y] = 1;
+            return ShotMessages[1];
+        }
+        else if (targetShipGrid[x][y].name !== 0)
+        {
+            targetShipGrid[x][y].damage++;
+            shotGrid[x][y] = 2;
+            return ShotMessages[2];
+        }
     };
     
     //define the ships in mode 1. This array of ships will be copied onto the grid of each players
@@ -496,17 +497,3 @@ function mode1Ships()
 //create the engine that will be used and initialize it.
 //init is called to initialize the engine if it already setup or create new data for the engine
 var engine = new Engine().init();
-
-//////////////////
-// testing code //
-//////////////////
-
-//get the available ships
-var availableShips = engine.getAvailableShips();
-
-//iterate over the available ships and print their names to the console
-console.log("Going through the available ships. ");
-for (var i = 0; i < availableShips.length; i++)
-{
-    console.log(i + " > " + availableShips[i].name);
-}
