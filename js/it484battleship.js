@@ -59,13 +59,14 @@ function clone(obj)
 }
 
 //clone a specific function
-function cloneFunction(func)
-{
-    var cloneFunc;
-    //this is evil, but necessary to duplicate a function as far as I know
-    eval("var cloneFunc = " +  func.toString()); // CREATE THE COPY*
-    return cloneFunc;
-}
+Function.prototype.clone = function() {
+    var that = this;
+    var temp = function temporary() { return that.apply(this, arguments); };
+    for( key in this ) {
+        temp[key] = this[key];
+    }
+    return temp;
+};
 
 //this is a player agnostic function for placing a ship on a specific grid
 function placeShipOnGrid(x, y, ship, grid)
@@ -74,7 +75,9 @@ function placeShipOnGrid(x, y, ship, grid)
     if (ship.isVertical)
     {
         //place the ship vertically
-        for (var posY = y; posY < y + ship.length; posY++)
+        var endY = y + ship.shipLength;
+        var posY = y;
+        for (posY; posY < endY; posY++)
         { 
             grid[x][posY] = ship;
         }
@@ -83,7 +86,9 @@ function placeShipOnGrid(x, y, ship, grid)
     else
     {
         //place the ship horizontally
-        for (var posX = x; posX < x + ship.length; posX++)
+        var endX = x + ship.shipLength;
+        var posX = x;
+        for (posX; posX < endX; posX++)
         {
             grid[posX][y] = ship;
         }
@@ -93,10 +98,10 @@ function placeShipOnGrid(x, y, ship, grid)
 //Create an empty grid array
 function createEmptyGridArray(size)
 {
-    var newGrid new Array();
+    var newGrid = [];
     for (var x = 0; x < size; x++)
     {
-        newGrid[x] = new Array();
+        newGrid[x] = [];
         for (var y = 0; y < size; y++)
         {
             newGrid[x][y] = 0;
@@ -110,7 +115,7 @@ function createEmptyGridArray(size)
 ///////////////////////////////
 
 //Array of shot messages based on shot impact on the grid
-var ShotMessages = Array();
+var ShotMessages = [];
 ShotMessages[0] = "FogOfWar";
 ShotMessages[1] = "Miss";
 ShotMessages[2] = "Hit";
@@ -129,38 +134,45 @@ function Ship(name, shipLength, shots)
     //Indicates if the ship is destroyed 
     this.isDestroyed = function()
     {
-        if (this.damage >= this.shipLength) { return true; }
-        return false;
+        return this.damage >= this.shipLength;
     };
+
+    //decrement the cooldown on all shots for this ship
+    this.decCooldown = function()
+    {
+        for (var i = 0; i < shots.length; i++)
+        {
+            shots[i].decCooldown();
+        }
+    }
 }
 
 //the class that defines a shot and how it will interact with the grids.
 function Shot(shotName, shotCooldown)
 {
-    var name = shotName;
-    var cooldownLength = shotCooldown;
-    var cooldownTimer = 0;
+    this.name = shotName;
+    this.cooldownLength = shotCooldown;
+    this.cooldownTimer = 0;
     
     //define what a shot does. This is the only function allowed  in this class so that cloning it is possible
-    var fire = function(x, y, targetShipGrid, shotGrid) {};
+    this.fire = function(x, y, targetShipGrid, shotGrid) {};
     
     //determine if the shot is ready to be fired again
-    var isAvailable = function()
+    this.isAvailable = function()
     {
-        if (this.cooldownTimer === 0) { return true; }
-        return false;
+        return this.cooldownTimer === 0;
     };
     
     //set the cooldown timer
-    var fired = function()
+    this.fired = function()
     {
-        this.cooldownTimer = cooldownLength;
+        this.cooldownTimer = this.cooldownLength;
     };
     
     //deincrement the cooldown timer, but only if it isn't ready
-    var decCooldown = function()
+    this.decCooldown = function()
     {
-        if (cooldownTimer > 0) { cooldownTimer--; }
+        if (this.cooldownTimer > 0) { this.cooldownTimer--; }
     };
 }
 
@@ -176,12 +188,13 @@ function cloneShip(originalShip)
 {
     var clonedShip = clone(originalShip);
     //walk through the shots and clone each
-    var clonedShots = new Array();
+    var clonedShots = [];
     for(var i = 0; i < originalShip.shots.length; i++)
     {
-        clonedShots[i] = cloneFunction(originalShip.shots[i]);
+        clonedShots[i] = cloneShot(originalShip.shots[i]);
     }
     clonedShip.shots = clonedShots;
+    clonedShip.decCooldown = originalShip.decCooldown.clone();
     return clonedShip;
 }
 
@@ -189,10 +202,10 @@ function cloneShip(originalShip)
 function cloneShot(originalShot)
 {
     var clonedShot = clone(originalShot);
-    clonedShot.fire = cloneFunction(originalShot.fire);
-    clonedShot.isAvailable = cloneFunction(originalShot.isAvailable);
-    clonedShot.fired = cloneFunction(originalShot.fired);
-    clonedShot.decCooldown = cloneFunction(originalShot.decCooldown);
+    clonedShot.fire = originalShot.fire.clone();
+    clonedShot.isAvailable = originalShot.isAvailable.clone();
+    clonedShot.fired = originalShot.fired.clone();
+    clonedShot.decCooldown = originalShot.decCooldown.clone();
     return clonedShot;
 }
 
@@ -201,10 +214,7 @@ function decShipShotTimers(ships)
 {
     for (var i = 0; i < ships.length; i++)
     {
-        for (var j = 0; j < ships[i].shots.length; j++)
-        {
-            ships[i][j].decCooldown();
-        }
+        ships[i].decCooldown();
     }
 }
 
@@ -220,19 +230,19 @@ function Engine()
     
     // The grids to be used //
     //Player1 Grids
-    this.player1ShipGrid = new Array();
-    this.player1ShotGrid = new Array();
+    this.player1ShipGrid = [];
+    this.player1ShotGrid = [];
     //Player2 Grids
-    this.player2ShipGrid = new Array();
-    this.player2ShotGrid = new Array();
+    this.player2ShipGrid = [];
+    this.player2ShotGrid = [];
     
     //a history of shots for each player
-    this.player1ShotHistory = new Array();
-    this.player2ShotHistory = new Array();
+    this.player1ShotHistory = [];
+    this.player2ShotHistory = [];
     
     //an array of ships for each player
-    this.player1Ships = new Array();
-    this.player2Ships = new Array();
+    this.player1Ships = [];
+    this.player2Ships = [];
     
     //Watch value to represent who's turn it is
     this.isFirstPlayer = true;
@@ -244,7 +254,7 @@ function Engine()
     //fire a shot at the opponent's ship grid
     this.fireShot = function(x, y, shot)
     {
-        var message
+        var message = "";
         //firing logic if this is the first player shooting
         if (this.isFirstPlayer)
         {
@@ -255,8 +265,8 @@ function Engine()
         else 
         {
             message = shot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
+            this.player2ShotHistory.push("" + message);
         }
-        
     };
     
     //place a ship on the current player;s grid
@@ -268,7 +278,7 @@ function Engine()
         ship.isVertical = isVertical;
         
         //create a clone so we don't get reference errors
-        var shipClone = clone(ship);
+        var shipClone = cloneShip(ship)
         
         //sort by player
         if (this.isFirstPlayer)
@@ -330,7 +340,7 @@ function Engine()
     //return a list of available ships
     this.getAvailableShips = function()
     {
-        var clonedAvailableShips = new Array();
+        var clonedAvailableShips = [];
         //return clone of the array of ships
         for (var i = 0; i < this.availableShips.length; i++)
         {
@@ -427,33 +437,29 @@ function mode1Ships()
     regularShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
             regularShot.fire = function(x, y, targetShipGrid, shotGrid)
-    {
-        //implement a regular shot and how it interacts with the grid
+        {
+            //implement a regular shot and how it interacts with the grid
 
-			if (shotGrid[x][y] ==1 || shotGrid[x][y] ==2)
-	{
-		alert("Cell already targeted");
-	}
-	else if (targetShipGrid[x][y] == "0")
-	{
-		targetShipGrid[x][y].damage = targetShipGrid[x][y].damage + 1;
-		shotGrid[x][y] = 1;
-		return ShotMessages[1];
-	}
-	else if (targetShipGrid[x][y] !== "0")
-	{
-		targetShipGrid[x][y] = 2;
-		shotGrid[x][y] = 2;
-		Ship.damage++;
-		return ShotMessages[2];
-		
-	}
-		
-    };
+            if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
+            {
+                alert("Cell already targeted");
+            }
+            else if (targetShipGrid[x][y].name === undefined)
+            {
+                shotGrid[x][y] = 1;
+                return ShotMessages[1];
+            }
+            else if (targetShipGrid[x][y].name !== undefined)
+            {
+                targetShipGrid[x][y].damage++;
+                shotGrid[x][y] = 2;
+                return ShotMessages[2];
+            }
+        };
     };
     
-    //define the ships in mode 1. This array of ships will be coppied onto the grid of each players
-    var ships = new Array(
+    //define the ships in mode 1. This array of ships will be copied onto the grid of each players
+    return new Array(
         new Ship("Carrier", 5, new Array(
             regularShot
             )
@@ -475,7 +481,6 @@ function mode1Ships()
             )
         )
     );
-    return ships;
 }
 
 /////////////////////////
