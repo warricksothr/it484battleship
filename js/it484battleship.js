@@ -488,7 +488,97 @@ function mode1Ships()
 // Section for AI Code //
 /////////////////////////
 
-//TODO: Yeah, you know...
+
+
+//We generate a random number between 0-4 in order to generate a starting point for AI shot selection.
+//This should limit the ability of the opponent to plan ship position to avoid shots.
+//This will begin firing in the upper right corner of the board.
+var randomInt = Math.floor(Math.random()*5);
+var xCoord = (9 - randomInt);
+var yCoord = 0;
+
+
+//This searches for enemy ships by firing in a pattern as long as no ships are found
+ function huntingShot()
+{
+    //We use x and y as starting coordinates and begin firing in a diagonal line (x+1, y+1) on cells which !=0 until an edge is reached.
+//When an edge is reached we begin a new diagonal by moving five cells to the left on the x-axis and diagonally firing again.
+//When an edge is reached we begin a new diagonal by moving left to x=0 and diagonally firing again from x=0, y=randomInt.
+//If (randomInt+5) < 9 we perform one more diagonal run
+
+    //TODO  implement regularShot.fire in a searching pattern to locate enemy ships
+
+
+}
+
+//method for sinking an enemy ship once located with hunting shot
+function killingShot()
+{
+//Create functions to locate orientation of found ship
+
+//TODO implement firing shots for each directional check.
+    this.fireNorth = function()
+    {
+        yCoord--;
+
+    };
+    this.fireEast = function()
+    {
+        xCoord++;
+
+    };
+    this.fireSouth = function()
+    {
+        yCoord++;
+
+    };
+    this.fireWest = function()
+    {
+        xCoord--;
+
+    };
+
+
+/**
+ *   once ship is hit we search for orientation. We limit shots to cells within the grid which are affected by fog of war.
+ *
+ * //While a ship is hit but not sunk we check one cell north of it
+ *   if (y-1 > 0 and [x][y-1] == 0)
+ *      {
+ *      fireNorth();
+ *      }
+ *
+ *   else if (x+1 < 10 and [x+1][y] == 0)
+ *      {
+ *      fireEast();
+ *      }
+ *
+ *   else if (x-1 > 0 and [x-1][y] == 0)
+ *      {
+ *      fireSouth();
+ *      }
+ *
+ *   else if (y+1 < 10 and [x][y+1] == 0)
+ *      {
+ *      fireWest();
+ *      }
+*/
+// TODO: Continue implementation of killingShot with strategy following results from orientation shots.
+}
+
+
+//As long as no ships have been hit we continue with hunting shots
+
+if (huntingShot !== ShotMessages[2])
+{
+    huntingShot();
+}
+else
+{
+    killingShot();
+}
+
+
 
 ///////////////////////////
 // Now Start The Engines //
