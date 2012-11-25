@@ -1,12 +1,12 @@
 // IT484 Battleship implementation
-/** 
+/**
  *      Example ship grid with numbering for reference (x1,y1 to x2,y2)
  *      Carrier     :   0,0 to 4,0
  *      Battleship  :   0,1 to 0,4
  *      Cruiser     :   5,4 to 5,6
  *      Submarine   :   2,7 to 4,7
  *      Destroyer   :   8,7 to 8,8
- * 
+ *
  *      0   1   2   3   4   5   6   7   8   9
  *  0   C   C   C   C   C   x   x   x   x   x
  *  1   B   x   x   x   x   x   x   x   x   x
@@ -18,10 +18,10 @@
  *  7   x   x   S   S   S   x   x   x   D   x
  *  8   x   x   x   x   x   x   x   x   D   x
  *  9   x   x   x   x   x   x   x   x   x   x
- * 
+ *
  *      Example Empty Shot Grid
  *      (0) indicates fog of war (nethier a hit or miss)
- * 
+ *
  *      0   1   2   3   4   5   6   7   8   9
  *  0   0   0   0   0   0   0   0   0   0   0
  *  1   0   0   0   0   0   0   0   0   0   0
@@ -33,11 +33,11 @@
  *  7   0   0   0   0   0   0   0   0   0   0
  *  8   0   0   0   0   0   0   0   0   0   0
  *  9   0   0   0   0   0   0   0   0   0   0
- * 
+ *
  *      Example Sunk Shot Grid
  *      (1) indicates a miss
  *      (2) indicates a hit
- * 
+ *
  *      0   1   2   3   4   5   6   7   8   9
  *  0   2   2   2   2   2   1   1   1   1   1
  *  1   2   1   1   1   1   1   1   1   1   1
@@ -73,6 +73,17 @@ Function.prototype.clone = function() {
     return clone;
 };
 
+//For storing objects in the local storage
+Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value));
+}
+
+//For retriving objects from local storage. Returns a null if there is no object at the key
+Storage.prototype.getObject = function(key) {
+    var value = this.getItem(key);
+    return value && JSON.parse(value);
+}
+
 //this is a player agnostic function for placing a ship on a specific grid
 function placeShipOnGrid(x, y, ship, grid)
 {
@@ -83,7 +94,7 @@ function placeShipOnGrid(x, y, ship, grid)
         var endY = y + ship.shipLength;
         var posY = y;
         for (posY; posY < endY; posY++)
-        { 
+        {
             grid[x][posY] = ship;
         }
     }
@@ -135,7 +146,8 @@ function Ship(name, shipLength, shots)
     this.shipLength = shipLength; // shipLength: the pre-defined length of the ship. This is used when populating the grid.
     this.damage = 0; //a simple damage counter. When this counter equals the length it is destroyed
     this.isVertical = false; //indicates if the ship is positioned vertically or horizontally
-    
+    this.isModeOne = true; //indicates the current mode, which is used to pre-load ship resources and the like
+
     //Indicates if the ship is destroyed 
     this.isDestroyed = function()
     {
@@ -158,34 +170,27 @@ function Shot(shotName, shotCooldown)
     this.name = shotName;
     this.cooldownLength = shotCooldown;
     this.cooldownTimer = 0;
-    
+
     //define what a shot does. This is the only function allowed  in this class so that cloning it is possible
     this.fire = function(x, y, targetShipGrid, shotGrid) {};
-    
+
     //determine if the shot is ready to be fired again
     this.isAvailable = function()
     {
         return this.cooldownTimer === 0;
     };
-    
+
     //set the cooldown timer
     this.fired = function()
     {
         this.cooldownTimer = this.cooldownLength;
     };
-    
+
     //deincrement the cooldown timer, but only if it isn't ready
     this.decCooldown = function()
     {
         if (this.cooldownTimer > 0) { this.cooldownTimer--; }
     };
-}
-
-//the class the represents the data to be returned when a turn is complete.
-//Drew: not sure how to approach this yet, just a mockup consideration
-function TurnData()
-{
-    
 }
 
 //clone a ship and its function
@@ -232,7 +237,7 @@ function Engine()
 {
     //The available ships (this is an array of available ship objects)
     //availableShips
-    
+
     // The grids to be used //
     //Player1 Grids
     this.player1ShipGrid = [];
@@ -240,22 +245,22 @@ function Engine()
     //Player2 Grids
     this.player2ShipGrid = [];
     this.player2ShotGrid = [];
-    
+
     //a history of shots for each player
     this.player1ShotHistory = [];
     this.player2ShotHistory = [];
-    
+
     //an array of ships for each player
     this.player1Ships = [];
     this.player2Ships = [];
-    
+
     //Watch value to represent who's turn it is
     this.isFirstPlayer = true;
-    
+
     //turn counter
     //initialized to 0 so that when we change players to setup ship it ends up at one for the first turn
     this.turnCounter = 0;
-    
+
     //fire a shot at the opponent's ship grid
     this.fireShot = function(x, y, shot)
     {
@@ -267,13 +272,13 @@ function Engine()
             this.player1ShotHistory.push("player1: " + x + "," + y + " " + message);
         }
         //firing logic if this is the second player shooting
-        else 
+        else
         {
             message = shot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
             this.player2ShotHistory.push("player2: " + x + "," + y + " " + message);
         }
     };
-    
+
     //place a ship on the current player;s grid
     this.placeShip = function(startx,starty,isVertical,ship)
     {
@@ -281,10 +286,10 @@ function Engine()
         ship.startx = startx;
         ship.starty = starty;
         ship.isVertical = isVertical;
-        
+
         //create a clone so we don't get reference errors
         var shipClone = cloneShip(ship)
-        
+
         //sort by player
         if (this.isFirstPlayer)
         {
@@ -301,20 +306,20 @@ function Engine()
             placeShipOnGrid(startx, starty, shipClone, this.player2ShipGrid);
         }
     };
-    
+
     //return the shot history of the current player
     this.getShotHistory = function()
     {
         if (this.isFirstPlayer) { return this.player1ShotHistory; }
         return this.player2ShotHistory;
     };
-    
+
     //return the shot types that are available
     this.getAvailableShots = function() {};
-    
+
     //return the shot types that are on cooldown
     this.getShotsOnCooldown = function() {};
-    
+
     /**
      * Returns the shot grids of the current player
      */
@@ -323,7 +328,7 @@ function Engine()
         if (this.isFirstPlayer) { return clone(this.player1ShotGrid); }
         return clone(this.player2ShotGrid);
     };
-    
+
     /**
      * Returns the ship grid for the current player
      */
@@ -332,16 +337,17 @@ function Engine()
         if (this.isFirstPlayer) { return clone(this.player1ShipGrid); }
         return clone(this.player2ShipGrid);
     };
-    
+
     //clear the local storage and prepare the engine for a new game
     //TODO: implement this
     this.forfit = function()
     {
         this.isFirstPlayer = true;
         this.turnCounter = 0;
-        //TODO: clear data from the local storage
+        //clear the data from session storage
+        this.clearLocalStorage();
     };
-    
+
     //return a list of available ships
     this.getAvailableShips = function()
     {
@@ -353,24 +359,42 @@ function Engine()
         }
         return clonedAvailableShips;
     };
-    
+
     //trigger a player switch
     this.changePlayers = function()
     {
         //change to the second player
         if (this.isFirstPlayer)
         {
+            //decrement all shot timers for current players ships
             decShipShotTimers(this.player1Ships);
+            this.turnCounter++;
             this.isFirstPlayer = false;
         }
-        //checnge to first player and increment the turn counter
+        //change to first player and increment the turn counter
         else
-        { 
+        {
             decShipShotTimers(this.player2Ships);
             this.turnCounter++;
             this.isFirstPlayer = true;
         }
+        //save the current game state;
+        this.saveToLocalStorage();
     };
+
+    //This must be called to save the state when switching pages
+    this.saveToLocalStorage = function()
+    {
+        sessionStorage.gameStateSaved = "true";
+        sessionStorage.setObject("gameEngine", this)
+    }
+
+    //clear the local storage
+    this.clearLocalStorage = function()
+    {
+        sessionStorage.gameStateSaved = "false";
+        sessionStorage.gameEngine = "";
+    }
 }
 
 //define init as a prototype of Engine so it isn't recreated each time an Engine object is created.
@@ -380,40 +404,26 @@ Engine.prototype.init = function()
 {
     //I am used to initialize the engine
     var newEngine = new Engine();
-    
-    // This is test code. Remove me when this is properly implemented //
-    
-    //initialize the starting arrays with nothing of size 10x10
-    newEngine.player1ShipGrid = createEmptyGridArray(10);
-    newEngine.player1ShotGrid = createEmptyGridArray(10);
-    newEngine.player2ShipGrid = createEmptyGridArray(10);
-    newEngine.player2ShotGrid = createEmptyGridArray(10);
-    
-    //load the mode 1 ships
-    newEngine.loadShips(mode1Ships());
-    var ships = newEngine.getAvailableShips();
-    
-    //place ships for player 1
-    newEngine.placeShip(0, 0, false, ships[0]);
-    newEngine.placeShip(0, 1, true, ships[1]);
-    newEngine.placeShip(5, 4, true, ships[2]);
-    newEngine.placeShip(2, 7, false, ships[3]);
-    newEngine.placeShip(8, 7, true, ships[4]);
-    
-    //change to the second player
-    newEngine.changePlayers();
-    //place ships for player 2
-    newEngine.placeShip(1, 0, false, ships[0]);
-    newEngine.placeShip(0, 2, true, ships[1]);
-    newEngine.placeShip(6, 4, true, ships[2]);
-    newEngine.placeShip(2, 8, false, ships[3]);
-    newEngine.placeShip(9, 8, true, ships[4]);
-    
-    //change back to player 1
-    newEngine.changePlayers();
-    
+
     //Here I will check the local storage for previous game data and load it if found
-    //TODO: Check local storage and initialize the engine appropriately
+    //check if there is any current game state stored
+    if (sessionStorage.gameStateSaved && sessionStorage.gameStateSaved === "true")
+    {
+        //TODO: Remove me later, I am test code
+        alert("Found session data to load from");
+
+        //TODO: Load Ships from local storage
+
+        //TODO: synchronize loaded ships with grids
+    }
+    else
+    {
+        //initialize the starting arrays with nothing of size 10x10
+        newEngine.player1ShipGrid = createEmptyGridArray(10);
+        newEngine.player1ShotGrid = createEmptyGridArray(10);
+        newEngine.player2ShipGrid = createEmptyGridArray(10);
+        newEngine.player2ShotGrid = createEmptyGridArray(10);
+    }
     //finally I will return the new engine
     return newEngine;
 };
@@ -428,9 +438,37 @@ Engine.prototype.loadShips = function(ships)
 //select the game mode and store in the local cache.
 //This should only be called from the front page when selecting the version of the game to run.
 //basically this is used to switch between single and multi player, and toggle game mode
-Engine.prototype.selectGameMode = function(numberOfPlayers, isModified)
+Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
 {
-    //TODO:
+    //TODO: initialize AI if only one player
+    //TODO: set the correct booleans for modes 1 and 2 also load the correct ships
+    //load mode 1 ships and set booleans
+    if (modeOne)
+    {
+        this.loadShips(mode1Ships());
+        //Watch value for the current mode
+        this.isModeOne = true;
+    }
+    //load mode 2 ships and set booleans
+    else
+    {
+        this.loadShips(mode2Ships());
+        this.isModeOne = false;
+    }
+
+    //initialize the AI as player 2
+    if (numberOfPlayers === 1)
+    {
+        this.numberOfPlayers = 1;
+    }
+    else if (numberOfPlayers === 2)
+    {
+        this.numberOfPlayers = 2;
+    }
+    else
+    {
+        alert("Invalid number of players: " + numberOfPlayers);
+    }
 };
 
 //This defines all the ships available in mode 1 of the game
@@ -458,28 +496,81 @@ function mode1Ships()
             return ShotMessages[2];
         }
     };
-    
+
     //define the ships in mode 1. This array of ships will be copied onto the grid of each players
     return new Array(
         new Ship("Carrier", 5, new Array(
             regularShot
-            )
+        )
         ),
         new Ship("Battleship", 4, new Array(
             regularShot
-            )
+        )
         ),
         new Ship("Cruiser", 3, new Array(
             regularShot
-            )
+        )
         ),
         new Ship("Submarine", 3, new Array(
             regularShot
-            )
+        )
         ),
         new Ship("Destroyer", 2, new Array(
             regularShot
-            )
+        )
+        )
+    );
+}
+
+//This defines all the ships available in mode 1 of the game
+function mode2Ships()
+{
+    //define a regular shot
+    var regularShot = new Shot("Regular Shot", 1);
+    //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
+    regularShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //implement a regular shot and how it interacts with the grid
+        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
+        {
+            alert("Cell already targeted");
+        }
+        else if (targetShipGrid[x][y].name === 0)
+        {
+            shotGrid[x][y] = 1;
+            return ShotMessages[1];
+        }
+        else if (targetShipGrid[x][y].name !== 0)
+        {
+            targetShipGrid[x][y].damage++;
+            shotGrid[x][y] = 2;
+            return ShotMessages[2];
+        }
+    };
+
+    //define special shots
+
+    //define the ships in mode 1. This array of ships will be copied onto the grid of each players
+    return new Array(
+        new Ship("Carrier", 5, new Array(
+            regularShot
+        )
+        ),
+        new Ship("Battleship", 4, new Array(
+            regularShot
+        )
+        ),
+        new Ship("Cruiser", 3, new Array(
+            regularShot
+        )
+        ),
+        new Ship("Submarine", 3, new Array(
+            regularShot
+        )
+        ),
+        new Ship("Destroyer", 2, new Array(
+            regularShot
+        )
         )
     );
 }
@@ -499,7 +590,7 @@ var yCoord = 0;
 
 
 //This searches for enemy ships by firing in a pattern as long as no ships are found
- function huntingShot()
+function huntingShot()
 {
     //We use x and y as starting coordinates and begin firing in a diagonal line (x+1, y+1) on cells which !=0 until an edge is reached.
 //When an edge is reached we begin a new diagonal by moving five cells to the left on the x-axis and diagonally firing again.
@@ -539,30 +630,30 @@ function killingShot()
     };
 
 
-/**
- *   once ship is hit we search for orientation. We limit shots to cells within the grid which are affected by fog of war.
- *
- * //While a ship is hit but not sunk we check one cell north of it
- *   if (y-1 > 0 and [x][y-1] == 0)
- *      {
+    /**
+     *   once ship is hit we search for orientation. We limit shots to cells within the grid which are affected by fog of war.
+     *
+     * //While a ship is hit but not sunk we check one cell north of it
+     *   if (y-1 > 0 and [x][y-1] == 0)
+     *      {
  *      fireNorth();
  *      }
- *
- *   else if (x+1 < 10 and [x+1][y] == 0)
- *      {
+     *
+     *   else if (x+1 < 10 and [x+1][y] == 0)
+     *      {
  *      fireEast();
  *      }
- *
- *   else if (x-1 > 0 and [x-1][y] == 0)
- *      {
+     *
+     *   else if (x-1 > 0 and [x-1][y] == 0)
+     *      {
  *      fireSouth();
  *      }
- *
- *   else if (y+1 < 10 and [x][y+1] == 0)
- *      {
+     *
+     *   else if (y+1 < 10 and [x][y+1] == 0)
+     *      {
  *      fireWest();
  *      }
-*/
+     */
 // TODO: Continue implementation of killingShot with strategy following results from orientation shots.
 }
 
