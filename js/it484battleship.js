@@ -313,11 +313,65 @@ function Engine()
         return this.player2ShotHistory;
     };
 
-    //return the shot types that are available
-    this.getAvailableShots = function() {};
+    //return the shot types that are available for the current player
+    this.getAvailableShots = function()
+    {
+
+        var availableShots = [];
+        var i = 0;
+        //get the first player's available shots
+        if (this.isFirstPlayer)
+        {
+            for (var j = 0; j < this.player1Ships.length; j++)
+            {
+                var ship = this.player1Ships[j];
+                for (var k = 0; k < ship.shots.length; k++)
+                {
+                    var shot = ship.shots[k];
+                    if (shot.isAvailable());
+                    {
+                        availableShots[i++] = shot;
+                    }
+                }
+            }
+        }
+        //get the second player's available shots
+        else
+        {
+            for (var j = 0; j < this.player2Ships.length; j++)
+            {
+                var ship = this.player2Ships[j];
+                for (var k = 0; k < ship.shots.length; k++)
+                {
+                    var shot = ship.shots[k];
+                    if (shot.cooldownTimer === 0)
+                    {
+                        availableShots[i++] = shot;
+                    }
+                }
+            }
+        }
+        return availableShots;
+    };
+
+    //get the ships available for the current player
+    this.getPlayerShips = function()
+    {
+        if (this.isFirstPlayer)
+        {
+            return this.player1Ships;
+        }
+        else
+        {
+            return this.player2Ships;
+        }
+    }
 
     //return the shot types that are on cooldown
-    this.getShotsOnCooldown = function() {};
+    this.getShotsOnCooldown = function()
+    {
+
+    };
 
     /**
      * Returns the shot grids of the current player
