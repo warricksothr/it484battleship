@@ -6,7 +6,10 @@
 <body>
 <script type="text/javascript">
     //make sure to not load data from the session storage
-    sessionStorage.gameStateSaved = "false";
+    if(sessionStorage.gameStateSaved)
+    {
+        sessionStorage.gameStateSaved = "true";
+    }
 </script>
 <script src="it484battleship.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -14,31 +17,36 @@
     // testing code //
     //////////////////
 
-    //populate the engine with test data
-    //set the player mode to 1 and the number of players to 2
-    engine.selectGameMode(2,true);
+    //populate the engine with data only if we have no data to load
+    if(sessionStorage.gameStateSaved !== "true")
+    {
+        //populate the engine with test data
+        //set the player mode to 1 and the number of players to 2
+        engine.selectGameMode(2,true);
 
-    //get the available ships for the mode
+        //get the available ships for the mode
+        var ships = engine.getAvailableShips();
+
+        //place ships for player 1
+        engine.placeShip(0, 0, false, ships[0]);
+        engine.placeShip(0, 1, true, ships[1]);
+        engine.placeShip(5, 4, true, ships[2]);
+        engine.placeShip(2, 7, false, ships[3]);
+        engine.placeShip(8, 7, true, ships[4]);
+
+        //change to the second player
+        engine.changePlayers();
+        //place ships for player 2
+        engine.placeShip(1, 0, false, ships[0]);
+        engine.placeShip(0, 2, true, ships[1]);
+        engine.placeShip(6, 4, true, ships[2]);
+        engine.placeShip(2, 8, false, ships[3]);
+        engine.placeShip(9, 8, true, ships[4]);
+
+        //change back to player 1
+        engine.changePlayers();
+    }
     var ships = engine.getAvailableShips();
-
-    //place ships for player 1
-    engine.placeShip(0, 0, false, ships[0]);
-    engine.placeShip(0, 1, true, ships[1]);
-    engine.placeShip(5, 4, true, ships[2]);
-    engine.placeShip(2, 7, false, ships[3]);
-    engine.placeShip(8, 7, true, ships[4]);
-
-    //change to the second player
-    engine.changePlayers();
-    //place ships for player 2
-    engine.placeShip(1, 0, false, ships[0]);
-    engine.placeShip(0, 2, true, ships[1]);
-    engine.placeShip(6, 4, true, ships[2]);
-    engine.placeShip(2, 8, false, ships[3]);
-    engine.placeShip(9, 8, true, ships[4]);
-
-    //change back to player 1
-    engine.changePlayers();
 
     //iterate over the available ships and print their names to the console
     console.log("Going through the available ships. ");

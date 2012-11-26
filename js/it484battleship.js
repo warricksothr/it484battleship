@@ -146,7 +146,6 @@ function Ship(name, shipLength, shots)
     this.shipLength = shipLength; // shipLength: the pre-defined length of the ship. This is used when populating the grid.
     this.damage = 0; //a simple damage counter. When this counter equals the length it is destroyed
     this.isVertical = false; //indicates if the ship is positioned vertically or horizontally
-    this.isModeOne = true; //indicates the current mode, which is used to pre-load ship resources and the like
 
     //Indicates if the ship is destroyed 
     this.isDestroyed = function()
@@ -283,9 +282,9 @@ function Engine()
     this.placeShip = function(startx,starty,isVertical,ship)
     {
         //The grid location of the ship (important for placing the ship on the grid)
-        ship.startx = startx;
-        ship.starty = starty;
-        ship.isVertical = isVertical;
+        ship.startx = startx; //store the starting x location of the ship
+        ship.starty = starty; //store the starting y location of the ship
+        ship.isVertical = isVertical; //store if the ship is vertical or not
 
         //create a clone so we don't get reference errors
         var shipClone = cloneShip(ship)
@@ -385,6 +384,8 @@ function Engine()
     //This must be called to save the state when switching pages
     this.saveToLocalStorage = function()
     {
+        //indicate that the engine was retrieved from sessionStorage
+        this.fromStorage = true;
         sessionStorage.gameStateSaved = "true";
         sessionStorage.setObject("gameEngine", this)
     }
@@ -392,8 +393,8 @@ function Engine()
     //clear the local storage
     this.clearLocalStorage = function()
     {
-        sessionStorage.gameStateSaved = "false";
-        sessionStorage.gameEngine = "";
+        this.fromStorage = false;
+        sessionStorage.clear(); //clear session storage
     }
 }
 
@@ -412,9 +413,97 @@ Engine.prototype.init = function()
         //TODO: Remove me later, I am test code
         alert("Found session data to load from");
 
-        //TODO: Load Ships from local storage
+        //get saved state
+        var savedState = sessionStorage.getObject("gameEngine");
 
-        //TODO: synchronize loaded ships with grids
+        //set engine variables from saved state
+        newEngine.isFirstPlayer = savedState.isFirstPlayer;
+        newEngine.isModeOne = savedState.isModeOne;
+        newEngine.numberOfPlayers = savedState.numberOfPlayers;
+        newEngine.turnCounter = savedState.turnCounter;
+        newEngine.fromStorage = savedState.fromStorage;
+
+        //copy shot histories over
+        newEngine.player1ShotHistory = savedState.player1ShotHistory;
+        newEngine.player2ShotHistory = savedState.player2ShotHistory;
+
+        //copy shot grids
+        newEngine.player1ShotGrid = savedState.player1ShotGrid;
+        newEngine.player2ShotGrid = savedState.player2ShotGrid;
+
+        //copy the ship grids which will be updated further down
+        newEngine.player1ShipGrid = savedState.player1ShipGrid;
+        newEngine.player2ShipGrid = savedState.player2ShipGrid;
+
+        //initialize with the proper ships and shots
+        newEngine.selectGameMode(newEngine.numberOfPlayers, newEngine.isModeOne);
+
+        //create mapping of available ships to be used for populating player listings
+        var availableShipsClone = newEngine.getAvailableShips();
+        var availableShipsMap = new Object();
+        for (var j = 0; j < availableShipsClone.length; j++)
+        {
+            var availableShip = availableShipsClone[j];
+            availableShipsMap[availableShip.name] = availableShip;
+        }
+
+        //synchronize loaded ship and shot info with engine, then place ships
+        //process: load player 1 ship array from saved state
+        newEngine.isFirstPlayer = true;
+        for (var i = 0; i < savedState.player1Ships.length; i++)
+        {
+            //first player ship that is missing shot functions
+            var oldShip = savedState.player1Ships[i];
+
+            //then clone a ship of the appropriate type from the available ships
+            var newShip = cloneShip(availableShipsMap[oldShip.name]);
+
+            //then populate the correct damage and shot data
+            newShip.damage = oldShip.damage;
+            newShip.isVertical = oldShip.isVertical;
+            newShip.startx = oldShip.startx;
+            newShip.starty = oldShip.starty;
+
+            //then copy all the shot data
+            for (var k = 0; k < newShip.shots.length; k++)
+            {
+                newShip.shots[k].cooldownLength = oldShip.shots[k].cooldownLength;
+                newShip.shots[k].cooldownTimer = oldShip.shots[k].cooldownTimer;
+            }
+
+            //then place it on the board
+            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip);
+        }
+
+        //same for player 2
+        newEngine.isFirstPlayer = false;
+        for (var i = 0; i < savedState.player2Ships.length; i++)
+        {
+            //first player ship that is missing shot functions
+            var oldShip = savedState.player2Ships[i];
+
+            //then clone a ship of the appropriate type from the available ships
+            var newShip = cloneShip(availableShipsMap[oldShip.name]);
+
+            //then populate the correct damage and shot data
+            newShip.damage = oldShip.damage;
+            newShip.isVertical = oldShip.isVertical;
+            newShip.startx = oldShip.startx;
+            newShip.starty = oldShip.starty;
+
+            //then copy all the shot data
+            for (var k = 0; k < newShip.shots.length; k++)
+            {
+                newShip.shots[k].cooldownLength = oldShip.shots[k].cooldownLength;
+                newShip.shots[k].cooldownTimer = oldShip.shots[k].cooldownTimer;
+            }
+
+            //then place it on the board
+            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip);
+        }
+
+        //change back to the correct player we loaded from
+        newEngine.isFirstPlayer = savedState.isFirstPlayer;
     }
     else
     {
@@ -457,11 +546,11 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
     }
 
     //initialize the AI as player 2
-    if (numberOfPlayers === 1)
+    if (numberOfPlayers == 1)
     {
         this.numberOfPlayers = 1;
     }
-    else if (numberOfPlayers === 2)
+    else if (numberOfPlayers == 2)
     {
         this.numberOfPlayers = 2;
     }
