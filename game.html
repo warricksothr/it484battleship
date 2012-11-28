@@ -53,6 +53,21 @@
         background-image: linear-gradient(#eeeeee, #cde1ff);
     }
     
+    #shipgrids
+    {
+        position:absolute;
+        bottom:0%;
+        right:0%;
+        width:100px;
+        height:75px;
+        background-color:#eeeeee;
+        box-shadow:0px 0px 10px black;
+        border-radius:10px 0px 0px 0px;
+        font-size:30px;
+        text-align:center;
+        cursor:pointer;
+    }
+    
     #one
     {
         visibility:hidden;   
@@ -63,13 +78,23 @@
         visibility:visible;
     }
     
+    #shipone
+    {
+        visibility:hidden;
+    }
+    
+    #shiptwo
+    {
+        visibility:hidden;
+    }
+    
     #shipview
     {
         position:absolute;
         top:0%;
         right:0%;
         width:250px;
-        height:200px;
+        height:175px;
         background-color:white;
         box-shadow:0px 0px 10px black;
         border-radius:0px 0px 0px 8px;
@@ -77,15 +102,19 @@
     
     .ship
     {
-        position:inherit;
+        position:relative;
         background-color:#d1d1d1;
+        width:20px
+        z-index:1000;
+        margin:14px;
+        float:left;
     }
     
     .segment
     {
         border: 1px solid black;
         width: 20px;
-        height: 50px;
+        height: 25px;
     }
     
     .headings
@@ -94,6 +123,20 @@
     }
     
     </style>
+    <script type="text/javascript">
+        function showShipMap() {
+            if(false) {
+                document.getElementById('one').style.visibility = hidden;
+                document.getElementById('shipone').style.visibility = visible;
+            }
+            else {
+                document.getElementById('two').style.visibility = hidden;
+                document.getElementById('shiptwo').style.visibility = visible;
+            }
+            
+        }
+        
+    </script>
 </head>
 <body>
     <div id="history">
@@ -117,20 +160,69 @@
     <div id="shipview">
     <!-- this is the view of the ships and hits on ships -->
         <div id="carrier" class="ship">
-        
+        <div id="s1p1" class="segment">
+            
+        </div>
+        <div id="s1p2" class="segment">
+            
+        </div>
+        <div id="s1p3" class="segment">
+            
+        </div>
+        <div id="s1p4" class="segment">
+            
+        </div>
+        <div id="s1p5" class="segment">
+            
+        </div>
         </div>
         <div id="battleship" class="ship">
-        
+        <div id="s2p1" class="segment">
+            
+        </div>
+        <div id="s2p2" class="segment">
+            
+        </div>
+        <div id="s2p3" class="segment">
+            
+        </div>
+        <div id="s2p4" class="segment">
+            
+        </div>
         </div>
         <div id="crusier" class="ship">
-        
+        <div id="s3p1" class="segment">
+            
+        </div>
+        <div id="s3p2" class="segment">
+            
+        </div>
+        <div id="s3p3" class="segment">
+            
+        </div>
         </div>
         <div id="submarine" class="ship">
-        
+        <div id="s4p1" class="segment">
+            
+        </div>
+        <div id="s4p2" class="segment">
+            
+        </div>
+        <div id="s4p3" class="segment">
+            
+        </div>
         </div>
         <div id="destroyer" class="ship">
-        
+        <div id="s3p1" class="segment">
+            
         </div>
+        <div id="s5p2" class="segment">
+            
+        </div>
+        </div>
+    </div>
+    <div id="shipgrids" onHover="JavaScript:showShipMap()">
+        Ship Views
     </div>
 </body>
 </html>
