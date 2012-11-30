@@ -1,0 +1,128 @@
+body
+{
+    background: url('img/carbon.png');
+    background-color:black;
+    font-family:monospace;
+}
+
+#menu
+{
+    position:absolute;
+    left: 33%;
+    top: 15%;
+    width:33%;
+    min-width:400px;
+    padding-bottom:40px;
+    background-color:white;
+    border-radius:8px;
+    box-shadow:
+        0px 0px 20px black,
+        inset 0px 0px 30px black;
+}
+
+#logo
+{
+    font-size:42px;
+    text-align:center;
+    padding-top:25px;
+}
+
+.rotate
+{
+-webkit-transition-duration: 0.8s;
+-moz-transition-duration: 0.8s;
+-o-transition-duration: 0.8s;
+transition-duration: 0.8s;
+
+-webkit-transition-property: -webkit-transform;
+-moz-transition-property: -moz-transform;
+-o-transition-property: -o-transform;
+transition-property: transform;
+
+overflow:hidden;
+
+}   
+
+.rotate:hover   
+{ 
+    -webkit-transform:rotate(2deg);
+    -moz-transform:rotate(2deg); 
+    -o-transform:rotate(2deg);
+}
+
+.tab
+{
+    color:black;
+    font-size:35px;
+    text-decoration:none;
+    top:50%;
+    left:50%;
+    padding:8px;
+    border:20px;
+}
+
+.tab:hover
+{
+    color:white;
+    padding:8px;
+    background-color:#333333;
+    text-decoration:none;
+    font-size:35px;
+    border-radius:8px;
+    border:20px;
+    box-shadow:inset 0px 0px 20px black;
+}
+
+.tab:visit
+{
+    color:black;
+    font-size:35px;
+    text-decoration:none;
+    padding:8px;
+    border:20px;
+}
+
+#motto
+{
+    font-size:10px; 
+    padding:10px 40px 10px 0px;
+    text-align:right;
+    -moz-transform:rotate(-5deg);
+    -webkit-transform:rotate(-5deg);
+    -o-transform:-5deg;
+    transform:-5deg;
+}
+
+#footer
+{
+    position:absolute;
+    z-index:1;
+    color:#d1d1d1;
+    font-size:10px; 
+    bottom:0px;
+    padding:5px;
+    width:90%;
+    min-width:400px;
+    left:5%;
+    text-align:center;
+}
+
+#footera
+{
+    font-size:10px;
+    z-index:1;
+    color:#d1d1d1;
+}
+
+#footera:hover
+{
+    font-size:10px;
+    z-index:1;
+    color:#d1d1d1;
+}
+
+#footera:visted
+{
+    font-size:10px;
+    z-index:1;
+    color:#d1d1d1;

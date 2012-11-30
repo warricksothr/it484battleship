@@ -2,92 +2,7 @@
 <html>
 <head>
     <title>Welcome to Battleships</title>
-    <style rel="stylesheet" type="text/css" id="stylesheet">
-        body
-        {
-            background: url('img/carbon.png');
-            background-color:black;
-            font-family:monospace;
-        }
-        
-        #menu
-        {
-            position:absolute;
-            left: 33%;
-            top: 15%;
-            width:33%;
-            min-width:400px;
-            height:33%;
-            min-height:300px;
-            background-color:white;
-            border-radius:8px;
-            box-shadow:
-                0px 0px 20px black,
-                inset 0px 0px 30px black;
-        }
-        
-        #logo
-        {
-            font-size:42px;
-            text-align:center;
-            padding-top:25px;
-        }
-        
-        rotate
-        {
-        -webkit-transition-duration: 0.8s;
-        -moz-transition-duration: 0.8s;
-        -o-transition-duration: 0.8s;
-        transition-duration: 0.8s;
-     
-        -webkit-transition-property: -webkit-transform;
-        -moz-transition-property: -moz-transform;
-        -o-transition-property: -o-transform;
-        transition-property: transform;
-     
-        overflow:hidden;
- 
-        }   
- 
-        .rotate:hover   
-        { 
-            -webkit-transform:rotate(2deg);
-            -moz-transform:rotate(2deg); 
-            -o-transform:rotate(2deg);
-        }
-        
-        a
-        {
-            color:black;
-            font-size:35px;
-            text-decoration:none;
-            top:50%
-            left:50%
-            padding:8px;
-            border:20px;
-        }
-        
-        a:hover
-        {
-            color:white;
-            padding:8px;
-            background-color:#333333;
-            text-decoration:none;
-            font-size:35px;
-            border-radius:8px;
-            border:20px;
-            box-shadow:inset 0px 0px 20px black;
-        }
-        
-        a:visit
-        {
-            color:black;
-            font-size:30px;
-            text-decoration:none;
-            padding:8px;
-            border:20px;
-        }
-    </style>
+    <link href="styles/menu.css" rel="stylesheet" type="text/css" id="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js"></script>
     <script>
@@ -100,9 +15,10 @@
     <div id="menu">
         <div id="logo" class="rotate">Select Your Game!</div>
         <center>
-        <a href="oneplayergame.html">One Player</a><br><br>
-        <a href="twoplayergame.html">Two Player</a><br><br>
-        <a href="index.html">Return to Home</a>
+        <a class="tab" href="game.html?mode=1&player=2">One Player</a><br><br>
+        <a class="tab" href="game.html?mode=1&player=2">Two Player</a><br><br>
+        <a class="tab" href="game.html?mode=1&player=1">Crazy One Player</a><br><br>
+        <a class="tab" href="index.html">Return to Home</a>
         </center>
     </div>
 </body>

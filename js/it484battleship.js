@@ -400,6 +400,42 @@ function Engine()
         //clear the data from session storage
         this.clearLocalStorage();
     };
+    
+    //returns true if the current player has no ships left
+    this.isGameOver = function()
+    {
+        //check if the current player has no ships
+        //check first players ship
+        if (this.isFirstPlayer)
+        {
+            var i = 0;
+            while (i < this.player1Ships.length)
+            {
+                //if one ship isn't destroyed then the the game is still going
+                if (!this.player1Ships[i].isDestroyed())
+                {
+                    return false;
+                }
+                i++;
+            }
+            return true;
+        }
+        //check second players ship
+        else
+        {
+            var i = 0;
+            while (i < this.player2Ships.length)
+            {
+                //if one ship isn't destroyed then the the game is still going
+                if (!this.player2Ships[i].isDestroyed())
+                {
+                    return false;
+                }
+                i++;
+            }
+            return true;
+        }
+    }
 
     //return a list of available ships
     this.getAvailableShips = function()
@@ -625,9 +661,9 @@ function mode1Ships()
         //implement a regular shot and how it interacts with the grid
         if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
         {
-            alert("Cell already targeted");
+            return ShotMessages[shotGrid[x][y]];
         }
-        else if (targetShipGrid[x][y].name === 0)
+        else if (targetShipGrid[x][y] === 0)
         {
             shotGrid[x][y] = 1;
             return ShotMessages[1];
@@ -643,24 +679,24 @@ function mode1Ships()
     //define the ships in mode 1. This array of ships will be copied onto the grid of each players
     return new Array(
         new Ship("Carrier", 5, new Array(
-            regularShot
-        )
+                regularShot
+            )
         ),
         new Ship("Battleship", 4, new Array(
-            regularShot
-        )
+                regularShot
+            )
         ),
         new Ship("Cruiser", 3, new Array(
-            regularShot
-        )
+                regularShot
+            )
         ),
         new Ship("Submarine", 3, new Array(
-            regularShot
-        )
+                regularShot
+            )
         ),
         new Ship("Destroyer", 2, new Array(
-            regularShot
-        )
+                regularShot
+            )
         )
     );
 }
@@ -668,52 +704,134 @@ function mode1Ships()
 //This defines all the ships available in mode 1 of the game
 function mode2Ships()
 {
+    //Array of shot messages based on shot impact on the grid
+    // ShotMessages[0] = "FogOfWar";
+    // ShotMessages[1] = "Miss";
+    // ShotMessages[2] = "Hit";
+    // ShotMessages[3] = "RevealMiss";
+    // ShotMessages[4] = "RevealHit";
+    
     //define a regular shot
     var regularShot = new Shot("Regular Shot", 1);
     //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
     regularShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
-        //implement a regular shot and how it interacts with the grid
+        //if the cell is already miss or hit
         if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
         {
-            alert("Cell already targeted");
+            //return the message for the value for the existing cell
+            return ShotMessages[shotGrid[x][y]];
         }
-        else if (targetShipGrid[x][y].name === 0)
+        //if the cell hasn't been shot 
+        else if (targetShipGrid[x][y] === 0)
         {
+            //
             shotGrid[x][y] = 1;
             return ShotMessages[1];
         }
         else if (targetShipGrid[x][y].name !== 0)
         {
+            //
             targetShipGrid[x][y].damage++;
             shotGrid[x][y] = 2;
             return ShotMessages[2];
         }
     };
-
+    
     //define special shots
+    //Carrier Special Shot
+    var goliathShot = new Shot("Photon Bomb Run", 8);
+    goliathShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //Shot hits 3 consecutive places. Player chooses a starting grid point
+        //and a direction? How will this be handled from input via UI?
+    };
+    
+    //Battleship Special Shot
+    var ravagerShot = new Shot("Black Hole", 12);
+    ravagerShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //Shot hits in a central location and then hits one grid point
+        //in each direction up, right, down, left from chosen location
+        //if the cell is already miss or hit
+        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
+        {
+            //return the message for the value for the existing cell
+            return ShotMessages[shotGrid[x][y]];
+        }
+        //if the cell hasn't been shot 
+        else if (targetShipGrid[x][y] === 0)
+        {
+            //
+            shotGrid[x][y] = 1;
+            return ShotMessages[1];
+        }
+        else if (targetShipGrid[x][y].name !== 0)
+        {
+            //
+            targetShipGrid[x][y].damage++;
+            shotGrid[x][y] = 2;
+            return ShotMessages[2];
+        }
+    };
+    
+    //Cruiser Special Shot
+    var harvesterShot = new Shot("Scrap Radar", 6);
+    harvesterShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //Shot is fired at location and if it would be a hit, it reveals grid
+        //points to the up, right, down, left locations if they would be a hit
+        //or not as well. Hits similar to Black Hole but hits as reveal hit or
+        //reveal miss instead of true hit or miss.
+    };
+    
+    //Submarine Special Shot
+    var destroyerShot = new Shot("Plasma Salvo", 4);
+    destroyerShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //Player independently chooses 3 locations for "regular" shots    
+    };
+    
+    //Interceptor Special Shot
+    var interceptorShot = new Shot("Homing Missile", 6);
+    interceptorShot.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        //Player chooses a cell location. Spaces that have already been hit are
+        //invalid locations for homing missile to hit. Homing missile hits the
+        //"closest" grid space that would be a hit from chosen cell location
+    };
 
-    //define the ships in mode 1. This array of ships will be copied onto the grid of each players
+    //define the ships in mode 2. This array of ships will be copied onto the grid of each players
     return new Array(
-        new Ship("Carrier", 5, new Array(
-            regularShot
-        )
+        //carrier
+        new Ship("Stardust Goliath", 5, new Array(
+                regularShot
+                , goliathShot
+            )
         ),
-        new Ship("Battleship", 4, new Array(
-            regularShot
-        )
+        //battleship
+        new Ship("Galaxy Ravager", 4, new Array(
+                regularShot
+                , ravagerShot
+            )
         ),
-        new Ship("Cruiser", 3, new Array(
-            regularShot
-        )
+        //cruiser
+        new Ship("Scrap Harvester", 3, new Array(
+                regularShot
+                , harvesterShot
+            )
         ),
-        new Ship("Submarine", 3, new Array(
-            regularShot
-        )
+        //submarine
+        new Ship("Star Destroyer", 3, new Array(
+                regularShot
+                , destroyerShot
+            )
         ),
-        new Ship("Destroyer", 2, new Array(
-            regularShot
-        )
+        //destroyer
+        new Ship("Interceptor", 2, new Array(
+                regularShot
+                , interceptorShot
+            )
         )
     );
 }
@@ -722,7 +840,8 @@ function mode2Ships()
 // Section for AI Code //
 /////////////////////////
 
-
+function firingLogic()
+{
 
 //We generate a random number between 0-4 in order to generate a starting point for AI shot selection.
 //This should limit the ability of the opponent to plan ship position to avoid shots.
@@ -733,20 +852,20 @@ var yCoord = 0;
 
 
 //This searches for enemy ships by firing in a pattern as long as no ships are found
-function huntingShot()
+this.huntingShot = function()
 {
     //We use x and y as starting coordinates and begin firing in a diagonal line (x+1, y+1) on cells which !=0 until an edge is reached.
 //When an edge is reached we begin a new diagonal by moving five cells to the left on the x-axis and diagonally firing again.
 //When an edge is reached we begin a new diagonal by moving left to x=0 and diagonally firing again from x=0, y=randomInt.
 //If (randomInt+5) < 9 we perform one more diagonal run
 
-    //TODO  implement regularShot.fire in a searching pattern to locate enemy ships
+    
 
 
-}
+};
 
 //method for sinking an enemy ship once located with hunting shot
-function killingShot()
+this.killingShot = function()
 {
 //Create functions to locate orientation of found ship
 
@@ -798,21 +917,21 @@ function killingShot()
  *      }
      */
 // TODO: Continue implementation of killingShot with strategy following results from orientation shots.
-}
+};
 
 
 //As long as no ships have been hit we continue with hunting shots
 
-if (huntingShot !== ShotMessages[2])
+if (this.huntingShot !== ShotMessages[2])
 {
-    huntingShot();
+    this.huntingShot();
 }
 else
 {
-    killingShot();
+    this.killingShot();
 }
 
-
+}
 
 ///////////////////////////
 // Now Start The Engines //
