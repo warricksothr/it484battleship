@@ -3,32 +3,32 @@
 <head>
     <title>Battleship</title>
     <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
-    <script type="text/javascript" src="js/it484battleship.js" rel="javascript"></script>
+    <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
     <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
 </head>
 <body>
     <div id="history">
     <!-- this is the list of previous shots -->
         <h2 class="headings">History</h2>
-        T4: Player 1: B3  (Miss)<br>
-        T4: Player 1: B2  (Miss)<br>
-        T3: Player 2: G9  (Hit)<br>
-        T2: Player 1: A1  (Miss)<br>
-        T1: Player 2: G10 (Hit)
+        <script>
+            //this is a call to create the recent shot history for the current player
+            UI.createHistory();
+        </script>
     </div>
     <div id="tabletop">
     <!-- this is the tabletop that holds the two boards -->
         <div id="shot" class="board">
         <table>
             <script>
-                UI.createGrid();
+                //this is a call to draw the current player's shot grid
+                UI.createShotGrid();
             </script>
         </table>
         </div>
         <div id="ship" class="board">
         <table>
             <script>
-                UI.createGrid();
+                UI.createShipGrid();
             </script>
         </table>
         </div>
