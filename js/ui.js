@@ -53,40 +53,52 @@ function UI(engine)
         return newElement;
     };
     
+    //simply retreve a dom element from the current document identified by id
     this.helperGetElementById = function(elementId)
     {
         return document.getElementById(elementId);
     };
     
+    ////////////////////
+    // Update Methods //
+    ////////////////////
+    
+    //updates the user interface
+    this.updateInterface = function(params)
+    {
+        //autopopulate the params with defaults if we weren't passed some
+        if (typeof(params) === 'undefined')
+        {
+            params = {
+            historyID:"history",
+            shotID:"shot",
+            ship:"ship"
+            };
+        }
+        //create the history
+        this.createHistory(params.historyID);
+        //create the shot grid
+        this.createShotGrid(params.shotID);
+        //create the ship grid
+        this.createShipGrid(params.shipID);
+        //hide the ship grid by default
+        this.hideShipGrid();
+    };
     
     ////////////////////////////////////
     // Show/Hide Ship Grids Functions //
     ////////////////////////////////////
     
-    this.showShipMap = function()
+    this.showShipGrid = function()
     {
-        if(false) {
-            document.getElementById('one').style.display = "none";
-            document.getElementById('shipone').style.display = "block";
-        }
-        else {
-            document.getElementById('two').style.display = "none";
-            document.getElementById('shiptwo').style.display = "block";
-        }
-        
+        document.getElementById('shot').style.display = "none";
+        document.getElementById('ship').style.display = "block";
     };
     
-    this.hideShipMap = function()
+    this.hideShipGrid = function()
     {
-        if(false) {
-            document.getElementById('one').style.display = "none";
-            document.getElementById('shipone').style.display = "block";
-        }
-        else {
-            document.getElementById('two').style.display = "none";
-            document.getElementById('shiptwo').style.display = "block";
-        }
-        
+        document.getElementById('shot').style.display = "block";
+        document.getElementById('ship').style.display = "none";
     };
     
     ////////////////////////////
@@ -102,23 +114,28 @@ function UI(engine)
         {
             //fog of war
             case 0: 
-                classType += "cloud";
+                classType = "cloud";
                 break;
             //miss
             case 1: 
-                classType += "miss";
+                classType = "miss";
                 break;
             //hit
             case 2: 
-                classType += "hit";
+                classType = "hit";
                 break;
             //reveal miss
             case 3: 
-                classType += "revealmiss";
+                classType = "revealmiss";
                 break;
             //reveal hit
             case 4: 
-                classType += "revealhit";
+                classType = "revealhit";
+                break;
+            //it must be a ship
+            default:
+                classType = "shipGrid";
+                type = 1;
                 break;
         }
         var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, type);

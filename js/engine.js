@@ -506,9 +506,6 @@ Engine.prototype.init = function(AI)
     //check if there is any current game state stored
     if (sessionStorage.gameStateSaved && sessionStorage.gameStateSaved === "true")
     {
-        //TODO: Remove me later, I am test code
-        alert("Found session data to load from");
-
         //get saved state
         var savedState = sessionStorage.getObject("gameEngine");
 
@@ -536,7 +533,7 @@ Engine.prototype.init = function(AI)
 
         //create mapping of available ships to be used for populating player listings
         var availableShipsClone = newEngine.getAvailableShips();
-        var availableShipsMap = new Object();
+        var availableShipsMap = {};
         for (var j = 0; j < availableShipsClone.length; j++)
         {
             var availableShip = availableShipsClone[j];

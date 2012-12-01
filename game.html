@@ -3,33 +3,70 @@
 <head>
     <title>Battleship</title>
     <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
+    <script>
+        //this is for the test script below so that we generate new data every time
+        if(sessionStorage.gameStateSaved)
+        {
+            //prevent loading from session
+            sessionStorage.gameStateSaved = "false";
+        }
+    </script>
     <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
     <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
     <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
 </head>
 <body>
+    <script>
+        //this is test script to test the interface
+        //populate the engine with data only if we have no data to load
+        if(sessionStorage.gameStateSaved !== "true")
+        {
+            //populate the engine with test data
+            //set the player mode to 1 and the number of players to 2
+            ENGINE.selectGameMode(2,true);
+    
+            //get the available ships for the mode
+            var ships = ENGINE.getAvailableShips();
+    
+            //place ships for player 1
+            ENGINE.placeShip(0, 0, false, ships[0]);
+            ENGINE.placeShip(0, 1, true, ships[1]);
+            ENGINE.placeShip(5, 4, true, ships[2]);
+            ENGINE.placeShip(2, 7, false, ships[3]);
+            ENGINE.placeShip(8, 7, true, ships[4]);
+    
+            //change to the second player
+            ENGINE.changePlayers();
+            //place ships for player 2
+            ENGINE.placeShip(1, 0, false, ships[0]);
+            ENGINE.placeShip(0, 2, true, ships[1]);
+            ENGINE.placeShip(6, 4, true, ships[2]);
+            ENGINE.placeShip(2, 8, false, ships[3]);
+            ENGINE.placeShip(9, 8, true, ships[4]);
+    
+            //change back to player 1
+            ENGINE.changePlayers();
+        }
+        var ships = ENGINE.getAvailableShips();
+        var ship = ships[0];
+        var shot = ship.shots[0];
+        ENGINE.fireShot(1,0,shot);
+        //ENGINE.changePlayers();
+    </script>
     <!-- this is the list of previous shots -->
     <div id="history">
     </div>
-    <script>
-        //this is a call to create the recent shot history for the current player
-        UI.createHistory("history");
-        </script>
     <div id="tabletop">
     <!-- this is the tabletop that holds the two boards -->
         <div id="shot" class="board">
         </div>
-        <script>
-            //this is a call to draw the current player's shot grid
-            UI.createShotGrid("shot");
-        </script>
         <div id="ship" class="board">
         </div>
-        <script>
-            //this is the call to draw the current player's ship grid
-            UI.createShipGrid("ship");
-        </script>
     </div>
+    <script>
+        //call update interface method and pass it the ids of
+        UI.updateInterface({historyID:"history", shipID:"ship", shotID:"shot"});
+    </script>
     <div id="shipview">
     <!-- this is the view of the ships and hits on ships -->
         <div id="carrier" class="ship">
@@ -94,7 +131,7 @@
         </div>
         </div>
     </div>
-    <div id="shipgrids" onmouseover="" onmouseoff="">
+    <div id="shipgrids" onmouseover="UI.showShipGrid()" onmouseout="UI.hideShipGrid()">
         Ship Views
     </div>
 </body>
