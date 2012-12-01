@@ -12,19 +12,50 @@ function UI(engine)
     ////////////////////
     
     // element to empty a dom element identified by id
-    this.helperEmptyElement = function(elementId){
-        var element = document.getElementById(elementId);
+    this.helperEmptyElementById = function(elementId){
+        var element = this.helperGetElementById(elementId);
         while(element.hasChildNodes())
         {
             element.removeChild(element.firstChild);
         }
     };
     
-    this.helperAppendHTMLToElement = function(elementId, htmlToWrite)
+    //write the html to the requested element
+    this.helperAppendHTMLToElementById = function(elementId, htmlToWrite)
     {
-        var parentElement = document.getElementById(elementId);
+        var parentElement = this.helperGetElementById(elementId);
         //insert our html into the parent element
-        parentElement.innerHTML = parentElement.innerHTML + htmlToWrite;
+        this.helperAppendHTMLToElement(parentElement, htmlToWrite);
+    };
+    
+    //write HTML to the body of an element
+    this.helperAppendHTMLToElement = function(element, htmlToWrite)
+    {
+        element.innerHTML = element.innerHTML + htmlToWrite;
+    };
+    
+    //append an element as a child to a parent element
+    this.helperAppendChildElement = function(parentElement, childElement)
+    {
+        parentElement.appendChild(childElement);
+    };
+    
+    //helper method to construct an dom element
+    this.helperCreateElement = function(elementName, elementAttributes, elementTextContent)
+    {
+        var newElement = document.createElement(elementName);
+        //loop through all the properties of elementAttributes and add them as attributes
+        for(var propt in elementAttributes){
+            //add an attribute based on the name with a value from the property
+            newElement.setAttribute(propt, elementAttributes[propt]);
+        }
+        newElement.textContent = elementTextContent;
+        return newElement;
+    };
+    
+    this.helperGetElementById = function(elementId)
+    {
+        return document.getElementById(elementId);
     };
     
     
@@ -62,66 +93,62 @@ function UI(engine)
     // Grid drawing functions //
     ////////////////////////////
     
-    //helper method to get the correct grid type from the cell
-    this.helperGetGridCellContents = function(type, j)
+    //helper method to create the correct grid type from the cell
+    this.helperGetGridCell = function(type, j)
     {
-        var returnMe = "<td class='";
+        var classType = "";
         //switch on the type in the cell 
         switch(type)
         {
             //fog of war
             case 0: 
-                returnMe += "cloud";
+                classType += "cloud";
                 break;
             //miss
             case 1: 
-                returnMe += "miss";
+                classType += "miss";
                 break;
             //hit
             case 2: 
-                returnMe += "hit";
+                classType += "hit";
                 break;
             //reveal miss
             case 3: 
-                returnMe += "revealmiss";
+                classType += "revealmiss";
                 break;
             //reveal hit
             case 4: 
-                returnMe += "revealhit";
+                classType += "revealhit";
                 break;
         }
-        //close the cell
-        returnMe +=  "' id='c" + j + "'>"+type+"</td>";
-        //by now returnMe should look like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
-        return returnMe;
+        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, type);
+        //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
+        return gridCell;
     };
     
     //helper method to draw the supplied grid
     this.helperCreateGrid = function(grid, gridElementId)
     {
         //empty the grid
-        this.helperEmptyElement(gridElementId);
+        this.helperEmptyElementById(gridElementId);
+        //get the container
+        var rootElement = this.helperGetElementById(gridElementId);
         //create the table
-        var tableElementId = gridElementId+"-table";
-        this.helperAppendHTMLToElement(gridElementId, "<table id='"+tableElementId+"'>");
-        //create table body
-        var tableBodyElementId = tableElementId+"-body";
-        this.helperAppendHTMLToElement(tableElementId, "<tbody id='"+tableBodyElementId+"'>");
+        var table = this.helperCreateElement("table", {}, "");
         for (var i = 0; i < 10; i++) {
             //write the row to the table body
-            var rowElementId = tableBodyElementId + "-r"+i;
-            this.helperAppendHTMLToElement(tableBodyElementId, "<tr id='"+rowElementId+"'>");
+            var row = this.helperCreateElement("tr", {id:"r"+i},"");
             for (var j = 0; j < 10; j++) {
                 //write a column to the table
                 //get the appropriate cell contents and write the column
-                var contents = this.helperGetGridCellContents(grid[j][i], j);
-                this.helperAppendHTMLToElement(rowElementId, contents);
+                var gridCell = this.helperGetGridCell(grid[j][i], j);
+                this.helperAppendChildElement(row, gridCell);
             }
-            //end the row
-            this.helperAppendHTMLToElement(tableElementId, "</tr>");
+            //add the row to the table
+            this.helperAppendChildElement(table, row);
         }
-        this.helperAppendHTMLToElement(tableElementId, "</tbody>");
-        this.helperAppendHTMLToElement(gridElementId, "</table>");
+        //finally write the table to the root element
+        this.helperAppendChildElement(rootElement, table);
     };
     
     //draw the current player's ship grid
@@ -147,18 +174,18 @@ function UI(engine)
     //show the history for the current player
     this.createHistory = function(gridElementId)
     {
-        this.helperEmptyElement(gridElementId);
-        this.helperAppendHTMLToElement(gridElementId, "<h2 class=\"headings\">History</h2>");
+        this.helperEmptyElementById(gridElementId);
+        this.helperAppendHTMLToElementById(gridElementId, "<h2 class=\"headings\">History</h2>");
         var history = this.engine.getShotHistory();
         for (var i = 0; i < history.length; i++)
         {
             //write out the history
-            this.helperAppendHTMLToElement(gridElementId, history[i] + "<br>");
+            this.helperAppendHTMLToElementById(gridElementId, history[i] + "<br>");
         }
         //print out no history if there is no history yet
         if (!history || history.length < 1)
         {
-            this.helperAppendHTMLToElement(gridElementId, "No History<br>");
+            this.helperAppendHTMLToElementById(gridElementId, "No History<br>");
         }
     };
 }
