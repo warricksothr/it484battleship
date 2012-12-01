@@ -232,7 +232,17 @@ function UI(engine)
     /////////////////////////
     
     //a helper method to determine if a cell should be red or not
-    //this.helperShipView
+    this.helperShipViewGetClass = function(ship, currentCount)
+    {
+        if (currentCount < ship.damage)
+        {
+            return "segmenthit";
+        }
+        else
+        {
+            return "segment";
+        }
+    };
     
     this.createShipView = function(shipViewElementId)
     {
@@ -240,6 +250,8 @@ function UI(engine)
         var ships = engine.getPlayerShips();
         //get access to the root element in the DOM
         var rootElement = this.helperGetElementById(shipViewElementId);
+        //empty the element
+        this.helperEmptyElement(rootElement);
         //loop through the ships and create the elements
         for (var i = 0; i < ships.length; i++)
         {
@@ -250,8 +262,10 @@ function UI(engine)
             //loop through each cell in the length of the ship
             for (var x = 0; x < ship.shipLength; x++)
             {
+                //determine if the section should be hit or not
+                var cellClass = this.helperShipViewGetClass(ship, x);
                 //create the cell for the ship
-                var shipCellElement = this.helperCreateElement("div", {id:"s"+(i+1)+"p"+(x+1), "class":"segment"}, "");
+                var shipCellElement = this.helperCreateElement("div", {id:"s"+(i+1)+"p"+(x+1), "class":cellClass}, "");
                 //append it to the ship
                 this.helperAppendChildElement(shipElement, shipCellElement);
             }
