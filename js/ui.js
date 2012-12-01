@@ -7,6 +7,27 @@ function UI(engine)
     //Always load after engine.js to ensure the latest engine is linked
     this.engine = engine;
     
+    ////////////////////
+    // Global Helpers //
+    ////////////////////
+    
+    // element to empty a dom element identified by id
+    this.helperEmptyElement = function(elementId){
+        var element = document.getElementById(elementId);
+        while(element.hasChildNodes())
+        {
+            element.removeChild(element.firstChild);
+        }
+    };
+    
+    this.helperAppendHTMLToElement = function(elementId, htmlToWrite)
+    {
+        var parentElement = document.getElementById(elementId);
+        //insert our html into the parent element
+        parentElement.innerHTML = parentElement.innerHTML + htmlToWrite;
+    };
+    
+    
     ////////////////////////////////////
     // Show/Hide Ship Grids Functions //
     ////////////////////////////////////
@@ -76,32 +97,47 @@ function UI(engine)
     };
     
     //helper method to draw the supplied grid
-    this.helperCreateGrid = function(grid)
+    this.helperCreateGrid = function(grid, gridElementId)
     {
+        //empty the grid
+        this.helperEmptyElement(gridElementId);
+        //create the table
+        var tableElementId = gridElementId+"-table";
+        this.helperAppendHTMLToElement(gridElementId, "<table id='"+tableElementId+"'>");
+        //create table body
+        var tableBodyElementId = tableElementId+"-body";
+        this.helperAppendHTMLToElement(tableElementId, "<tbody id='"+tableBodyElementId+"'>");
         for (var i = 0; i < 10; i++) {
-            //write the row 
-            document.writeln("<tr id='r"+i+"'>");
+            //write the row to the table body
+            var rowElementId = tableBodyElementId + "-r"+i;
+            this.helperAppendHTMLToElement(tableBodyElementId, "<tr id='"+rowElementId+"'>");
             for (var j = 0; j < 10; j++) {
+                //write a column to the table
                 //get the appropriate cell contents and write the column
-                document.writeln(this.helperGetGridCellContents(grid[j][i], j));
+                var contents = this.helperGetGridCellContents(grid[j][i], j);
+                this.helperAppendHTMLToElement(rowElementId, contents);
             }
             //end the row
-            document.writeln("</tr>");
+            this.helperAppendHTMLToElement(tableElementId, "</tr>");
         }
+        this.helperAppendHTMLToElement(tableElementId, "</tbody>");
+        this.helperAppendHTMLToElement(gridElementId, "</table>");
     };
     
     //draw the current player's ship grid
-    this.createShipGrid = function()
+    this.createShipGrid = function(gridElementId)
     {
+        if(!gridElementId) { gridElementId = "ship"; }
         var grid = this.engine.getShipGrid();
-        this.helperCreateGrid(grid);
+        this.helperCreateGrid(grid, gridElementId);
     };
     
     //draw the current players shot grid
-    this.createShotGrid = function()
+    this.createShotGrid = function(gridElementId)
     {
+        if(!gridElementId) { gridElementId = "shot"; }
         var grid = this.engine.getShotGrid();
-        this.helperCreateGrid(grid);
+        this.helperCreateGrid(grid, gridElementId);
     };
     
     ///////////////////////
@@ -109,18 +145,20 @@ function UI(engine)
     ///////////////////////
     
     //show the history for the current player
-    this.createHistory = function()
+    this.createHistory = function(gridElementId)
     {
+        this.helperEmptyElement(gridElementId);
+        this.helperAppendHTMLToElement(gridElementId, "<h2 class=\"headings\">History</h2>");
         var history = this.engine.getShotHistory();
         for (var i = 0; i < history.length; i++)
         {
             //write out the history
-            document.writeln(history[i] + "<br>");
+            this.helperAppendHTMLToElement(gridElementId, history[i] + "<br>");
         }
         //print out no history if there is no history yet
         if (!history || history.length < 1)
         {
-            document.writeln("No History<br>");
+            this.helperAppendHTMLToElement(gridElementId, "No History<br>");
         }
     };
 }

@@ -8,31 +8,27 @@
     <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
 </head>
 <body>
-    <div id="history">
     <!-- this is the list of previous shots -->
-        <h2 class="headings">History</h2>
-        <script>
-            //this is a call to create the recent shot history for the current player
-            UI.createHistory();
-        </script>
+    <div id="history">
     </div>
+    <script>
+        //this is a call to create the recent shot history for the current player
+        UI.createHistory("history");
+        </script>
     <div id="tabletop">
     <!-- this is the tabletop that holds the two boards -->
         <div id="shot" class="board">
-        <table>
-            <script>
-                //this is a call to draw the current player's shot grid
-                UI.createShotGrid();
-            </script>
-        </table>
         </div>
+        <script>
+            //this is a call to draw the current player's shot grid
+            UI.createShotGrid("shot");
+        </script>
         <div id="ship" class="board">
-        <table>
-            <script>
-                UI.createShipGrid();
-            </script>
-        </table>
         </div>
+        <script>
+            //this is the call to draw the current player's ship grid
+            UI.createShipGrid("ship");
+        </script>
     </div>
     <div id="shipview">
     <!-- this is the view of the ships and hits on ships -->
