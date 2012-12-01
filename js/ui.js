@@ -119,31 +119,37 @@ function UI(engine)
     this.helperGetShotGridCell = function(type, j)
     {
         var classType = "";
+        var typeToDisplay = "U";
         //switch on the type in the cell 
         switch(type)
         {
             //fog of war
             case 0: 
                 classType = "cloud";
+                typeToDisplay = "F";
                 break;
             //miss
             case 1: 
                 classType = "miss";
+                typeToDisplay = "M";
                 break;
             //hit
             case 2: 
                 classType = "hit";
+                typeToDisplay = "H";
                 break;
             //reveal miss
             case 3: 
                 classType = "revealmiss";
+                typeToDisplay = "RM";
                 break;
             //reveal hit
             case 4: 
                 classType = "revealhit";
+                typeToDisplay = "RH";
                 break;
         }
-        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, type);
+        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, typeToDisplay);
         //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
         return gridCell;
     };
@@ -187,17 +193,19 @@ function UI(engine)
     this.helperGetShipGridCell = function(type, enemyType, j)
     {
         var classType = "";
-        var typeToDisplay = enemyType;
+        var typeToDisplay = "U";
         //switch on the type in the cell
         switch(enemyType)
         {
             //fog of war
             case 0: 
                 classType = "cloud";
+                typeToDisplay = "F"
                 break;
             //miss
             case 1: 
                 classType = "miss";
+                typeToDisplay = "M"
                 break;
             //hit on one of our ships
             case 2: 
@@ -207,10 +215,12 @@ function UI(engine)
             //reveal miss
             case 3: 
                 classType = "revealmiss";
+                typeToDisplay = "RM"
                 break;
             //reveal hit
             case 4: 
                 classType = "revealhit";
+                typeToDisplay = "RH-" + type.name[0];
                 break;
         }
         //miss on one of our ships
