@@ -134,7 +134,14 @@ td
     cursor:pointer;
     text-align:center;
 }
-.shipGrid
+.shiphit
+{
+    background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
+    background-image: -moz-radial-gradient(circle, #444444, #ff6666);
+    background-image: -o-radial-gradient(circle, #444444, #ff6666);
+    background-image: radial-gradient(circle, #444444, #ff6666);
+}
+.shipmiss
 {
     background-image: -webkit-radial-gradient(circle, #eeeeee, #ff6666);
     background-image: -moz-radial-gradient(circle, #eeeeee, #ff6666);

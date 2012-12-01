@@ -113,8 +113,10 @@ function UI(engine)
     // Grid drawing functions //
     ////////////////////////////
     
+    // for shot grids //
+    
     //helper method to create the correct grid type from the cell
-    this.helperGetGridCell = function(type, j)
+    this.helperGetShotGridCell = function(type, j)
     {
         var classType = "";
         //switch on the type in the cell 
@@ -140,11 +142,6 @@ function UI(engine)
             case 4: 
                 classType = "revealhit";
                 break;
-            //it must be a ship
-            default:
-                classType = "shipGrid";
-                type = 1;
-                break;
         }
         var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, type);
         //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
@@ -152,7 +149,7 @@ function UI(engine)
     };
     
     //helper method to draw the supplied grid
-    this.helperCreateGrid = function(grid, gridElementId)
+    this.helperCreateShotGrid = function(grid, gridElementId)
     {
         //empty the grid
         this.helperEmptyElementById(gridElementId);
@@ -166,7 +163,83 @@ function UI(engine)
             for (var j = 0; j < 10; j++) {
                 //write a column to the table
                 //get the appropriate cell contents and write the column
-                var gridCell = this.helperGetGridCell(grid[j][i], j);
+                var gridCell = this.helperGetShotGridCell(grid[j][i], j);
+                this.helperAppendChildElement(row, gridCell);
+            }
+            //add the row to the table
+            this.helperAppendChildElement(table, row);
+        }
+        //finally write the table to the root element
+        this.helperAppendChildElement(rootElement, table);
+    };
+    
+    //draw the current players shot grid
+    this.createShotGrid = function(gridElementId)
+    {
+        if(!gridElementId) { gridElementId = "shot"; }
+        var grid = this.engine.getShotGrid();
+        this.helperCreateShotGrid(grid, gridElementId);
+    };
+    
+    // for ship grids //
+    
+    //helper method to create the correct grid type from the cell
+    this.helperGetShipGridCell = function(type, enemyType, j)
+    {
+        var classType = "";
+        var typeToDisplay = enemyType;
+        //switch on the type in the cell
+        switch(enemyType)
+        {
+            //fog of war
+            case 0: 
+                classType = "cloud";
+                break;
+            //miss
+            case 1: 
+                classType = "miss";
+                break;
+            //hit on one of our ships
+            case 2: 
+                classType = "shiphit";
+                typeToDisplay = type.name[0];
+                break;
+            //reveal miss
+            case 3: 
+                classType = "revealmiss";
+                break;
+            //reveal hit
+            case 4: 
+                classType = "revealhit";
+                break;
+        }
+        //miss on one of our ships
+        if (enemyType == 0 && type != 0)
+        {
+            classType = "shipmiss";
+            typeToDisplay = type.name[0];
+        }
+        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, typeToDisplay);
+        //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
+        return gridCell;
+    };
+    
+    //helper method to draw the supplied grid
+    this.helperCreateShipGrid = function(grid, enemyShotGrid, gridElementId)
+    {
+        //empty the grid
+        this.helperEmptyElementById(gridElementId);
+        //get the container
+        var rootElement = this.helperGetElementById(gridElementId);
+        //create the table
+        var table = this.helperCreateElement("table", {}, "");
+        for (var i = 0; i < 10; i++) {
+            //write the row to the table body
+            var row = this.helperCreateElement("tr", {id:"r"+i},"");
+            for (var j = 0; j < 10; j++) {
+                //write a column to the table
+                //get the appropriate cell contents and write the column
+                var gridCell = this.helperGetShipGridCell(grid[j][i], enemyShotGrid[j][i], j);
                 this.helperAppendChildElement(row, gridCell);
             }
             //add the row to the table
@@ -181,15 +254,8 @@ function UI(engine)
     {
         if(!gridElementId) { gridElementId = "ship"; }
         var grid = this.engine.getShipGrid();
-        this.helperCreateGrid(grid, gridElementId);
-    };
-    
-    //draw the current players shot grid
-    this.createShotGrid = function(gridElementId)
-    {
-        if(!gridElementId) { gridElementId = "shot"; }
-        var grid = this.engine.getShotGrid();
-        this.helperCreateGrid(grid, gridElementId);
+        var enemyShotGrid = this.engine.getEnemyShotGrid();
+        this.helperCreateShipGrid(grid, enemyShotGrid,  gridElementId);
     };
     
     ///////////////////////

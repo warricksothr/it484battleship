@@ -65,7 +65,7 @@ Function.prototype.clone = function() {
         return fct.apply(this, arguments);
     };
     clone.prototype = fct.prototype;
-    for (property in fct) {
+    for (var property in fct) {
         if (fct.hasOwnProperty(property) && property !== 'prototype') {
             clone[property] = fct[property];
         }
@@ -268,13 +268,13 @@ function Engine()
         if (this.isFirstPlayer)
         {
             message = shot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
-            this.player1ShotHistory.push("player1: " + x + "," + y + " " + message);
+            this.player1ShotHistory.push("player1: (" + x + "," + y + ") " + message);
         }
         //firing logic if this is the second player shooting
         else
         {
             message = shot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
-            this.player2ShotHistory.push("player2: " + x + "," + y + " " + message);
+            this.player2ShotHistory.push("player2: (" + x + "," + y + ") " + message);
         }
     };
 
@@ -373,12 +373,21 @@ function Engine()
     };
 
     /**
-     * Returns the shot grids of the current player
+     * Returns the shot grid of the current player
      */
     this.getShotGrid = function()
     {
         if (this.isFirstPlayer) { return clone(this.player1ShotGrid); }
         return clone(this.player2ShotGrid);
+    };
+    
+    /**
+     * Returns the enemy shot grid
+     */
+    this.getEnemyShotGrid = function()
+    {
+        if (this.isFirstPlayer) { return clone(this.player2ShotGrid); }
+        return clone(this.player1ShotGrid);
     };
 
     /**
