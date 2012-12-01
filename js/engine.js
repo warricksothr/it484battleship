@@ -84,33 +84,6 @@ Storage.prototype.getObject = function(key) {
     return value && JSON.parse(value);
 };
 
-//this is a player agnostic function for placing a ship on a specific grid
-function placeShipOnGrid(x, y, ship, grid)
-{
-    //place the ship vertically
-    if (ship.isVertical)
-    {
-        //place the ship vertically
-        var endY = y + ship.shipLength;
-        var posY = y;
-        for (posY; posY < endY; posY++)
-        {
-            grid[x][posY] = ship;
-        }
-    }
-    //place the ship horizontally
-    else
-    {
-        //place the ship horizontally
-        var endX = x + ship.shipLength;
-        var posX = x;
-        for (posX; posX < endX; posX++)
-        {
-            grid[posX][y] = ship;
-        }
-    }
-}
-
 //Create an empty grid array
 function createEmptyGridArray(size)
 {
@@ -171,7 +144,10 @@ function Shot(shotName, shotCooldown)
     this.cooldownTimer = 0;
 
     //define what a shot does. This is the only function allowed  in this class so that cloning it is possible
-    this.fire = function(x, y, targetShipGrid, shotGrid) {};
+    this.fire = function(x, y, targetShipGrid, shotGrid)
+    {
+        alert("I'm not implemented!!!!!!!");
+    };
 
     //determine if the shot is ready to be fired again
     this.isAvailable = function()
@@ -325,31 +301,62 @@ function Engine()
         }
     };
 
+    //this is a player agnostic function for placing a ship on a specific grid
+    this.helperPlaceShipOnGrid = function(x, y, ship, grid)
+    {
+        //place the ship vertically
+        if (ship.isVertical)
+        {
+            //place the ship vertically
+            var endY = y + ship.shipLength;
+            var posY = y;
+            for (posY; posY < endY; posY++)
+            {
+                grid[x][posY] = ship;
+            }
+        }
+        //place the ship horizontally
+        else
+        {
+            //place the ship horizontally
+            var endX = x + ship.shipLength;
+            var posX = x;
+            for (posX; posX < endX; posX++)
+            {
+                grid[posX][y] = ship;
+            }
+        }
+    }
+
     //place a ship on the current player;s grid
     this.placeShip = function(startx,starty,isVertical,ship)
     {
-        //The grid location of the ship (important for placing the ship on the grid)
-        ship.startx = startx; //store the starting x location of the ship
-        ship.starty = starty; //store the starting y location of the ship
-        ship.isVertical = isVertical; //store if the ship is vertical or not
-
-        //create a clone so we don't get reference errors
-        var shipClone = cloneShip(ship);
-
-        //sort by player
-        if (this.isFirstPlayer)
+        //only palce a ship if its placement is valid
+        if (this.validateShipPlacement(startx,starty,isVertical,ship))
         {
-            //store the ship for the player at the end of the ship array
-            this.player1Ships.push(shipClone);
-            //now populate the array with the ship
-            placeShipOnGrid(startx, starty, shipClone, this.player1ShipGrid);
-        }
-        else
-        {
-            //store the ship for the player at the end of the ship array
-            this.player2Ships.push(shipClone);
-            //now populate the array with the ship
-            placeShipOnGrid(startx, starty, shipClone, this.player2ShipGrid);
+            //The grid location of the ship (important for placing the ship on the grid)
+            ship.startx = startx; //store the starting x location of the ship
+            ship.starty = starty; //store the starting y location of the ship
+            ship.isVertical = isVertical; //store if the ship is vertical or not
+            
+            //create a clone so we don't get reference errors
+            var shipClone = cloneShip(ship);
+            
+            //sort by player
+            if (this.isFirstPlayer)
+            {
+                //store the ship for the player at the end of the ship array
+                this.player1Ships.push(shipClone);
+                //now populate the array with the ship
+                this.helperPlaceShipOnGrid(startx, starty, shipClone, this.player1ShipGrid);
+            }
+            else
+            {
+                //store the ship for the player at the end of the ship array
+                this.player2Ships.push(shipClone);
+                //now populate the array with the ship
+                this.helperPlaceShipOnGrid(startx, starty, shipClone, this.player2ShipGrid);
+            }
         }
     };
 
