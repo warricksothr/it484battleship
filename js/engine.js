@@ -278,6 +278,53 @@ function Engine()
         }
     };
 
+    /**
+     * internal function to verify if the requested ship placement is valid
+     * Returns true if it is valid, false otherwise
+     */
+    this.helperValidateShipPlacement = function(startx,starty,isVertical,ship,shipGrid)
+    {
+        //check if the positioning is valid for a vertical placement
+        if(isVertical)
+        {
+            var endy = starty + ship.shipLength;
+            //if it will be positioned off the grid it is an immediate false
+            if (endy > 9) { return false; }
+            //make sure there are no ships already in these cells
+            for (var i = starty; i < endy; i++)
+            {
+                if (shipGrid[startx][i] !== 0) { return false; }
+            }
+        }
+        //check if the positioning is valid for a horizontal placement
+        else
+        {
+            var endx = startx + ship.shipLength;
+             //if it will be positioned off the grid it is an immediate false
+            if (endx > 9) { return false; }
+            //make sure there are no ships already in these cells
+            for (var i = startx; i < endx; i++)
+            {
+                if (shipGrid[i][starty] !== 0) { return false; }
+            }
+        }
+        //placement passes all tests
+        return true;
+    };
+
+    //determines if the request placement is valid 
+    this.validateShipPlacement = function(startx,starty,isVertical,ship)
+    {
+        if(this.isFirstPlayer)
+        {
+            return this.helperValidateShipPlacement(startx,starty,isVertical,ship,this.player1ShipGrid);
+        }
+        else
+        {
+            return this.helperValidateShipPlacement(startx,starty,isVertical,ship,this.player2ShipGrid);
+        }
+    };
+
     //place a ship on the current player;s grid
     this.placeShip = function(startx,starty,isVertical,ship)
     {

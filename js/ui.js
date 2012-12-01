@@ -224,7 +224,7 @@ function UI(engine)
                 break;
         }
         //miss on one of our ships
-        if (enemyType == 0 && type != 0)
+        if (enemyType === 0 && type !== 0)
         {
             classType = "shipmiss";
             typeToDisplay = type.name[0];
@@ -294,11 +294,13 @@ function UI(engine)
         else
         {
             //need to implement a limit (aka. recent history otherwise we will over flow, we could also make it a scrollable box)
-            for (var i = 0; i < history.length; i++)
+            for (var i = history.length-1; i >= 0; i--)
             {
                 //write out the history
                 var hist = this.helperCreateElement("span", {id:"historyRow"}, history[i]);
                 this.helperAppendChildElement(rootElement, hist);
+                //append a line break
+                this.helperAppendHTMLToElement(rootElement, "<br>");
             }
         }
     };

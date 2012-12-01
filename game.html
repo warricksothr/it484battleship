@@ -3,12 +3,22 @@
 <head>
     <title>Battleship</title>
     <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
+    <script type="text/javascript" src="js/util.js" rel="javascript"></script>
     <script>
-        //this is for the test script below so that we generate new data every time
-        if(sessionStorage.gameStateSaved)
+        //grab the parameters from the URL and alert if we don't have them
+        var params = getParamsFromURL();
+        if (typeof(params) === 'undefined' 
+            || typeof(params.mode) === 'undefined' 
+            || typeof(params.players) === 'undefined')
         {
-            //prevent loading from session
-            sessionStorage.gameStateSaved = "false";
+            alert("No parameters or invalid parameters passed in, this could cause problems.");
+        }
+        
+        //determine if we need to reload or if we can use storage
+        if (typeof(params.load) !== 'undefined')
+        {
+            //used to set the ability to load from any previous state
+            sessionStorage.gameStateSaved = params.load;
         }
     </script>
     <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
@@ -27,32 +37,64 @@
     
             //get the available ships for the mode
             var ships = ENGINE.getAvailableShips();
-    
-            //place ships for player 1
-            ENGINE.placeShip(0, 0, false, ships[0]);
-            ENGINE.placeShip(0, 1, true, ships[1]);
-            ENGINE.placeShip(5, 4, true, ships[2]);
-            ENGINE.placeShip(2, 7, false, ships[3]);
-            ENGINE.placeShip(8, 7, true, ships[4]);
-    
+            
+            //place a ship on the grid randomly
+            //check validity of position before placing it
+            function placeShipRandomly(ship)
+            {
+                do
+            {
+                var rx = getRandomInt(0, 9);
+                var ry = getRandomInt(0, 9);
+                var rvertical = getRandomInt(0,1);
+                var validPlacement = ENGINE.validateShipPlacement(rx,ry,rvertical,ship);
+                if (validPlacement)
+                {
+                    ENGINE.placeShip(rx, ry, rvertical, ship);
+                }
+            } while(!validPlacement);
+            }
+            
+            // place ships randomly for player 1 //
+            placeShipRandomly(ships[0])
+            placeShipRandomly(ships[1])
+            placeShipRandomly(ships[2])
+            placeShipRandomly(ships[3])
+            placeShipRandomly(ships[4])
+            
             //change to the second player
             ENGINE.changePlayers();
-            //place ships for player 2
-            ENGINE.placeShip(1, 0, false, ships[0]);
-            ENGINE.placeShip(0, 2, true, ships[1]);
-            ENGINE.placeShip(6, 4, true, ships[2]);
-            ENGINE.placeShip(2, 8, false, ships[3]);
-            ENGINE.placeShip(9, 8, true, ships[4]);
-    
+            
+            // place ships randomly for player 2 //
+            placeShipRandomly(ships[0])
+            placeShipRandomly(ships[1])
+            placeShipRandomly(ships[2])
+            placeShipRandomly(ships[3])
+            placeShipRandomly(ships[4])
+            
             //change back to player 1
             ENGINE.changePlayers();
         }
+        
         var ships = ENGINE.getAvailableShips();
         var ship = ships[0];
+        //get the regular shot from the first ship
         var shot = ship.shots[0];
-        ENGINE.fireShot(1,0,shot);
+        
+        //get random coordinates for player 1
+        var randomx = getRandomInt(0, 9);
+        var randomy = getRandomInt(0, 9);
+        
+        //fire a random shot
+        ENGINE.fireShot(randomx,randomy,shot);
         ENGINE.changePlayers();
-        ENGINE.fireShot(0,3,shot);
+        
+        //get random coordinates for player 2
+        randomx = getRandomInt(0, 9);
+        randomy = getRandomInt(0, 9);
+        
+        //fire a random shot
+        ENGINE.fireShot(randomx,randomy,shot);
         ENGINE.changePlayers();
     </script>
     <!-- this is the list of previous shots -->

@@ -143,7 +143,7 @@ function AI(engine)
                }
          
     // TODO: Continue implementation of killingShot with strategy following results from orientation shots.
-    }
+    };
     
     //As long as no ships have been hit we continue with hunting shots. When a ship has been hit we switch to kiling shot.
     
@@ -158,6 +158,6 @@ function AI(engine)
         {
             this.killingShot();
         }
-    }
+    };
     
 };
