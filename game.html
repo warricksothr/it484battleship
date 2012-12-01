@@ -63,74 +63,13 @@
         <div id="ship" class="board">
         </div>
     </div>
-    <script>
-        //call update interface method and pass it the ids of
-        UI.updateInterface({historyID:"history", shipID:"ship", shotID:"shot"});
-    </script>
     <div id="shipview">
     <!-- this is the view of the ships and hits on ships -->
-        <div id="carrier" class="ship">
-        <div id="s1p1" class="segment">
-            
-        </div>
-        <div id="s1p2" class="segment">
-            
-        </div>
-        <div id="s1p3" class="segment">
-            
-        </div>
-        <div id="s1p4" class="segment">
-            
-        </div>
-        <div id="s1p5" class="segment">
-            
-        </div>
-        </div>
-        <div id="battleship" class="ship">
-        <div id="s2p1" class="segment">
-            
-        </div>
-        <div id="s2p2" class="segment">
-            
-        </div>
-        <div id="s2p3" class="segment">
-            
-        </div>
-        <div id="s2p4" class="segment">
-            
-        </div>
-        </div>
-        <div id="crusier" class="ship">
-        <div id="s3p1" class="segment">
-            
-        </div>
-        <div id="s3p2" class="segment">
-            
-        </div>
-        <div id="s3p3" class="segment">
-            
-        </div>
-        </div>
-        <div id="submarine" class="ship">
-        <div id="s4p1" class="segment">
-            
-        </div>
-        <div id="s4p2" class="segment">
-            
-        </div>
-        <div id="s4p3" class="segment">
-            
-        </div>
-        </div>
-        <div id="destroyer" class="ship">
-        <div id="s3p1" class="segment">
-            
-        </div>
-        <div id="s5p2" class="segment">
-            
-        </div>
-        </div>
     </div>
+    <script>
+        //call update interface method and pass it the ids of
+        UI.updateInterface({historyID:"history", shipID:"ship", shotID:"shot", shipViewID:"shipview"});
+    </script>
     <div id="shipgrids" onmouseover="UI.showShipGrid()" onmouseout="UI.hideShipGrid()">
         Ship Views
     </div>

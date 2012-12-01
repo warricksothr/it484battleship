@@ -107,6 +107,17 @@ body
     height: 25px;
 }
 
+.segmenthit
+{
+    border: 1px solid black;
+    width: 20px;
+    height: 25px;
+    background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
+    background-image: -moz-radial-gradient(circle, #444444, #ff6666);
+    background-image: -o-radial-gradient(circle, #444444, #ff6666);
+    background-image: radial-gradient(circle, #444444, #ff6666);
+}
+
 .headings
 {
     padding-left:20%;

@@ -14,6 +14,11 @@ function UI(engine)
     // element to empty a dom element identified by id
     this.helperEmptyElementById = function(elementId){
         var element = this.helperGetElementById(elementId);
+        this.helperEmptyElement(element);
+    };
+    
+    // element to empty a dom element
+    this.helperEmptyElement = function(element){
         while(element.hasChildNodes())
         {
             element.removeChild(element.firstChild);
@@ -72,7 +77,8 @@ function UI(engine)
             params = {
             historyID:"history",
             shotID:"shot",
-            ship:"ship"
+            ship:"ship",
+            shipViewID:"shipview"
             };
         }
         //create the history
@@ -83,6 +89,8 @@ function UI(engine)
         this.createShipGrid(params.shipID);
         //hide the ship grid by default
         this.hideShipGrid();
+        //create the ship view
+        this.createShipView(params.shipViewID);
     };
     
     ////////////////////////////////////
@@ -191,18 +199,64 @@ function UI(engine)
     //show the history for the current player
     this.createHistory = function(gridElementId)
     {
-        this.helperEmptyElementById(gridElementId);
-        this.helperAppendHTMLToElementById(gridElementId, "<h2 class=\"headings\">History</h2>");
+        var rootElement = this.helperGetElementById(gridElementId);
+        //empty the current history
+        this.helperEmptyElement(rootElement);
+        //create the heading
+        var heading = this.helperCreateElement("h2", {"class":"headings"}, "History");
+        this.helperAppendChildElement(rootElement, heading);
+        
+        //populate the history
         var history = this.engine.getShotHistory();
-        for (var i = 0; i < history.length; i++)
-        {
-            //write out the history
-            this.helperAppendHTMLToElementById(gridElementId, history[i] + "<br>");
-        }
-        //print out no history if there is no history yet
+        //print out "no history" if there is no history yet
         if (!history || history.length < 1)
         {
-            this.helperAppendHTMLToElementById(gridElementId, "No History<br>");
+            var noHist = this.helperCreateElement("span", {}, "No History");
+            this.helperAppendChildElement(rootElement, noHist);
+        }
+        //otherwise print the history
+        else
+        {
+            //need to implement a limit (aka. recent history otherwise we will over flow, we could also make it a scrollable box)
+            for (var i = 0; i < history.length; i++)
+            {
+                //write out the history
+                var hist = this.helperCreateElement("span", {id:"historyRow"}, history[i]);
+                this.helperAppendChildElement(rootElement, hist);
+            }
+        }
+    };
+    
+    /////////////////////////
+    // Ship View Functions //
+    /////////////////////////
+    
+    //a helper method to determine if a cell should be red or not
+    //this.helperShipView
+    
+    this.createShipView = function(shipViewElementId)
+    {
+        //get a list of the current player ships
+        var ships = engine.getPlayerShips();
+        //get access to the root element in the DOM
+        var rootElement = this.helperGetElementById(shipViewElementId);
+        //loop through the ships and create the elements
+        for (var i = 0; i < ships.length; i++)
+        {
+            //get the ship
+            var ship = ships[i];
+            //create an element for this ship
+            var shipElement = this.helperCreateElement("div", {id:ship.name, "class":"ship"}, "");
+            //loop through each cell in the length of the ship
+            for (var x = 0; x < ship.shipLength; x++)
+            {
+                //create the cell for the ship
+                var shipCellElement = this.helperCreateElement("div", {id:"s"+(i+1)+"p"+(x+1), "class":"segment"}, "");
+                //append it to the ship
+                this.helperAppendChildElement(shipElement, shipCellElement);
+            }
+            //append the ship to the root
+            this.helperAppendChildElement(rootElement, shipElement);
         }
     };
 }

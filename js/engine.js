@@ -316,7 +316,6 @@ function Engine()
     //return the shot types that are available for the current player
     this.getAvailableShots = function()
     {
-
         var availableShots = [];
         var i = 0;
         //get the first player's available shots
