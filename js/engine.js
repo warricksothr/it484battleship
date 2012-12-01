@@ -76,13 +76,13 @@ Function.prototype.clone = function() {
 //For storing objects in the local storage
 Storage.prototype.setObject = function(key, value) {
     this.setItem(key, JSON.stringify(value));
-}
+};
 
 //For retriving objects from local storage. Returns a null if there is no object at the key
 Storage.prototype.getObject = function(key) {
     var value = this.getItem(key);
     return value && JSON.parse(value);
-}
+};
 
 //this is a player agnostic function for placing a ship on a specific grid
 function placeShipOnGrid(x, y, ship, grid)
@@ -160,7 +160,7 @@ function Ship(name, shipLength, shots)
         {
             shots[i].decCooldown();
         }
-    }
+    };
 }
 
 //the class that defines a shot and how it will interact with the grids.
@@ -287,7 +287,7 @@ function Engine()
         ship.isVertical = isVertical; //store if the ship is vertical or not
 
         //create a clone so we don't get reference errors
-        var shipClone = cloneShip(ship)
+        var shipClone = cloneShip(ship);
 
         //sort by player
         if (this.isFirstPlayer)
@@ -365,7 +365,7 @@ function Engine()
         {
             return this.player2Ships;
         }
-    }
+    };
 
     //return the shot types that are on cooldown
     this.getShotsOnCooldown = function()
@@ -435,7 +435,7 @@ function Engine()
             }
             return true;
         }
-    }
+    };
 
     //return a list of available ships
     this.getAvailableShips = function()
@@ -474,18 +474,24 @@ function Engine()
     //This must be called to save the state when switching pages
     this.saveToLocalStorage = function()
     {
+        //we need to remove the ai temporarily and add it back after the save to avoid a circular reference
+        var temp = this.ai;
+        this.ai = null;
+        //save in the session
+        sessionStorage.setObject("gameEngine", this);
+        //now restore the ai
+        this.ai = temp;
         //indicate that the engine was retrieved from sessionStorage
         this.fromStorage = true;
         sessionStorage.gameStateSaved = "true";
-        sessionStorage.setObject("gameEngine", this)
-    }
+    };
 
     //clear the local storage
     this.clearLocalStorage = function()
     {
         this.fromStorage = false;
         sessionStorage.clear(); //clear session storage
-    }
+    };
 }
 
 //define init as a prototype of Engine so it isn't recreated each time an Engine object is created.

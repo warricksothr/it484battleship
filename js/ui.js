@@ -73,7 +73,7 @@ function UI(engine)
         returnMe +=  "' id='c" + j + "'>"+type+"</td>";
         //by now returnMe should look like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
         return returnMe;
-    }
+    };
     
     //helper method to draw the supplied grid
     this.helperCreateGrid = function(grid)
@@ -88,7 +88,7 @@ function UI(engine)
             //end the row
             document.writeln("</tr>");
         }
-    }
+    };
     
     //draw the current player's ship grid
     this.createShipGrid = function()
@@ -122,7 +122,7 @@ function UI(engine)
         {
             document.writeln("No History<br>");
         }
-    }
+    };
 }
 
 //create a new UI instance and import ENGINE into it
