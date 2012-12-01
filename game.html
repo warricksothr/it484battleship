@@ -3,37 +3,8 @@
 <head>
     <title>Battleship</title>
     <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
-    
-    <script type="text/javascript">
-        function showShipMap() {
-            if(false) {
-                document.getElementById('one').style.display = "none";
-                document.getElementById('shipone').style.display = "block";
-                return true;
-            }
-            else {
-                document.getElementById('two').style.visibility = "none";
-                document.getElementById('shiptwo').style.visibility = "block";
-                return true;
-            }
-            
-        }
-        
-        function hideShipMap() {
-            if(false) {
-                document.getElementById('one').style.display = "none";
-                document.getElementById('shipone').style.display = "block";
-                return true;
-            }
-            else {
-                document.getElementById('two').style.visibility = "none";
-                document.getElementById('shiptwo').style.visibility = "block";
-                return true;
-            }
-            
-        }
-        
-    </script>
+    <script type="text/javascript" src="js/it484battleship.js" rel="javascript"></script>
+    <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
 </head>
 <body>
     <div id="history">
@@ -47,35 +18,19 @@
     </div>
     <div id="tabletop">
     <!-- this is the tabletop that holds the two boards -->
-        <div id="one" class="board">
+        <div id="shot" class="board">
         <table>
             <script>
-                for (var i = 0; i < 10; i++) {
-                    document.writeln("<tr id='r"+i+"'>");
-                    for (var j = 0; j < 10; j++) {
-                        document.writeln("<td id='c"+j+"'></td>");
-                    }
-                    document.writeln("</tr>");
-                }
+                UI.createGrid();
             </script>
         </table>
         </div>
-        <div id="two" class="board">
+        <div id="ship" class="board">
+        <table>
             <script>
-                for (var i = 0; i < 10; i++) {
-                    document.writeln("<tr id='r"+i+"'>");
-                    for (var j = 0; j < 10; j++) {
-                        document.writeln("<td id='c"+j+"'></td>");
-                    }
-                    document.writeln("</tr>");
-                }
+                UI.createGrid();
             </script>
-        </div>
-        <div id="shipone" class="board">
-            
-        </div>
-        <div id="shiptwo" class="board">
-            
+        </table>
         </div>
     </div>
     <div id="shipview">
@@ -142,7 +97,7 @@
         </div>
         </div>
     </div>
-    <div id="shipgrids" onHover="showShipMap()">
+    <div id="shipgrids" onmouseover="" onmouseoff="">
         Ship Views
     </div>
 </body>

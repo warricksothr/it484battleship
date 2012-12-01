@@ -40,10 +40,7 @@ body
     top:5%;
     left:5%;
     border:1px solid black;
-    background-image: -webkit-linear-gradient(#eeeeee, #cde1ff);
-    background-image: -moz-linear-gradient(#eeeeee, #cde1ff);
-    background-image: -o-linear-gradient(#eeeeee, #cde1ff);
-    background-image: linear-gradient(#eeeeee, #cde1ff);
+    background-color:black;
 }
 
 #shipgrids
@@ -117,7 +114,44 @@ body
 
 table
 {
-    border: 1px solid black;
     width:100%;
     height:100%;
 }   
+td
+{
+    border:1px solid black;
+    cursor:pointer;
+    text-align:center;
+}
+.revealhit
+{
+    background-image: -webkit-radial-gradient(circle, #eeeeee, #ff6666);
+    background-image: -moz-radial-gradient(circle, #eeeeee, #ff6666);
+    background-image: -o-radial-gradient(circle, #eeeeee, #ff6666);
+    background-image: radial-gradient(circle, #eeeeee, #ff6666);
+}
+.revealmiss
+{
+    background-image: -webkit-radial-gradient(circle, #eeeeee, #cde1ff);
+    background-image: -moz-radial-gradient(circle, #eeeeee, #cde1ff);
+    background-image: -o-radial-gradient(circle, #eeeeee, #cde1ff);
+    background-image: radial-gradient(circle, #eeeeee, #cde1ff);
+}
+.hit
+{
+    background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
+    background-image: -moz-radial-gradient(circle, #444444, #ff6666);
+    background-image: -o-radial-gradient(circle, #444444, #ff6666);
+    background-image: radial-gradient(circle, #444444, #ff6666);
+}
+.miss
+{
+    background-image: -webkit-radial-gradient(circle, #444444, #cde1ff);
+    background-image: -moz-radial-gradient(circle, #444444, #cde1ff);
+    background-image: -o-radial-gradient(circle, #444444, #cde1ff);
+    background-image: radial-gradient(circle, #444444, #cde1ff);
+}
+.cloud
+{
+    background-color:#eeeeee;   
+}
