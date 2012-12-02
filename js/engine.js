@@ -112,13 +112,14 @@ ShotMessages[3] = "RevealMiss";
 ShotMessages[4] = "RevealHit";
 
 //the class that defines a ship on the grid.
-function Ship(name, shipLength, shots)
+function Ship(name, abbreviation, shipLength, shots)
 {
     this.name = name; // name: the name of the ship type.
     this.shots = shots; // shots: an array of shot types available for this ship.
     this.shipLength = shipLength; // shipLength: the pre-defined length of the ship. This is used when populating the grid.
     this.damage = 0; //a simple damage counter. When this counter equals the length it is destroyed
     this.isVertical = false; //indicates if the ship is positioned vertically or horizontally
+    this.abbreviation = abbreviation;
 
     //Indicates if the ship is destroyed 
     this.isDestroyed = function()
@@ -329,10 +330,10 @@ function Engine()
     }
 
     //place a ship on the current player;s grid
-    this.placeShip = function(startx,starty,isVertical,ship)
+    this.placeShip = function(startx, starty, isVertical, ship, overridePlacement)
     {
         //only palce a ship if its placement is valid
-        if (this.validateShipPlacement(startx,starty,isVertical,ship))
+        if (overridePlacement || this.validateShipPlacement(startx,starty,isVertical,ship))
         {
             //The grid location of the ship (important for placing the ship on the grid)
             ship.startx = startx; //store the starting x location of the ship
@@ -627,7 +628,7 @@ Engine.prototype.init = function(AI)
             }
 
             //then place it on the board
-            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip);
+            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip, true);
         }
 
         //same for player 2
@@ -654,7 +655,7 @@ Engine.prototype.init = function(AI)
             }
 
             //then place it on the board
-            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip);
+            newEngine.placeShip(newShip.startx, newShip.starty, newShip.isVertical, newShip, true);
         }
 
         //change back to the correct player we loaded from
@@ -751,23 +752,23 @@ function mode1Ships()
 
     //define the ships in mode 1. This array of ships will be copied onto the grid of each players
     return new Array(
-        new Ship("Carrier", 5, new Array(
+        new Ship("Carrier", "Ca", 5, new Array(
                 regularShot
             )
         ),
-        new Ship("Battleship", 4, new Array(
+        new Ship("Battleship", "B", 4, new Array(
                 regularShot
             )
         ),
-        new Ship("Cruiser", 3, new Array(
+        new Ship("Cruiser", "Cr", 3, new Array(
                 regularShot
             )
         ),
-        new Ship("Submarine", 3, new Array(
+        new Ship("Submarine", "S", 3, new Array(
                 regularShot
             )
         ),
-        new Ship("Destroyer", 2, new Array(
+        new Ship("Destroyer", "D", 2, new Array(
                 regularShot
             )
         )
@@ -877,31 +878,31 @@ function mode2Ships()
     //define the ships in mode 2. This array of ships will be copied onto the grid of each players
     return new Array(
         //carrier
-        new Ship("Stardust Goliath", 5, new Array(
+        new Ship("Stardust Goliath", "SG", 5, new Array(
                 regularShot
                 , goliathShot
             )
         ),
         //battleship
-        new Ship("Galaxy Ravager", 4, new Array(
+        new Ship("Galaxy Ravager", "GR", 4, new Array(
                 regularShot
                 , ravagerShot
             )
         ),
         //cruiser
-        new Ship("Scrap Harvester", 3, new Array(
+        new Ship("Scrap Harvester", "SH", 3, new Array(
                 regularShot
                 , harvesterShot
             )
         ),
         //submarine
-        new Ship("Star Destroyer", 3, new Array(
+        new Ship("Star Destroyer", "SD",3, new Array(
                 regularShot
                 , destroyerShot
             )
         ),
         //destroyer
-        new Ship("Interceptor", 2, new Array(
+        new Ship("Interceptor", "I", 2, new Array(
                 regularShot
                 , interceptorShot
             )

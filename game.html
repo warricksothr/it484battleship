@@ -14,16 +14,25 @@
             alert("No parameters or invalid parameters passed in, this could cause problems.");
         }
         
-        //determine if we need to reload or if we can use storage
         if (typeof(params.load) !== 'undefined')
         {
-            //used to set the ability to load from any previous state
             sessionStorage.gameStateSaved = params.load;
         }
     </script>
     <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
     <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
     <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
+    <script>
+        //script to handle engine persistence
+        //check if we are NOT loading a saved state
+        if (typeof(sessionStorage.gameStateSaved) !== 'undefined' || sessionStorage.gameStateSaved === 'false')
+        {
+            var isMode1 = true;
+            if (params.mode == 2) { isMode1 = false; }
+            //set the player and mode appropriately
+            ENGINE.selectGameMode(params.players,isMode1);
+        }
+    </script>
 </head>
 <body>
     <script>
@@ -33,7 +42,7 @@
         {
             //populate the engine with test data
             //set the player mode to 1 and the number of players to 2
-            ENGINE.selectGameMode(2,true);
+            //ENGINE.selectGameMode(2,true);
     
             //get the available ships for the mode
             var ships = ENGINE.getAvailableShips();

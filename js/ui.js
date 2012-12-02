@@ -97,16 +97,24 @@ function UI(engine)
     // Show/Hide Ship Grids Functions //
     ////////////////////////////////////
     
-    this.showShipGrid = function()
-    {
-        document.getElementById('shot').style.display = "none";
-        document.getElementById('ship').style.display = "block";
+    //show the ship grid
+    this.showShipGrid = function(shotGridElementId, shipGridElementId)
+    {   
+        //set defaults in case the values are not provided
+        if(typeof(shotGridElementId) === 'undefined') { shotGridElementId = "shot"; }
+        if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+        this.helperGetElementById(shotGridElementId).style.display = "none";
+        this.helperGetElementById(shipGridElementId).style.display = "block";
     };
     
-    this.hideShipGrid = function()
+    //hide the ship grid
+    this.hideShipGrid = function(shotGridElementId, shipGridElementId)
     {
-        document.getElementById('shot').style.display = "block";
-        document.getElementById('ship').style.display = "none";
+        //set defaults in case the values are not provided
+        if(typeof(shotGridElementId) === 'undefined') { shotGridElementId = "shot"; }
+        if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+        this.helperGetElementById(shotGridElementId).style.display = "block";
+        this.helperGetElementById(shipGridElementId).style.display = "none";
     };
     
     ////////////////////////////
@@ -120,6 +128,7 @@ function UI(engine)
     {
         var classType = "";
         var typeToDisplay = "U";
+        var typeTitle = "";
         //switch on the type in the cell 
         switch(type)
         {
@@ -127,29 +136,34 @@ function UI(engine)
             case 0: 
                 classType = "cloud";
                 typeToDisplay = "F";
+                typeTitle = "Fog Of War";
                 break;
             //miss
             case 1: 
                 classType = "miss";
                 typeToDisplay = "M";
+                typeTitle = "Miss";
                 break;
             //hit
             case 2: 
                 classType = "hit";
                 typeToDisplay = "H";
+                typeTitle = "Hit";
                 break;
             //reveal miss
             case 3: 
                 classType = "revealmiss";
                 typeToDisplay = "RM";
+                typeTitle = "Revealed Miss";
                 break;
             //reveal hit
             case 4: 
                 classType = "revealhit";
                 typeToDisplay = "RH";
+                typeTitle = "Revealed Hit";
                 break;
         }
-        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, typeToDisplay);
+        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j, title:typeTitle}, typeToDisplay);
         //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
         return gridCell;
     };
@@ -157,6 +171,9 @@ function UI(engine)
     //helper method to draw the supplied grid
     this.helperCreateShotGrid = function(grid, gridElementId)
     {
+        //calculate the grid size to make sure it stays a grid
+        var gridSize = grid.length;
+        var cellPercent = Math.floor(100 / gridSize);
         //empty the grid
         this.helperEmptyElementById(gridElementId);
         //get the container
@@ -170,6 +187,8 @@ function UI(engine)
                 //write a column to the table
                 //get the appropriate cell contents and write the column
                 var gridCell = this.helperGetShotGridCell(grid[j][i], j);
+                //assign the cell width dynamically based on the grid size
+                gridCell.style.width = cellPercent + "%";
                 this.helperAppendChildElement(row, gridCell);
             }
             //add the row to the table
@@ -182,7 +201,7 @@ function UI(engine)
     //draw the current players shot grid
     this.createShotGrid = function(gridElementId)
     {
-        if(!gridElementId) { gridElementId = "shot"; }
+        if(typeof(gridElementId) === 'undefined') { gridElementId = "shot"; }
         var grid = this.engine.getShotGrid();
         this.helperCreateShotGrid(grid, gridElementId);
     };
@@ -194,42 +213,49 @@ function UI(engine)
     {
         var classType = "";
         var typeToDisplay = "U";
+        var typeTitle = "";
         //switch on the type in the cell
         switch(enemyType)
         {
             //fog of war
             case 0: 
                 classType = "cloud";
-                typeToDisplay = "F"
+                typeToDisplay = "F";
+                typeTitle = "Fog Of War";
                 break;
             //miss
             case 1: 
                 classType = "miss";
-                typeToDisplay = "M"
+                typeToDisplay = "M";
+                typeTitle = "Miss";
                 break;
             //hit on one of our ships
             case 2: 
                 classType = "shiphit";
-                typeToDisplay = type.name[0];
+                typeToDisplay = type.abbreviation;
+                typeTitle = type.name;
                 break;
             //reveal miss
             case 3: 
                 classType = "revealmiss";
-                typeToDisplay = "RM"
+                typeToDisplay = "RM";
+                typeTitle = "Revealed Miss";
                 break;
             //reveal hit
             case 4: 
                 classType = "revealhit";
-                typeToDisplay = "RH-" + type.name[0];
+                typeToDisplay = "RH-" + type.abbreviation;
+                typeTitle = "Revealed Hit";
                 break;
         }
         //miss on one of our ships
         if (enemyType === 0 && type !== 0)
         {
             classType = "shipmiss";
-            typeToDisplay = type.name[0];
+            typeToDisplay = type.abbreviation;
+            typeTitle = type.name;
         }
-        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j}, typeToDisplay);
+        var gridCell = this.helperCreateElement("td", {"class":classType, "id":"c" + j, title:typeTitle}, typeToDisplay);
         //by now gridCell should represent like this if it is a type 0 and j is 0 (<td class='cloud' id='c0'>0</td>)
         return gridCell;
     };
@@ -237,6 +263,9 @@ function UI(engine)
     //helper method to draw the supplied grid
     this.helperCreateShipGrid = function(grid, enemyShotGrid, gridElementId)
     {
+        //calculate the grid size to make sure it stays a grid
+        var gridSize = grid.length;
+        var cellPercent = Math.floor(100 / gridSize);
         //empty the grid
         this.helperEmptyElementById(gridElementId);
         //get the container
@@ -250,6 +279,7 @@ function UI(engine)
                 //write a column to the table
                 //get the appropriate cell contents and write the column
                 var gridCell = this.helperGetShipGridCell(grid[j][i], enemyShotGrid[j][i], j);
+                gridCell.style.width = cellPercent + "%";
                 this.helperAppendChildElement(row, gridCell);
             }
             //add the row to the table
@@ -262,7 +292,8 @@ function UI(engine)
     //draw the current player's ship grid
     this.createShipGrid = function(gridElementId)
     {
-        if(!gridElementId) { gridElementId = "ship"; }
+        //default the value to ship if not provided
+        if(typeof(gridElementId) === 'undefined') { gridElementId = "ship"; }
         var grid = this.engine.getShipGrid();
         var enemyShotGrid = this.engine.getEnemyShotGrid();
         this.helperCreateShipGrid(grid, enemyShotGrid,  gridElementId);
@@ -273,8 +304,13 @@ function UI(engine)
     ///////////////////////
     
     //show the history for the current player
-    this.createHistory = function(gridElementId)
+    this.createHistory = function(gridElementId, historyLimit)
     {
+        //limit of history messages to show a default of 15 unless overridden
+        if (typeof(historyLimit) === 'undefined') { historyLimit = 15; }
+        //default the tag to "history"
+        if (typeof(gridElementId) === 'undefined') { gridElementId = "history"; }
+        //get the element defined
         var rootElement = this.helperGetElementById(gridElementId);
         //empty the current history
         this.helperEmptyElement(rootElement);
@@ -296,6 +332,11 @@ function UI(engine)
             //need to implement a limit (aka. recent history otherwise we will over flow, we could also make it a scrollable box)
             for (var i = history.length-1; i >= 0; i--)
             {
+                //leave loop if we've printed historyLimit messages
+                if (i < (history.length-historyLimit))
+                {
+                    break;
+                }
                 //write out the history
                 var hist = this.helperCreateElement("span", {id:"historyRow"}, history[i]);
                 this.helperAppendChildElement(rootElement, hist);
@@ -336,7 +377,7 @@ function UI(engine)
             //get the ship
             var ship = ships[i];
             //create an element for this ship
-            var shipElement = this.helperCreateElement("div", {id:ship.name, "class":"ship"}, "");
+            var shipElement = this.helperCreateElement("div", {id:ship.name, "class":"ship", title:ship.name}, "");
             //loop through each cell in the length of the ship
             for (var x = 0; x < ship.shipLength; x++)
             {
