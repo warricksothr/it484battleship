@@ -124,7 +124,7 @@ function Ship(name, abbreviation, shipLength, shots)
     //Indicates if the ship is destroyed 
     this.isDestroyed = function()
     {
-        return this.damage >= this.shipLength;
+        return (this.damage >= this.shipLength);
     };
 
     //decrement the cooldown on all shots for this ship
@@ -181,6 +181,7 @@ function cloneShip(originalShip)
     }
     clonedShip.shots = clonedShots;
     clonedShip.decCooldown = originalShip.decCooldown.clone();
+    clonedShip.isDestroyed = originalShip.isDestroyed.clone();
     return clonedShip;
 }
 
@@ -442,10 +443,14 @@ function Engine()
             for (var j = 0; j < this.player1Ships.length; j++)
             {
                 var ship = this.player1Ships[j];
-                for (var k = 0; k < ship.shots.length; k++)
+                //skip the ship if it is destroyed
+                if (!ship.isDestroyed())
                 {
-                    var shot = ship.shots[k];
-                    availableShots[i++] = shot;
+                    for (var k = 0; k < ship.shots.length; k++)
+                    {
+                        var shot = ship.shots[k];
+                        availableShots[i++] = shot;
+                    }
                 }
             }
         }
@@ -455,10 +460,13 @@ function Engine()
             for (var j = 0; j < this.player2Ships.length; j++)
             {
                 var ship = this.player2Ships[j];
-                for (var k = 0; k < ship.shots.length; k++)
+                if (!ship.isDestroyed())
                 {
-                    var shot = ship.shots[k];
-                    availableShots[i++] = shot;
+                    for (var k = 0; k < ship.shots.length; k++)
+                    {
+                        var shot = ship.shots[k];
+                        availableShots[i++] = shot;
+                    }
                 }
             }
         }
@@ -537,33 +545,38 @@ function Engine()
         //check first players ship
         if (this.isFirstPlayer)
         {
-            var i = 0;
-            while (i < this.player1Ships.length)
-            {
-                //if one ship isn't destroyed then the the game is still going
-                if (!this.player1Ships[i].isDestroyed())
+            if (this.player2Ships.length > 0){
+                var i = 0;
+                while (i < this.player2Ships.length)
                 {
-                    return false;
+                    //if one ship isn't destroyed then the the game is still going
+                    if (!this.player2Ships[i].isDestroyed())
+                    {
+                        return false;
+                    }
+                    i++;
                 }
-                i++;
+                return true;
             }
-            return true;
         }
         //check second players ship
         else
         {
-            var i = 0;
-            while (i < this.player2Ships.length)
-            {
-                //if one ship isn't destroyed then the the game is still going
-                if (!this.player2Ships[i].isDestroyed())
+            if (this.player1Ships.length > 0){
+                var i = 0;
+                while (i < this.player1Ships.length)
                 {
-                    return false;
+                    //if one ship isn't destroyed then the the game is still going
+                    if (!this.player1Ships[i].isDestroyed())
+                    {
+                        return false;
+                    }
+                    i++;
                 }
-                i++;
+                return true;
             }
-            return true;
         }
+        return false;
     };
 
     //return a list of available ships
@@ -591,6 +604,12 @@ function Engine()
     //trigger a player switch
     this.changePlayers = function()
     {
+        //check if he game has ended
+        if (this.isGameOver())
+        {
+            //return true to indicate that the game is over
+            return true;
+        }
         //change to the second player
         if (this.isFirstPlayer)
         {
@@ -827,11 +846,26 @@ function fireGenericShot(x, y, targetShipGrid, shotGrid)
     {
         message += ShotMessages[shotGrid[x][y]];
     }
+    //reveal miss converted to actual miss
+    else if (shotGrid[x][y] === 3)
+    {
+        shotGrid[x][y] = 1;
+        message += ShotMessages[1];
+    }
+    //reveal hit converted to actual hit
+    else if (shotGrid[x][y] === 4)
+    {
+        targetShipGrid[x][y].damage++;
+        shotGrid[x][y] = 2;
+        message += ShotMessages[2];
+    }
+    //miss
     else if (targetShipGrid[x][y] === 0)
     {
         shotGrid[x][y] = 1;
         message += ShotMessages[1];
     }
+    //hit
     else if (targetShipGrid[x][y].name !== 0)
     {
         targetShipGrid[x][y].damage++;
@@ -886,6 +920,7 @@ function mode2Ships()
         //and a direction? How will this be handled from input via UI?
         
         //lets simply make it random on the direction... ~DS
+        //this shot will take a center spot and randomly shoot up,down,left,right if it is valid
         
         //determine randomly if the shot will go vertically or horizontally
         var messages = [];
@@ -894,38 +929,86 @@ function mode2Ships()
         if (random === 0) { isVertical = false; }
         if (isVertical)
         {
-            //check if going down will go off the board
-            var endy = y + 2;
-            if (endy > 9)
+            random = getRandomInt(0,1);
+            var isUp = true;
+            if (random === 0) { isUp = false; }
+            if (isUp)
             {
-                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x, y-2, targetShipGrid, shotGrid);
+                //check if going up will go off the board
+                var endy = y - 2;
+                if (endy < 0)
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x, y+2, targetShipGrid, shotGrid);
+                }
+                //if its fine we'll shoot up
+                else
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x, y-2, targetShipGrid, shotGrid);
+                }
             }
-            //if its fine we'll shoot down
             else
             {
-                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x, y+2, targetShipGrid, shotGrid);
+                //check if going down will go off the board
+                var endy = y + 2;
+                if (endy > 9)
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x, y-2, targetShipGrid, shotGrid);
+                }
+                //if its fine we'll shoot down
+                else
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x, y+2, targetShipGrid, shotGrid);
+                }
             }
         }
         else
         {
-            //check if going down will go off the board
-            var endx = x + 2;
-            if (endx > 9)
+            random = getRandomInt(0,1);
+            var isLeft = true;
+            if (random === 0) { isLeft = false; }
+            if (isLeft)
             {
-                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x-2, y, targetShipGrid, shotGrid);
+                //check if going left will go off the board
+                var endx = x - 2;
+                if (endx < 0)
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x+2, y, targetShipGrid, shotGrid);
+                }
+                //if its fine we'll shoot left
+                else
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x-2, y, targetShipGrid, shotGrid);
+                }
             }
-            //if its fine we'll shoot right
             else
             {
-                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
-                messages[0] = fireGenericShot(x+2, y, targetShipGrid, shotGrid);
+                //check if going right will go off the board
+                var endx = x - 2;
+                if (endx > 9)
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x-2, y, targetShipGrid, shotGrid);
+                }
+                //if its fine we'll shoot right
+                else
+                {
+                    messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                    messages[1] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
+                    messages[2] = fireGenericShot(x+2, y, targetShipGrid, shotGrid);
+                }
             }
         }
         return messages;
@@ -956,13 +1039,102 @@ function mode2Ships()
         //points to the up, right, down, left locations if they would be a hit
         //or not as well. Hits similar to Black Hole but hits as reveal hit or
         //reveal miss instead of true hit or miss.
+        
+        function fireScrapShot(x, y, targetShipGrid, shotGrid)
+        {
+            var message = "("+x+","+y+") ";
+            //implementation of a regular shot and how it interacts with the grid
+            if (shotGrid[x][y] > 0 && shotGrid[x][y] < 5)
+            {
+                message += ShotMessages[shotGrid[x][y]];
+            }
+            //reveal miss
+            else if (targetShipGrid[x][y] === 0)
+            {
+                shotGrid[x][y] = 3;
+                message += ShotMessages[3];
+            }
+            //reveal hit
+            else if (targetShipGrid[x][y].name !== 0)
+            {
+                shotGrid[x][y] = 4;
+                message += ShotMessages[4];
+            }
+            return message;
+        }
+        
+        var messages = [];
+        var i = 0;
+        if (x-1 >= 0) { messages[i++] = fireScrapShot(x-1, y, targetShipGrid, shotGrid); }
+        messages[i++] = fireScrapShot(x, y, targetShipGrid, shotGrid);
+        if (x+1 <= 9) { messages[i++] = fireScrapShot(x+1, y, targetShipGrid, shotGrid); }
+        if (y-1 >= 0) { messages[i++] = fireScrapShot(x, y-1, targetShipGrid, shotGrid); }
+        if (y+1 <= 9) { messages[i++] = fireScrapShot(x, y+1, targetShipGrid, shotGrid); }
+        return messages;
+        
     };
     
     //Submarine Special Shot
     var destroyerShot = new Shot("Plasma Salvo", 4);
     destroyerShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
-        //Player independently chooses 3 locations for "regular" shots    
+        //Player independently chooses 3 locations for "regular" shots
+        
+        //player chooses one location, and then two other locations are chosen at random (but will not shoot at a space other than occupied by a 0 (fog of war)) ~DS
+        
+        function getRandomCell(exclude, shotGrid)
+        {
+            var cell = {};
+            var valid = false;
+            do
+            {
+                var randomx = getRandomInt(0,9);
+                var randomy = getRandomInt(0,9);
+                var alreadyHave = false;
+                //check if it is in the excludes
+                for (var i = 0; i < exclude.length; i++)
+                {
+                    if (exclude[i][0] === randomx && exclude[i][1] === randomy)
+                    {
+                        alreadyHave = true;
+                        break;
+                    }
+                }
+                //try again
+                if (alreadyHave)
+                {
+                    valid = false;
+                    //loop again
+                    continue;
+                }
+                //check if we've already shot here
+                if (shotGrid[randomx][randomy] > 0)
+                {
+                    valid = false;
+                    //loop again
+                    continue;
+                }
+                //we found a unique cell that is empty
+                valid = true;
+                cell.x = randomx;
+                cell.y = randomy;
+            }
+            while (!valid);
+            return cell;
+        }
+        
+        var messages = [];
+        var exclude = [];
+        exclude[0] = [x,y];
+        var cell1 = getRandomCell(exclude, shotGrid);
+        exclude[1] = [cell1.x, cell1.y];
+        var cell2 = getRandomCell(exclude, shotGrid);
+        
+        messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+        messages[1] = fireGenericShot(cell1.x, cell1.y, targetShipGrid, shotGrid);
+        messages[2] = fireGenericShot(cell2.x, cell2.y, targetShipGrid, shotGrid);
+        
+        return messages;
     };
     
     //Interceptor Special Shot
@@ -972,6 +1144,151 @@ function mode2Ships()
         //Player chooses a cell location. Spaces that have already been hit are
         //invalid locations for homing missile to hit. Homing missile hits the
         //"closest" grid space that would be a hit from chosen cell location
+        
+        //check if a cell is a valid
+        function isValidCell(x,y,shotGrid)
+        {
+            if (x < 0 || y < 0) { return false; }
+            if (x >= shotGrid.length || y >= shotGrid.length ) { return false; }
+            return true;
+        }
+        
+        //check if a cell contains a valid target
+        //not already shot at and contains a ship
+        function isValidTarget(x,y,shipGrid,shotGrid)
+        {
+            //check if the location has already been searched
+            if (shotGrid[x][y] > 0)
+            {
+                return false;
+            }
+            if (shipGrid[x][y] === 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        
+        //seach for the nearest ship
+        function hitSearch(x,y,shipGrid,shotGrid)
+        {
+            var cell = {};
+            //indicate if we have found our nearest target
+            var found = false;
+            //position modifier
+            var posMod = 0;
+            
+            //search the selected cell and if it is valid return it
+            if(isValidTarget(x,y,shipGrid,shotGrid))
+            {
+                found = true;
+                cell.x = x;
+                cell.y = y;
+                return cell;
+            }
+            
+            //new expanding search
+            //simple clockwise search
+            do
+            {
+                //increment the position finder
+                posMod++;
+                //check above
+                //loop through cells x-1,y-1, x,y-1 and x+1,y-1 first
+                var modx;
+                var mody = y-posMod;
+                for (modx = x-posMod; modx <= (x+posMod); modx++)
+                {
+                    //if the cell is valid we'll check it for a target
+                    if (isValidCell(modx,mody,shotGrid))
+                    {
+                        //if the cell is a valid target set the vaiables and break out of the loop
+                        if (isValidTarget(modx,mody,shipGrid,shotGrid))
+                        {
+                            found = true;
+                            cell.x=modx;
+                            cell.y=mody;
+                            break;
+                        }
+                    }
+                }
+                //only continue searching if we haven't found anything yet
+                if(!found)
+                {
+                    //search right side down
+                    //loop through cells x+1,y, x+1,y+1
+                    modx = x+posMod;
+                    //start with cell y-(posMod+1)
+                    for (mody = (y-(posMod+1)); mody <= (y+posMod); mody++)
+                    {
+                         //if the cell is valid we'll check it for a target
+                        if (isValidCell(modx,mody,shotGrid))
+                        {
+                            //if the cell is a valid target set the vaiables and break out of the loop
+                            if (isValidTarget(modx,mody,shipGrid,shotGrid))
+                            {
+                                found = true;
+                                cell.x=modx;
+                                cell.y=mody;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //only continue searching if we haven't found anything yet
+                if(!found)
+                {
+                    //search below
+                    //loop through cells x,y+1, x-1,y+1
+                    mody = y+posMod;
+                    for (modx = (x+(posMod-1)); modx >= (x-posMod); modx--)
+                    {
+                         //if the cell is valid we'll check it for a target
+                        if (isValidCell(modx,mody,shotGrid))
+                        {
+                            //if the cell is a valid target set the vaiables and break out of the loop
+                            if (isValidTarget(modx,mody,shipGrid,shotGrid))
+                            {
+                                found = true;
+                                cell.x=modx;
+                                cell.y=mody;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //only continue searching if we haven't found anything yet
+                if(!found)
+                {
+                    //search left side up
+                    //loop through cells x-1,y
+                    modx = x-posMod;
+                    for (mody = (y+(posMod-1)); mody > (y-posMod); mody--)
+                    {
+                         //if the cell is valid we'll check it for a target
+                        if (isValidCell(modx,mody,shotGrid))
+                        {
+                            //if the cell is a valid target set the vaiables and break out of the loop
+                            if (isValidTarget(modx,mody,shipGrid,shotGrid))
+                            {
+                                found = true;
+                                cell.x=modx;
+                                cell.y=mody;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            while(!found);
+            return cell;
+        }
+        
+        var target = hitSearch(x, y, targetShipGrid, shotGrid);
+        var message = "("+target.x+","+target.y+") ";
+        shotGrid[target.x][target.y] = 4;
+        message += ShotMessages[4];
+        return message;
     };
 
     //define the ships in mode 2. This array of ships will be copied onto the grid of each players

@@ -480,7 +480,17 @@ function UI(engine)
         alert("ending turn for " + hist[hist.length-1]);
         alert("I'm really changing turn now. Don't Cheat.");
         //change turn
-        engine.changePlayers();
+        var gameOver = engine.changePlayers();
+        //check if the game is over
+        if (typeof(gameOver) !== 'undefined' && gameOver === true)
+        {
+            var player = "Player One";
+            if(!engine.isFirstPlayer) { player = "Player Two"; }
+            alert("The game is over. " + player + " wins");
+            this.updateInterface();
+            //redirect to the index
+            window.location = "./index.html";
+        }
         //update ui
         this.updateInterface();
     };
