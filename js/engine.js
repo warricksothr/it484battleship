@@ -132,7 +132,7 @@ function Ship(name, abbreviation, shipLength, shots)
     {
         for (var i = 0; i < shots.length; i++)
         {
-            shots[i].decCooldown();
+            this.shots[i].decCooldown();
         }
     };
 }
@@ -195,15 +195,6 @@ function cloneShot(originalShot)
     return clonedShot;
 }
 
-//walk through deincrement all the timers on the shots in all the ships
-function decShipShotTimers(ships)
-{
-    for (var i = 0; i < ships.length; i++)
-    {
-        ships[i].decCooldown();
-    }
-}
-
 ///////////////////////
 // BattleShip Engine //
 ///////////////////////
@@ -253,6 +244,12 @@ function Engine()
      */
     this.fireShot = function(x, y)
     {
+        //check if the shot is available and alert if it is not
+        if (!this.selectedShot.isAvailable())
+        {
+            alert(this.selectedShot.name + " has " + this.selectedShot.cooldownTimer + " turns before it is usable again.");
+            return;
+        }
         var message = "";
         //firing logic if this is the first player shooting
         if (this.isFirstPlayer)
@@ -290,6 +287,8 @@ function Engine()
                 this.player2ShotHistory.push("player2: "+message);
             }
         }
+        //indicate that we have fired this shot
+        this.selectedShot.fired();
     };
 
     /**
@@ -364,7 +363,7 @@ function Engine()
                 grid[posX][y] = ship;
             }
         }
-    }
+    };
 
     //place a ship on the current player;s grid
     this.placeShip = function(startx, starty, isVertical, ship, overridePlacement)
@@ -446,6 +445,22 @@ function Engine()
         }
         return availableShots;
     };
+    
+    //return the shot types that are on cooldown
+    this.getShotsOnCooldown = function()
+    {
+        var shotsOnCooldown = [];
+        var j = 0;
+        var shots = this.getAvailableShots();
+        for (var i = 0; i < shots.length; i++)
+        {
+            if (!shots[i].isAvailable())
+            {
+                shotsOnCooldown[j++] = shots[i];
+            }
+        }
+        return shotsOnCooldown;
+    };
 
     //get the ships available for the current player
     this.getPlayerShips = function()
@@ -458,12 +473,6 @@ function Engine()
         {
             return this.player2Ships;
         }
-    };
-
-    //return the shot types that are on cooldown
-    this.getShotsOnCooldown = function()
-    {
-
     };
 
     /**
@@ -551,6 +560,16 @@ function Engine()
         return clonedAvailableShips;
     };
 
+    //walk through deincrement all the timers on the shots in all the ships
+    this.decShipShotTimers = function(ships)
+    {
+        regularShot.decCooldown();
+        for (var i = 0; i < ships.length; i++)
+        {
+            ships[i].decCooldown();
+        }
+    };
+
     //trigger a player switch
     this.changePlayers = function()
     {
@@ -558,14 +577,14 @@ function Engine()
         if (this.isFirstPlayer)
         {
             //decrement all shot timers for current players ships
-            decShipShotTimers(this.player1Ships);
+            this.decShipShotTimers(this.player1Ships);
             this.turnCounter++;
             this.isFirstPlayer = false;
         }
         //change to first player and increment the turn counter
         else
         {
-            decShipShotTimers(this.player2Ships);
+            this.decShipShotTimers(this.player2Ships);
             this.turnCounter++;
             this.isFirstPlayer = true;
         }
@@ -829,6 +848,51 @@ function mode2Ships()
     {
         //Shot hits 3 consecutive places. Player chooses a starting grid point
         //and a direction? How will this be handled from input via UI?
+        
+        //lets simply make it random on the direction... ~DS
+        
+        //determine randomly if the shot will go vertically or horizontally
+        var messages = [];
+        var random = getRandomInt(0,1);
+        var isVertical = true;
+        if (random === 0) { isVertical = false; }
+        if (isVertical)
+        {
+            //check if going down will go off the board
+            var endy = y + 2;
+            if (endy > 9)
+            {
+                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x, y-2, targetShipGrid, shotGrid);
+            }
+            //if its fine we'll shoot down
+            else
+            {
+                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x, y+2, targetShipGrid, shotGrid);
+            }
+        }
+        else
+        {
+            //check if going down will go off the board
+            var endx = x + 2;
+            if (endx > 9)
+            {
+                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x-2, y, targetShipGrid, shotGrid);
+            }
+            //if its fine we'll shoot right
+            else
+            {
+                messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
+                messages[0] = fireGenericShot(x+2, y, targetShipGrid, shotGrid);
+            }
+        }
+        return messages;
     };
     
     //Battleship Special Shot
@@ -839,11 +903,12 @@ function mode2Ships()
         //in each direction up, right, down, left from chosen location
         //if the cell is already miss or hit
         var messages = [];
-        messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-        messages[1] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
-        messages[2] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
-        messages[3] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
-        messages[4] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
+        var i = 0;
+        if (x-1 >= 0) { messages[i++] = fireGenericShot(x-1, y, targetShipGrid, shotGrid); }
+        messages[i++] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+        if (x+1 <= 9) { messages[i++] = fireGenericShot(x+1, y, targetShipGrid, shotGrid); }
+        if (y-1 >= 0) { messages[i++] = fireGenericShot(x, y-1, targetShipGrid, shotGrid); }
+        if (y+1 <= 9) { messages[i++] = fireGenericShot(x, y+1, targetShipGrid, shotGrid); }
         return messages;
     };
     
