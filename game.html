@@ -44,90 +44,50 @@
 </head>
 <body>
     <script>
-        //this is test script to test the interface
-        //populate the engine with data only if we have no data to load
-        /**
+        //this is the game setup script, either move this into the UI or update it here to handle ship placement for the players
+        //get the available ships for the mode
+        var ships = ENGINE.getAvailableShips();
         
-        if(sessionStorage.gameStateSaved !== "true")
+        //place a ship on the grid randomly
+        //check validity of position before placing it
+        function placeShipRandomly(ship)
         {
-            //populate the engine with test data
-            //set the player mode to 1 and the number of players to 2
-            //ENGINE.selectGameMode(2,true);
-        */
-            //get the available ships for the mode
-            var ships = ENGINE.getAvailableShips();
-            
-            //place a ship on the grid randomly
-            //check validity of position before placing it
-            function placeShipRandomly(ship)
+            do
             {
-                do
-            {
+                var validPlacement = false;
                 var rx = getRandomInt(0, 9);
                 var ry = getRandomInt(0, 9);
                 var rvertical = getRandomInt(0,1);
-                var validPlacement = ENGINE.validateShipPlacement(rx,ry,rvertical,ship);
+                validPlacement = ENGINE.validateShipPlacement(rx,ry,rvertical,ship);
                 if (validPlacement)
                 {
                     ENGINE.placeShip(rx, ry, rvertical, ship);
                 }
             } while(!validPlacement);
-            }
-            
-            // place ships randomly for player 1 //
-            placeShipRandomly(ships[0])
-            placeShipRandomly(ships[1])
-            placeShipRandomly(ships[2])
-            placeShipRandomly(ships[3])
-            placeShipRandomly(ships[4])
-            
-            //change to the second player
-            ENGINE.changePlayers();
-            
+        }
+        
+        // place ships randomly for player 1 //
+        for (var i = 0; i < ships.length; i++)
+        {
+            placeShipRandomly(ships[i]);
+        }
+        
+        //change to the second player
+        ENGINE.changePlayers();
+        
+        //if the second player is an AI they will do this themselves
+        //TODO: remove me later!!!!!!!!
+        if (ENGINE.numberOfPlayers !== 1)
+        {
             // place ships randomly for player 2 //
-            placeShipRandomly(ships[0])
-            placeShipRandomly(ships[1])
-            placeShipRandomly(ships[2])
-            placeShipRandomly(ships[3])
-            placeShipRandomly(ships[4])
+            for (var i = 0; i < ships.length; i++)
+            {
+                placeShipRandomly(ships[i]);
+            }
             
             //change back to player 1
             ENGINE.changePlayers();
-            
-        /**
         }
-        
-        //get the available shots to fire
-        var shots = ENGINE.getAvailableShots();
-        //get the regular shot
-        var shot = shots[2];
-        ENGINE.selectShot(shot);
-        
-        //get random coordinates for player 1
-        var randomx = getRandomInt(0, 9);
-        var randomy = getRandomInt(0, 9);
-        
-        //fire a random shot
-        ENGINE.fireShot(randomx,randomy);
-        
-        //change to player 2
-        ENGINE.changePlayers();
-        
-        //get the available shots to fire
-        var shots = ENGINE.getAvailableShots();
-        //get the regular shot
-        var shot = shots[2];
-        ENGINE.selectShot(shot);
-        
-        //get random coordinates for player 2
-        randomx = getRandomInt(0, 9);
-        randomy = getRandomInt(0, 9);
-        
-        //fire a random shot
-        ENGINE.fireShot(randomx,randomy);
-        ENGINE.changePlayers();
-        
-        */
     </script>
     <!-- this is the list of previous shots -->
     <div id="history">

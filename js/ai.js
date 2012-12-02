@@ -33,14 +33,48 @@ function AI(engine)
     ////////////////////////
     
     //ship placement code
-    this.placeShips = function()
+    this.helperPlaceShips = function()
     {
         //make the engine calls to get a listing of ships and then place them. Perhaps randomly?
+        //TODO: really do me. but for now I'll be randomized ship placement
+        var ships = engine.getAvailableShips();
+            
+        //place a ship on the grid randomly
+        //check validity of position before placing it
+        function placeShipRandomly(ship)
+        {
+            do
+            {
+                var validPlacement = false;
+                //it will complain about these since they exist getRandomInt
+                var rx = getRandomInt(0, 9);
+                var ry = getRandomInt(0, 9);
+                var rvertical = getRandomInt(0,1);
+                validPlacement = engine.validateShipPlacement(rx,ry,rvertical,ship);
+                if (validPlacement)
+                {
+                    engine.placeShip(rx, ry, rvertical, ship);
+                }
+            } while(!validPlacement);
+        }
+        
+        //place ships randomly
+        for (var i = 0; i < ships.length; i++)
+        {
+            placeShipRandomly(ships[i]);
+        }
     };
     
     //this single "magic" function that performs the ai moves.
     this.executeTurn = function()
     {
+        //check if we need to place ou ships
+        if(engine.getPlayerShips().length < 1)
+        {
+            this.helperPlaceShips();
+            //and return since this is all we can do on this turn
+            return;
+        }
         //check which mode we're in
         if (engine.isModeOne)
         {
@@ -52,6 +86,8 @@ function AI(engine)
             //moe two logic
             this.helperExecuteTurnModeTwo();
         }
+        //and return flow to the engine
+        return;
     };
     
     ////////////////////

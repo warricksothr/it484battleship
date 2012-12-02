@@ -940,33 +940,26 @@ Engine.prototype.loadShips = function(ships)
 //basically this is used to switch between single and multi player, and toggle game mode
 Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
 {
-    //TODO: initialize AI if only one player
-    //TODO: set the correct booleans for modes 1 and 2 also load the correct ships
+    //set the correct booleans for modes 1 and 2 also load the correct ships
     //load mode 1 ships and set booleans
     if (modeOne)
     {
         this.loadShips(mode1Ships());
         //Watch value for the current mode
         this.isModeOne = true;
-        //tell the ai this is mode 1
-        this.ai.isModeOne = true;
     }
     //load mode 2 ships and set booleans
     else
     {
-        //remove me later
-        alert("Mode 2 is not fully implemented")
         this.loadShips(mode2Ships());
         this.isModeOne = false;
-        //tell the ai this is mode 2
-        this.ai.isModeOne = false;
     }
 
-    //initialize the AI as player 2
+    //todo: initialize the AI as player 2
     if (numberOfPlayers == 1)
     {
         //remove me later
-        alert("Single Player is not implemented")
+        alert("Single Player is not implemented. The AI may not be function or super buggy. You have been warned, pray I don't warn you further.");
         this.numberOfPlayers = 1;
     }
     else if (numberOfPlayers == 2)
