@@ -17,6 +17,17 @@ Blake Grotewold:
     www.BlakeGrotewold.com
 
 Drew Short:
+    Undergraduate at MNSU
+    Work on this project includes:
+        -- Function Analysis
+        -- Technical Specifications
+        -- Complete Game Engine
+        -- AI Implementation
+        -- Front-End JavaScript
+        -- Mode1 and Mode2 Ship + Shot Implementations
+        -- Front-End <-> Engine Hookup + Translation
+        -- Front-End Game Flow Code
+    www.sothr.com
 
 
 Jordan Ruedy:
