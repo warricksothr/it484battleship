@@ -18,6 +18,11 @@
         {
             sessionStorage.gameStateSaved = params.load;
         }
+        //deafult state is not to load from memory
+        else
+        {
+            sessionStorage.gameStateSaved = false;
+        }
     </script>
     <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
     <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
@@ -31,6 +36,9 @@
             if (params.mode == 2) { isMode1 = false; }
             //set the player and mode appropriately
             ENGINE.selectGameMode(params.players,isMode1);
+            //set the default shots to regular shots
+            ENGINE.player1SelectedShot = regularShot;
+            ENGINE.player2SelectedShot = regularShot;
         }
     </script>
 </head>
@@ -38,12 +46,14 @@
     <script>
         //this is test script to test the interface
         //populate the engine with data only if we have no data to load
+        /**
+        
         if(sessionStorage.gameStateSaved !== "true")
         {
             //populate the engine with test data
             //set the player mode to 1 and the number of players to 2
             //ENGINE.selectGameMode(2,true);
-    
+        */
             //get the available ships for the mode
             var ships = ENGINE.getAvailableShips();
             
@@ -83,6 +93,8 @@
             
             //change back to player 1
             ENGINE.changePlayers();
+            
+        /**
         }
         
         //get the available shots to fire
@@ -114,6 +126,8 @@
         //fire a random shot
         ENGINE.fireShot(randomx,randomy);
         ENGINE.changePlayers();
+        
+        */
     </script>
     <!-- this is the list of previous shots -->
     <div id="history">

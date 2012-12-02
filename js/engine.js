@@ -604,6 +604,16 @@ function Engine()
             this.decShipShotTimers(this.player1Ships);
             this.turnCounter++;
             this.isFirstPlayer = false;
+            
+            //implement the ai call here so that the ai player is always the second player
+            if(this.numberOfPlayers === 1)
+            {
+                //AI magic here pl0x
+                
+                //return control to the first player
+                this.changePlayers();
+            }
+            
         }
         //change to first player and increment the turn counter
         else
@@ -783,17 +793,25 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
         this.loadShips(mode1Ships());
         //Watch value for the current mode
         this.isModeOne = true;
+        //tell the ai this is mode 1
+        this.ai.isModeOne = true;
     }
     //load mode 2 ships and set booleans
     else
     {
+        //remove me later
+        alert("Mode 2 is not fully implemented")
         this.loadShips(mode2Ships());
         this.isModeOne = false;
+        //tell the ai this is mode 2
+        this.ai.isModeOne = false;
     }
 
     //initialize the AI as player 2
     if (numberOfPlayers == 1)
     {
+        //remove me later
+        alert("Single Player is not implemented")
         this.numberOfPlayers = 1;
     }
     else if (numberOfPlayers == 2)

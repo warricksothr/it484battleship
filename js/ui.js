@@ -476,8 +476,9 @@ function UI(engine)
         //if the result of the shot is undefined, then the shot failed because the user didn't select a shot. let them try again
         if (typeof(result) === 'undefined') { return; }
         //show the alerts
-        alert("changing turn");
-        alert("I'm really changing turn now");
+        var hist = engine.getShotHistory();
+        alert("ending turn for " + hist[hist.length-1]);
+        alert("I'm really changing turn now. Don't Cheat.");
         //change turn
         engine.changePlayers();
         //update ui
