@@ -445,10 +445,7 @@ function Engine()
                 for (var k = 0; k < ship.shots.length; k++)
                 {
                     var shot = ship.shots[k];
-                    if (shot.isAvailable());
-                    {
-                        availableShots[i++] = shot;
-                    }
+                    availableShots[i++] = shot;
                 }
             }
         }
@@ -461,10 +458,7 @@ function Engine()
                 for (var k = 0; k < ship.shots.length; k++)
                 {
                     var shot = ship.shots[k];
-                    if (shot.cooldownTimer === 0)
-                    {
-                        availableShots[i++] = shot;
-                    }
+                    availableShots[i++] = shot;
                 }
             }
         }

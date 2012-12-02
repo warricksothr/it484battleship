@@ -413,7 +413,7 @@ function UI(engine)
     // Available Shots Functions //
     ///////////////////////////////
     
-    this.helperSelectShip = function(index)
+    this.helperSelectShot = function(index)
     {
         engine.selectShot(engine.getAvailableShots()[index]);
         alert("selected shot: " + engine.getAvailableShots()[index].name);
@@ -421,28 +421,27 @@ function UI(engine)
     
     this.helperGetShotElement = function(shot,index)
     {
-        var shotWrapper = this.helperCreateElement("div", {"class":"shotwrapper"}, "");
+        var shotWrapper;
         //if the shot isn't available it is on cooldown
         if (!shot.isAvailable())
         {
+            shotWrapper = this.helperCreateElement("div", {}, "");
             //text on the outside
-            var shotcooldown = this.helperCreateElement("span", {"class":"shotcooldowntimer"}, shot.cooldownTimer);
-            //opacity layer to block out the shot
-            var opacityLayer = this.helperCreateElement("div", {"class":".shotcooldown"}, "");
+            var shotWrapperCountdown = this.helperCreateElement("span", {"class":"shotcooldowntimer"}, shot.cooldownTimer);
+            var shotInnerWrapper = this.helperCreateElement("div", {"class":"shotcooldownwrapper"}, "");
             //now create the shot and add it as a child
-            var shotElement = this.helperCreateElement("div", {"class":"shot"}, shot.name);
-            this.helperAppendChildElement(opacityLayer, shotElement);
-            //append opacity to the shotWrapper
-            this.helperAppendChildElement(shotWrapper,shotcooldown);
-            //append cooldown to the wrapper
-            this.helperAppendChildElement(shotWrapper,opacityLayer);
+            var shotElement = this.helperCreateElement("span", {"class":"shot"}, shot.name);
+            this.helperAppendChildElement(shotInnerWrapper,shotElement);
+            this.helperAppendChildElement(shotWrapper,shotInnerWrapper);
+            this.helperAppendChildElement(shotWrapper,shotWrapperCountdown);
         }
         //non cooldown shots
         else
         {
-            var shotElement = this.helperCreateElement("div", {"class":"shot"}, shot.name);
+            shotWrapper = this.helperCreateElement("div", {"class":"shotwrapper"}, "");
+            var shotElement = this.helperCreateElement("span", {"class":"shot"}, shot.name);
             //add the onclick method to the wrapper to select a specific shot
-            this.helperAddAttributesToElement(shotWrapper, {"onclick":"UI.helperSelectShip("+index+")"});
+            this.helperAddAttributesToElement(shotWrapper, {"onclick":"UI.helperSelectShot("+index+")"});
             this.helperAppendChildElement(shotWrapper, shotElement);
         }
         return shotWrapper;
@@ -469,6 +468,7 @@ function UI(engine)
     // Shot Grid Firing Functions //
     ////////////////////////////////
     
+    //all the logic behind firing a shot then handing the turn over to the next player
     this.helperFireShot = function(x,y)
     {
         //fire the shot
