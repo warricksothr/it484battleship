@@ -246,6 +246,10 @@ function Engine()
 
     /**
      * Fire the selected shot at the opponenet
+     * returns an undefined if there was an error
+     * returns the ship(s) destroyed if any were destroyed
+     * returns false if no ships were destroyed
+     * TODO: I can be minimized and made easier to read by using a helper function
      */
     this.fireShot = function(x, y)
     {
@@ -253,6 +257,7 @@ function Engine()
         //firing logic if this is the first player shooting
         if (this.isFirstPlayer)
         {
+            var shipsBeforeShot = this.helperDetermineShipsNotSunk(this.player2Ships);
             //make sure that the shot that has been selected actually exists
             if (typeof(this.player1SelectedShot) === 'undefined')
             {
@@ -271,20 +276,42 @@ function Engine()
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.player1ShotHistory.push("player1: "+message[i]);
+                    this.player1ShotHistory.push("p1_t"+this.turnCounter+": "+message[i]);
                     i++;
                 }
             }
             else
             {
-                this.player1ShotHistory.push("player1: "+message);
+                this.player1ShotHistory.push("p1_t"+this.turnCounter+": "+message);
+            }
+            var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player2Ships);
+            //check if we have sunk any ships and if so add a message and return the ship that was sunk
+            var sunkShips = this.helperCompareShipsForSunk(shipsBeforeShot, shipsAfterShot);
+            //check if we sunk any ships
+            if (sunkShips !== false)
+            {
+                //check if it is an array or not
+                if (sunkShips instanceof Array)
+                {
+                    for(var i = 0; i < sunkShips.length; i++)
+                    {
+                        this.player1ShotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                    }
+                }
+                else
+                {
+                    this.player1ShotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                }
             }
             //indicate that we have fired this shot
             this.player1SelectedShot.fired();
+            //return the sunk ship(s)
+            return sunkShips;
         }
         //firing logic if this is the second player shooting
         else
         {
+            var shipsBeforeShot = this.helperDetermineShipsNotSunk(this.player1Ships);
             //make sure that the shot that has been selected actually exists
             if (typeof(this.player2SelectedShot) === 'undefined')
             {
@@ -303,22 +330,110 @@ function Engine()
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.player2ShotHistory.push("player2: "+message[i]);
+                    this.player2ShotHistory.push("p2_t"+this.turnCounter+": "+message[i]);
                     i++;
                 }
             }
             else
             {
-                this.player2ShotHistory.push("player2: "+message);
+                this.player2ShotHistory.push("p2_t"+this.turnCounter+": "+message);
+            }
+            var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player1Ships);
+            //check if we have sunk any ships and if so add a message and return the ship that was sunk
+            var sunkShips = this.helperCompareShipsForSunk(shipsBeforeShot, shipsAfterShot);
+            //check if we sunk any ships
+            if (sunkShips !== false)
+            {
+                //check if it is an array or not
+                if (sunkShips instanceof Array)
+                {
+                    for(var i = 0; i < sunkShips.length; i++)
+                    {
+                        this.player2ShotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                    }
+                }
+                else
+                {
+                    this.player2ShotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                }
             }
             //indicate that we have fired this shot
             this.player2SelectedShot.fired();
+            //return the sunk ship(s)
+            return sunkShips;
         }
-        
-        //indicate that the shot was a success
-        return true;
     };
-
+    
+    //get an array of ships that are not destroyed
+    this.helperDetermineShipsNotSunk = function(ships)
+    {
+        var shipsNotSunk = [];
+        var j = 0;
+        for (var i = 0; i < ships.length; i++)
+        {
+            //if the ship is not sunk add it to the return array
+            if (!ships[i].isDestroyed())
+            {
+                shipsNotSunk[j++] = ships[i];
+            }
+        }
+        return shipsNotSunk;
+    };
+    
+    //compare two ship arrays to determine if a new ship has been sunk
+    //returns false if a ship is not sunk
+    //returns the ship that was sunk if one was sunk
+    this.helperCompareShipsForSunk = function(shipsOld, shipsNew)
+    {
+        //if the arrays are the same size then nothing has changed
+        if (shipsOld.length === shipsNew.length)
+        {
+            return false;
+        }
+        else
+        {
+            var ships = [];
+            var j = 0;
+            //now loop through the ship arrays and compare them to find the one that isn't contained
+            for (var i = 0; i < shipsOld.length; i++)
+            {
+                //see if the ship is missing from the new ship array
+                var temp = this.helperFireShotDetermineContainsShip(shipsNew, shipsOld[i]);
+                //if it isn't contained we've found a missing ship
+                if (!temp)
+                {
+                    ships[j++] = shipsOld[i];
+                }
+                //continue looping because it is possible to destroy multiple ships per turn
+            }
+            if (ships.length === 0)
+            {
+                return false;
+            }
+            else if (ships.length === 1)
+            {
+                return ships[0];
+            }
+            else
+            {
+                return ships;
+            }
+        }
+    };
+    
+    //determine what ship is missing between two arrays
+    this.helperFireShotDetermineContainsShip = function(shipsToSearch, shipToLookFor)
+    {
+        for (var i = 0; i < shipsToSearch.length; i++)
+        {
+            if (shipsToSearch[i].name === shipToLookFor.name)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+    
     /**
      * internal function to verify if the requested ship placement is valid
      * Returns true if it is valid, false otherwise
@@ -501,6 +616,31 @@ function Engine()
         {
             return this.player2Ships;
         }
+    };
+    
+    //get an array of all 'alive' player ships
+    this.getAlivePlayerShips = function()
+    {
+        return this.helperDetermineShipsNotSunk(this.getPlayerShips());
+    };
+    
+    //gets the opponent's ships
+    this.getEnemyShips = function()
+    {
+        if (this.isFirstPlayer)
+        {
+            return this.player2Ships;
+        }
+        else
+        {
+            return this.player1Ships;
+        }
+    };
+    
+    //get an array of a;; 'alive' enemy ships
+    this.getAliveEnemyShips = function()
+    {
+        return this.helperDetermineShipsNotSunk(this.getEnemyShips());
     };
 
     /**

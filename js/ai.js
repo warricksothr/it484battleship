@@ -12,10 +12,87 @@ function AI(engine)
     //load the engine
     this.engine = engine;
     
-    // imported AI code //
-    var randomInt = Math.floor(Math.random()*5);
+    // Define a Shot for shot history
+    // ie new Shot(1,5,7,'hunt'); A shot at position 5,7 on turn 1 that is hunting
+    function Shot(turn, x, y, type)
+    {
+        this.turn = turn;
+        this.x = x;
+        this.y = y;
+        this.type = type;
+    }
     
-    this.firingLogic = function()
+    //history of shots the AI has made in the form of [shot{x:x,y:y},shot{x:x,y:y}]
+    this.shotHistory = [];
+    
+    //logic flags for triggering hunting vs killing mode
+    this.foundShip = false;
+    
+    ////////////////////////
+    // AI Front End Logic //
+    ////////////////////////
+    
+    //ship placement code
+    this.placeShips = function()
+    {
+        //make the engine calls to get a listing of ships and then place them. Perhaps randomly?
+    };
+    
+    //this single "magic" function that performs the ai moves.
+    this.executeTurn = function()
+    {
+        //check which mode we're in
+        if (engine.isModeOne)
+        {
+            //mode one logic
+            this.helperExecuteTurnModeOne();
+        }
+        else
+        {
+            //moe two logic
+            this.helperExecuteTurnModeTwo();
+        }
+    };
+    
+    ////////////////////
+    // Mode One Logic //
+    ////////////////////
+    
+    this.helperExecuteTurnModeOne = function()
+    {
+        //all of the turn information is processed here for mode 1
+    };
+    
+    ////////////////////////////////
+    // Mode One Logic and Helpers //
+    ////////////////////////////////
+    
+    
+    
+    
+    
+    
+    ////////////////////
+    // Mode Two Logic //
+    ////////////////////
+    
+    this.helperExecuteTurnModeTwo = function()
+    {
+        //all of the turn information is processed here for mode 2
+    };
+    
+    ////////////////////////////////
+    // Mode Two Logic and Helpers //
+    ////////////////////////////////
+
+
+
+
+
+
+
+
+    this.helperFiringLogic = function()
     {
     
     //We generate a random number between 0-4 in order to generate a starting point for AI shot selection.
@@ -29,8 +106,12 @@ function AI(engine)
     //var yCoord = startYCoord;
     };
     
+    ////////////////////////////////
+    // Shot Selection Code Mode 1 //
+    ////////////////////////////////
+    
     //This function fires in a diagonal x+1, y+1 pattern with the starting point specified in the parameters   
-    this.checkDiagonal = function(xCoord, yCoord)
+    this.helperCheckDiagonal = function(xCoord, yCoord)
     {
         while (xCoord<=9 && yCoord>=0)
         {
@@ -49,8 +130,11 @@ function AI(engine)
     
     
     //This searches for enemy ships by firing in a pattern as long as no ships are found
-    this.huntingShot = function()
+    this.helperHuntingShot = function()
     {
+        // imported AI code //
+        var randomInt = Math.floor(Math.random()*5);
+        
         //We use x and y as starting coordinates and begin firing in a diagonal line (x+1, y+1) on cells which !=0 until an edge is reached.
         //When an edge is reached we begin a new diagonal by moving five cells to the left on the x-axis and diagonally firing again.
         //When an edge is reached we begin a new diagonal by moving left to x=0 and diagonally firing again from x=0, y=randomInt.
@@ -90,7 +174,7 @@ function AI(engine)
     };
     
     //method for sinking an enemy ship once located with hunting shot
-    this.killingShot = function(xCoord, yCoord)
+    this.helperKillingShot = function(xCoord, yCoord)
     {
     //Create functions to locate orientation of found ship
     

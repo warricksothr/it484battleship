@@ -39,3 +39,34 @@ function sizeOfObject(obj) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+/**
+ * view the end of an array
+ * arrayPeek(ary [,count]) 
+ */
+function arrayPeek(ary, count)
+{
+    var temp;
+    //request for a single value
+    if (typeof(count) === 'undefined' || count === 1)
+    {
+        temp = ary.pop();
+        ary.push(temp);
+    }
+    else
+    {
+        if (count === 0) { return; }
+        temp = [];
+        //return many
+        for (var i = 0; i < count; i++)
+        {
+            temp[i] = ary.pop();
+        }
+        //go back through and add them all back to the array
+        for (var j = count-1; j >= 0; j--)
+        {
+            ary.push(temp[j]);
+        }
+    }
+    return temp;
+}
