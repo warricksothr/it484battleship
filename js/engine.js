@@ -229,14 +229,16 @@ function Engine()
     this.turnCounter = 0;
     
     //current user selected shot
-    this.selectedShot = 0;
+    this.player1SelectedShot;
+    this.player2SelectedShot;
 
     /**
      * Select a shot to fire
      */
     this.selectShot = function(shot)
     {
-        this.selectedShot = shot;
+        if (this.isFirstPlayer) { this.player1SelectedShot = shot; }
+        else { this.player2SelectedShot = shot; }
     };
 
     /**
@@ -244,17 +246,23 @@ function Engine()
      */
     this.fireShot = function(x, y)
     {
-        //check if the shot is available and alert if it is not
-        if (!this.selectedShot.isAvailable())
-        {
-            alert(this.selectedShot.name + " has " + this.selectedShot.cooldownTimer + " turns before it is usable again.");
-            return;
-        }
         var message = "";
         //firing logic if this is the first player shooting
         if (this.isFirstPlayer)
         {
-            message = this.selectedShot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
+            //make sure that the shot that has been selected actually exists
+            if (typeof(this.player1SelectedShot) === 'undefined')
+            {
+                alert("The shot that has been selected does not exist, please make sure you are in the right mode.");
+                return;
+            }
+            //check if the shot is available and alert if it is not
+            if (!this.player1SelectedShot.isAvailable())
+            {
+                alert(this.player1SelectedShot.name + " has " + this.player1SelectedShot.cooldownTimer + " turns before it is usable again.");
+                return;
+            }
+            message = this.player1SelectedShot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
             if (message instanceof Array)
             {
                 var i = 0;
@@ -268,11 +276,25 @@ function Engine()
             {
                 this.player1ShotHistory.push("player1: "+message);
             }
+            //indicate that we have fired this shot
+            this.player1SelectedShot.fired();
         }
         //firing logic if this is the second player shooting
         else
         {
-            message = this.selectedShot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
+            //make sure that the shot that has been selected actually exists
+            if (typeof(this.player2SelectedShot) === 'undefined')
+            {
+                alert("The shot that has been selected does not exist, please make sure you are in the right mode.");
+                return;
+            }
+            //check if the shot is available and alert if it is not
+            if (!this.player2SelectedShot.isAvailable())
+            {
+                alert(this.player2SelectedShot.name + " has " + this.player2SelectedShot.cooldownTimer + " turns before it is usable again.");
+                return;
+            }
+            message = this.player2SelectedShot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
             if (message instanceof Array)
             {
                 var i = 0;
@@ -286,9 +308,12 @@ function Engine()
             {
                 this.player2ShotHistory.push("player2: "+message);
             }
+            //indicate that we have fired this shot
+            this.player2SelectedShot.fired();
         }
-        //indicate that we have fired this shot
-        this.selectedShot.fired();
+        
+        //indicate that the shot was a success
+        return true;
     };
 
     /**
@@ -449,14 +474,13 @@ function Engine()
     //return the shot types that are on cooldown
     this.getShotsOnCooldown = function()
     {
-        var shotsOnCooldown = [];
-        var j = 0;
+        var shotsOnCooldown = {};
         var shots = this.getAvailableShots();
         for (var i = 0; i < shots.length; i++)
         {
             if (!shots[i].isAvailable())
             {
-                shotsOnCooldown[j++] = shots[i];
+                shotsOnCooldown[shots[i].name] = shots[i];
             }
         }
         return shotsOnCooldown;

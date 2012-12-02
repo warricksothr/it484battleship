@@ -64,6 +64,15 @@ function UI(engine)
         return document.getElementById(elementId);
     };
     
+    //set attributes on an existing element
+    this.helperAddAttributesToElement = function(element, elementAttributes)
+    {
+        for(var propt in elementAttributes){
+                //add an attribute based on the name with a value from the property
+                element.setAttribute(propt, elementAttributes[propt]);
+            }
+    };
+    
     ////////////////////
     // Update Methods //
     ////////////////////
@@ -78,7 +87,8 @@ function UI(engine)
             historyID:"history",
             shotID:"shot",
             ship:"ship",
-            shipViewID:"shipview"
+            shipViewID:"shipview",
+            availableShotID:"availableshots"
             };
         }
         //create the history
@@ -91,6 +101,8 @@ function UI(engine)
         this.hideShipGrid();
         //create the ship view
         this.createShipView(params.shipViewID);
+        //create a listing of the shots
+        this.createAvailableShots(params.availableShotID)
     };
     
     ////////////////////////////////////
@@ -189,6 +201,9 @@ function UI(engine)
                 var gridCell = this.helperGetShotGridCell(grid[j][i], j);
                 //assign the cell width dynamically based on the grid size
                 gridCell.style.width = cellPercent + "%";
+                //assign an on click event to the cell
+                this.helperAddAttributesToElement(gridCell, {"onclick":"UI.helperFireShot("+j+","+i+")"});
+                //append the cell to the row
                 this.helperAppendChildElement(row, gridCell);
             }
             //add the row to the table
@@ -365,6 +380,7 @@ function UI(engine)
     
     this.createShipView = function(shipViewElementId)
     {
+        if(typeof(shipViewElementId) === 'undefined') { shipViewElementId = "shipview"; }
         //get a list of the current player ships
         var ships = engine.getPlayerShips();
         //get access to the root element in the DOM
@@ -392,6 +408,82 @@ function UI(engine)
             this.helperAppendChildElement(rootElement, shipElement);
         }
     };
+    
+    ///////////////////////////////
+    // Available Shots Functions //
+    ///////////////////////////////
+    
+    this.helperSelectShip = function(index)
+    {
+        engine.selectShot(engine.getAvailableShots()[index]);
+        alert("selected shot: " + engine.getAvailableShots()[index].name);
+    };
+    
+    this.helperGetShotElement = function(shot,index)
+    {
+        var shotWrapper = this.helperCreateElement("div", {"class":"shotwrapper"}, "");
+        //if the shot isn't available it is on cooldown
+        if (!shot.isAvailable())
+        {
+            //text on the outside
+            var shotcooldown = this.helperCreateElement("span", {"class":"shotcooldowntimer"}, shot.cooldownTimer);
+            //opacity layer to block out the shot
+            var opacityLayer = this.helperCreateElement("div", {"class":".shotcooldown"}, "");
+            //now create the shot and add it as a child
+            var shotElement = this.helperCreateElement("div", {"class":"shot"}, shot.name);
+            this.helperAppendChildElement(opacityLayer, shotElement);
+            //append opacity to the shotWrapper
+            this.helperAppendChildElement(shotWrapper,shotcooldown);
+            //append cooldown to the wrapper
+            this.helperAppendChildElement(shotWrapper,opacityLayer);
+        }
+        //non cooldown shots
+        else
+        {
+            var shotElement = this.helperCreateElement("div", {"class":"shot"}, shot.name);
+            //add the onclick method to the wrapper to select a specific shot
+            this.helperAddAttributesToElement(shotWrapper, {"onclick":"UI.helperSelectShip("+index+")"});
+            this.helperAppendChildElement(shotWrapper, shotElement);
+        }
+        return shotWrapper;
+    };
+    
+    //method to create the shot listing
+    this.createAvailableShots = function(availableShotsElementId)
+    {
+        if(typeof(availableShotsElementId) === 'undefined') { availableShotsElementId = "availableshots"; }
+        var rootElement = this.helperGetElementById(availableShotsElementId);
+        //empty the element
+        this.helperEmptyElement(rootElement);
+        //get array of shots for the player
+        var shots = engine.getAvailableShots();
+        //loop through all the shots
+        for (var i = 0; i < shots.length; i++)
+        {
+            var shot = this.helperGetShotElement(shots[i], i);
+            this.helperAppendChildElement(rootElement, shot);
+        }
+    };
+    
+    ////////////////////////////////
+    // Shot Grid Firing Functions //
+    ////////////////////////////////
+    
+    this.helperFireShot = function(x,y)
+    {
+        //fire the shot
+        var result = engine.fireShot(x,y);
+        //if the result of the shot is undefined, then the shot failed because the user didn't select a shot. let them try again
+        if (typeof(result) === 'undefined') { return; }
+        //show the alerts
+        alert("changing turn");
+        alert("I'm really changing turn now");
+        //change turn
+        engine.changePlayers();
+        //update ui
+        this.updateInterface();
+    };
+    
 }
 
 //create a new UI instance and import ENGINE into it
