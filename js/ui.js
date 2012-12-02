@@ -488,11 +488,7 @@ function UI(engine)
         //check if the game is over
         if (typeof(gameOver) !== 'undefined' && gameOver === true)
         {
-            var player = "Player One";
-            if(!engine.isFirstPlayer) { player = "Player Two"; }
-            alert("The game is over. " + player + " wins");
-            this.updateInterface();
-            //redirect to the index
+            //redirect to the index because the game is over
             window.location = "./index.html";
         }
         //update ui

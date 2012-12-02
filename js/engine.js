@@ -691,7 +691,7 @@ function Engine()
         this.clearLocalStorage();
     };
     
-    //returns true if the current player has no ships left
+    //returns true if the opponent has no ships left
     this.isGameOver = function()
     {
         //check if the current player has no ships
@@ -709,6 +709,7 @@ function Engine()
                     }
                     i++;
                 }
+                alert("The game is over, Player 1 wins");
                 return true;
             }
         }
@@ -726,6 +727,7 @@ function Engine()
                     }
                     i++;
                 }
+                alert("The game is over, Player 2 wins");
                 return true;
             }
         }
