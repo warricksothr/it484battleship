@@ -236,22 +236,59 @@ function Engine()
     //turn counter
     //initialized to 0 so that when we change players to setup ship it ends up at one for the first turn
     this.turnCounter = 0;
+    
+    //current user selected shot
+    this.selectedShot = 0;
 
-    //fire a shot at the opponent's ship grid
-    this.fireShot = function(x, y, shot)
+    /**
+     * Select a shot to fire
+     */
+    this.selectShot = function(shot)
+    {
+        this.selectedShot = shot;
+    };
+
+    /**
+     * Fire the selected shot at the opponenet
+     */
+    this.fireShot = function(x, y)
     {
         var message = "";
         //firing logic if this is the first player shooting
         if (this.isFirstPlayer)
         {
-            message = shot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
-            this.player1ShotHistory.push("player1: (" + x + "," + y + ") " + message);
+            message = this.selectedShot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
+            if (message instanceof Array)
+            {
+                var i = 0;
+                while ( i < message.length )
+                {
+                    this.player1ShotHistory.push("player1: "+message[i]);
+                    i++;
+                }
+            }
+            else
+            {
+                this.player1ShotHistory.push("player1: "+message);
+            }
         }
         //firing logic if this is the second player shooting
         else
         {
-            message = shot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
-            this.player2ShotHistory.push("player2: (" + x + "," + y + ") " + message);
+            message = this.selectedShot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
+            if (message instanceof Array)
+            {
+                var i = 0;
+                while ( i < message.length )
+                {
+                    this.player2ShotHistory.push("player2: "+message[i]);
+                    i++;
+                }
+            }
+            else
+            {
+                this.player2ShotHistory.push("player2: "+message);
+            }
         }
     };
 
@@ -372,7 +409,9 @@ function Engine()
     this.getAvailableShots = function()
     {
         var availableShots = [];
-        var i = 0;
+        //the regular shot is always available and is the first shot listed
+        availableShots[0] = regularShot;
+        var i = 1;
         //get the first player's available shots
         if (this.isFirstPlayer)
         {
@@ -724,53 +763,51 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
     }
 };
 
+//fire a generic shot
+function fireGenericShot(x, y, targetShipGrid, shotGrid)
+{
+    var message = "("+x+","+y+") ";
+    //implementation of a regular shot and how it interacts with the grid
+    if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
+    {
+        message += ShotMessages[shotGrid[x][y]];
+    }
+    else if (targetShipGrid[x][y] === 0)
+    {
+        shotGrid[x][y] = 1;
+        message += ShotMessages[1];
+    }
+    else if (targetShipGrid[x][y].name !== 0)
+    {
+        targetShipGrid[x][y].damage++;
+        shotGrid[x][y] = 2;
+        message += ShotMessages[2];
+    }
+    return message;
+}
+
+//define a regular shot
+var regularShot = new Shot("Regular Shot", 1);
+//because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
+regularShot.fire = function(x, y, targetShipGrid, shotGrid)
+{
+    return fireGenericShot(x, y, targetShipGrid, shotGrid);
+};
+
 //This defines all the ships available in mode 1 of the game
 function mode1Ships()
 {
-    //define a regular shot
-    var regularShot = new Shot("Regular Shot", 1);
-    //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
-    regularShot.fire = function(x, y, targetShipGrid, shotGrid)
-    {
-        //implement a regular shot and how it interacts with the grid
-        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
-        {
-            return ShotMessages[shotGrid[x][y]];
-        }
-        else if (targetShipGrid[x][y] === 0)
-        {
-            shotGrid[x][y] = 1;
-            return ShotMessages[1];
-        }
-        else if (targetShipGrid[x][y].name !== 0)
-        {
-            targetShipGrid[x][y].damage++;
-            shotGrid[x][y] = 2;
-            return ShotMessages[2];
-        }
-    };
-
     //define the ships in mode 1. This array of ships will be copied onto the grid of each players
     return new Array(
-        new Ship("Carrier", "Ca", 5, new Array(
-                regularShot
-            )
+        new Ship("Carrier", "Ca", 5, []
         ),
-        new Ship("Battleship", "B", 4, new Array(
-                regularShot
-            )
+        new Ship("Battleship", "B", 4, []
         ),
-        new Ship("Cruiser", "Cr", 3, new Array(
-                regularShot
-            )
+        new Ship("Cruiser", "Cr", 3, []
         ),
-        new Ship("Submarine", "S", 3, new Array(
-                regularShot
-            )
+        new Ship("Submarine", "S", 3, []
         ),
-        new Ship("Destroyer", "D", 2, new Array(
-                regularShot
-            )
+        new Ship("Destroyer", "D", 2, []
         )
     );
 }
@@ -784,33 +821,6 @@ function mode2Ships()
     // ShotMessages[2] = "Hit";
     // ShotMessages[3] = "RevealMiss";
     // ShotMessages[4] = "RevealHit";
-    
-    //define a regular shot
-    var regularShot = new Shot("Regular Shot", 1);
-    //because of the way cloning objects works in javascript, each shot object can only have the fire function, all logic for firing should be in this function.
-    regularShot.fire = function(x, y, targetShipGrid, shotGrid)
-    {
-        //if the cell is already miss or hit
-        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
-        {
-            //return the message for the value for the existing cell
-            return ShotMessages[shotGrid[x][y]];
-        }
-        //if the cell hasn't been shot 
-        else if (targetShipGrid[x][y] === 0)
-        {
-            //
-            shotGrid[x][y] = 1;
-            return ShotMessages[1];
-        }
-        else if (targetShipGrid[x][y].name !== 0)
-        {
-            //
-            targetShipGrid[x][y].damage++;
-            shotGrid[x][y] = 2;
-            return ShotMessages[2];
-        }
-    };
     
     //define special shots
     //Carrier Special Shot
@@ -828,25 +838,13 @@ function mode2Ships()
         //Shot hits in a central location and then hits one grid point
         //in each direction up, right, down, left from chosen location
         //if the cell is already miss or hit
-        if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
-        {
-            //return the message for the value for the existing cell
-            return ShotMessages[shotGrid[x][y]];
-        }
-        //if the cell hasn't been shot 
-        else if (targetShipGrid[x][y] === 0)
-        {
-            //
-            shotGrid[x][y] = 1;
-            return ShotMessages[1];
-        }
-        else if (targetShipGrid[x][y].name !== 0)
-        {
-            //
-            targetShipGrid[x][y].damage++;
-            shotGrid[x][y] = 2;
-            return ShotMessages[2];
-        }
+        var messages = [];
+        messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
+        messages[1] = fireGenericShot(x-1, y, targetShipGrid, shotGrid);
+        messages[2] = fireGenericShot(x+1, y, targetShipGrid, shotGrid);
+        messages[3] = fireGenericShot(x, y-1, targetShipGrid, shotGrid);
+        messages[4] = fireGenericShot(x, y+1, targetShipGrid, shotGrid);
+        return messages;
     };
     
     //Cruiser Special Shot
@@ -879,32 +877,27 @@ function mode2Ships()
     return new Array(
         //carrier
         new Ship("Stardust Goliath", "SG", 5, new Array(
-                regularShot
-                , goliathShot
+                goliathShot
             )
         ),
         //battleship
         new Ship("Galaxy Ravager", "GR", 4, new Array(
-                regularShot
-                , ravagerShot
+                ravagerShot
             )
         ),
         //cruiser
         new Ship("Scrap Harvester", "SH", 3, new Array(
-                regularShot
-                , harvesterShot
+                harvesterShot
             )
         ),
         //submarine
         new Ship("Star Destroyer", "SD",3, new Array(
-                regularShot
-                , destroyerShot
+                destroyerShot
             )
         ),
         //destroyer
         new Ship("Interceptor", "I", 2, new Array(
-                regularShot
-                , interceptorShot
+                interceptorShot
             )
         )
     );
