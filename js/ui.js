@@ -1,3 +1,7 @@
+/**
+ * 
+ * @author Drew Short <nerian.drew@gmail.com>
+ */
 function UI(engine)
 {
     ////////////////////

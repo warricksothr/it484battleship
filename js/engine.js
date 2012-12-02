@@ -49,6 +49,8 @@
  *  7   1   1   2   2   2   1   1   1   2   1
  *  8   1   1   1   1   1   1   1   1   2   1
  *  9   1   1   1   1   1   1   1   1   1   1
+ * 
+ * author Drew Short <nerian.drew@gmail.com>
  */
 
 //Clone functionality for custom objects

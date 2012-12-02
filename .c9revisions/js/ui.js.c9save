@@ -28,3 +28,5 @@
 {"ts":1354441525143,"patch":[[{"diffs":[[0,"meOver) "],[-1,"="],[1,"!"],[0,"== 'unde"]],"start1":18827,"start2":18827,"length1":17,"length2":17}]],"length":19262,"saved":false}
 {"ts":1354441547667,"patch":[[{"diffs":[[0," !== 'undefined'"],[1," && gameOver === true"],[0,")\n        {\n    "]],"start1":18834,"start2":18834,"length1":32,"length2":53}]],"length":19283,"saved":false}
 {"ts":1354442316500,"patch":[[{"diffs":[[0,"+ \" wins\");\n"],[1,"            this.updateInterface();\n"],[0,"            "]],"start1":19035,"start2":19035,"length1":24,"length2":60}]],"length":19319,"saved":false}
+{"ts":1354444087361,"patch":[[{"diffs":[[1,"/**\n * \n * author Drew Short <nerian.drew@gmail.com>\n */\n"],[0,"function UI(engi"]],"start1":0,"start2":0,"length1":16,"length2":73}]],"length":19376,"saved":false}
+{"ts":1354444129357,"patch":[[{"diffs":[[0,"\n * \n * "],[1,"@"],[0,"author D"]],"start1":3,"start2":3,"length1":16,"length2":17}]],"length":19377,"saved":false}
