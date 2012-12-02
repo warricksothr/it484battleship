@@ -1,7 +1,7 @@
 /**
  * 
  *  
- * @author Drew Short <nerian.drew@gmail.com>
+ * @author Drew Short <warrick@sothr.com>
  */
  
 //return an object of parameters parsed from the URL

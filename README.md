@@ -16,8 +16,8 @@ Guide here
 - - -
 Credits:
 -------------
-__Aaron Willcutt__
-__Blake Grotewold__
-__Drew Short__
-__Jordan Ruedy__
-__Tyler Jackson__
+- __Aaron Willcutt__
+- __Blake Grotewold__
+- __Drew Short__ <warrick@sothr.com>
+- __Jordan Ruedy__
+- __Tyler Jackson__

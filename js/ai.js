@@ -2,7 +2,7 @@
  * 
  * Home of the IT484 Battleship AI Code Base
  * 
- * @author Drew Short <nerian.drew@gmail.com>
+ * @author Drew Short <warrick@sothr.com>
  * @author Aaron Willcutt
  */
 // This is the home of the AI code //

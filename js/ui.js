@@ -1,6 +1,6 @@
 /**
  * 
- * @author Drew Short <nerian.drew@gmail.com>
+ * @author Drew Short <warrick@sothr.com>
  */
 function UI(engine)
 {

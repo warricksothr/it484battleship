@@ -22,3 +22,4 @@
 {"ts":1354398949331,"patch":[[{"diffs":[[0,"   }\n}\n\n"],[1,"//determine the size of an object\n"],[0,"function"]],"start1":636,"start2":636,"length1":16,"length2":50}]],"length":823,"saved":false}
 {"ts":1354399647391,"patch":[[{"diffs":[[0,"size;\n};"],[1,"\n\n//get a random number between min and max\nfunction getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min + 1)) + min;\n}"]],"start1":815,"start2":815,"length1":8,"length2":149}]],"length":964,"saved":false}
 {"contributors":[],"silentsave":false,"ts":1354444068761,"patch":[[{"diffs":[[0," *  \n * "],[1,"@author Drew Short <nerian.drew@gmail.com>"],[0,"\n */\n \n/"]],"start1":8,"start2":8,"length1":16,"length2":58}]],"length":1006,"saved":false}
+{"ts":1354445000373,"patch":[[{"diffs":[[0,"rt <"],[-1,"nerian.drew@gmail"],[1,"warrick@sothr"],[0,".com"]],"start1":32,"start2":32,"length1":25,"length2":21}]],"length":1002,"saved":false}
