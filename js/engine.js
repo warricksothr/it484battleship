@@ -305,7 +305,6 @@ function Engine()
             }
             //indicate that we have fired this shot
             this.player1SelectedShot.fired();
-            //return the sunk ship(s)
             return sunkShips;
         }
         //firing logic if this is the second player shooting
@@ -362,6 +361,16 @@ function Engine()
             //return the sunk ship(s)
             return sunkShips;
         }
+    };
+    
+    this.helperFireShotDetermineIsHit = function(message)
+    {
+        //check the message for "Hit"
+        if (message.indexOf("Hit") !== -1)
+        {
+            return true;
+        }
+        return false;
     };
     
     //get an array of ships that are not destroyed
@@ -590,19 +599,21 @@ function Engine()
         return availableShots;
     };
     
-    //return the shot types that are on cooldown
-    this.getShotsOnCooldown = function()
+    //return the shot types that are not on cooldown
+    //this returns only an array of shots from ships that exist and are not on cooldown
+    this.getShotsNotOnCooldown = function()
     {
-        var shotsOnCooldown = {};
+        var shotsNotOnCooldown = [];
+        var j = 0;
         var shots = this.getAvailableShots();
         for (var i = 0; i < shots.length; i++)
         {
-            if (!shots[i].isAvailable())
+            if (shots[i].isAvailable())
             {
-                shotsOnCooldown[shots[i].name] = shots[i];
+                shotsNotOnCooldown[j++] = shots[i];
             }
         }
-        return shotsOnCooldown;
+        return shotsNotOnCooldown;
     };
 
     //get the ships available for the current player
@@ -764,7 +775,7 @@ function Engine()
             if(this.numberOfPlayers === 1)
             {
                 //AI magic here pl0x
-                
+                this.ai.executeTurn();
                 //return control to the first player
                 this.changePlayers();
             }
@@ -955,11 +966,11 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
         this.isModeOne = false;
     }
 
-    //todo: initialize the AI as player 2
+    //TODO: initialize the AI as player 2
     if (numberOfPlayers == 1)
     {
         //remove me later
-        alert("Single Player is not implemented. The AI may not be function or super buggy. You have been warned, pray I don't warn you further.");
+        alert("Single Player is not implemented. The AI may not be function or be super buggy. You have been warned, pray I don't warn you further.");
         this.numberOfPlayers = 1;
     }
     else if (numberOfPlayers == 2)
