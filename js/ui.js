@@ -588,6 +588,59 @@ function Ui(engine)
             this.helperAppendChildElement(rootElement, headerElement);
         };
         
+        //////////////////////////////
+        // Ship Placement Functions //
+        //////////////////////////////
+        
+        this.helperPlacePlayerShipsRandom = function(ship)
+        {
+            //place a ship on the grid randomly
+            //check validity of position before placing it
+            var validPlacement = false;
+            do
+            {
+                validPlacement = false;
+                var rx = getRandomInt(0, 9);
+                var ry = getRandomInt(0, 9);
+                var rvertical = getRandomInt(0,1);
+                validPlacement = this.engine.validateShipPlacement(rx,ry,rvertical,ship);
+                if (validPlacement)
+                {
+                    this.engine.placeShip(rx, ry, rvertical, ship);
+                }
+            } while(!validPlacement);
+        };
+        
+        //this is where the logic will go for iterating through the shipPlacement for the current player
+        //for two players this code will be called twice
+        this.placePlayerShips = function()
+        {
+            //get an array of available ships to place
+            var availableShips = this.engine.getAvailableShips();
+            
+            //loop through the array of available ships
+            for (var i = 0; i < availableShips.length; i++)
+            {
+                //for testing purposes this is random at the moment
+                this.helperPlacePlayerShipsRandom(availableShips[i]);
+                
+                //now show the interface to place the ship
+                //consisting of the current ship grid and highlighting where the ship will go
+            }
+            //once the ships are placed the turn is over, indicate that to the engine
+            this.engine.changePlayers();
+        };
+        
+        //////////////////////
+        // Forfit Functions //
+        //////////////////////
+        
+        this.forfit = function()
+        {
+            this.engine.forfit();
+            window.location = "./index.html";
+        };
+        
         ////////////////////////////////
         // Shot Grid Firing Functions //
         ////////////////////////////////

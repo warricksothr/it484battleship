@@ -22,4 +22,4 @@ Playing a game:
 - - -
 Credits:
 -------------
-See humans.txt
+See [humans.txt](./humans.txt)
