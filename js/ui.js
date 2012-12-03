@@ -109,11 +109,11 @@ function UI(engine)
         //create the ship view
         this.createShipView(params.shipViewID);
         //create a listing of the shots
-        this.createAvailableShots(params.availableShotID)
+        this.createAvailableShots(params.availableShotID);
     };
     
     ////////////////////////////////////
-    // Show/Hide Ship Grids Functions //
+    // Show/Hide Grids Functions //
     ////////////////////////////////////
     
     //show the ship grid
@@ -134,6 +134,24 @@ function UI(engine)
         if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
         this.helperGetElementById(shotGridElementId).style.display = "block";
         this.helperGetElementById(shipGridElementId).style.display = "none";
+    };
+    
+    //hide both grids
+    this.hideGrids = function(shotGridElementId, shipGridElementId)
+    {
+        if(typeof(shotGridElementId) === 'undefined') { shotGridElementId = "shot"; }
+        if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+        this.helperGetElementById(shotGridElementId).style.display = "none";
+        this.helperGetElementById(shipGridElementId).style.display = "none";
+    };
+    
+    //return to the default state of showing the shot grid and hiding the ship grid
+    this.resetGrids = function(shotGridElementId, shipGridElementId)
+    {
+        if(typeof(shotGridElementId) === 'undefined') { shotGridElementId = "shot"; }
+        if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+        this.helperGetElementById(shotGridElementId).style.display = "block";
+        this.helperGetElementById(shipGridElementId).style.display = "block";
     };
     
     ////////////////////////////
@@ -485,6 +503,8 @@ function UI(engine)
         //show the alerts
         var hist = engine.getShotHistory();
         alert("ending turn for " + hist[hist.length-1]);
+        //hide the grids between turns
+        this.hideGrids();
         alert("I'm really changing turn now. Don't Cheat.");
         //change turn
         var gameOver = engine.changePlayers();
@@ -494,6 +514,8 @@ function UI(engine)
             //redirect to the index because the game is over
             window.location = "./index.html";
         }
+        //reset the grids back to normal
+        this.resetGrids();
         //update ui
         this.updateInterface();
     };

@@ -4,6 +4,7 @@ body
     background-color:black;
     font-family:monospace;
 }
+
 #history
 {
     position:absolute;
@@ -11,12 +12,78 @@ body
     left:0%;
     top:20%;
     height:60%;
+    z-index:2;
     min-height:300px;
     background-color:white;
     border-radius:0px 8px 8px 0px;
     box-shadow:0px 0px 10px black;
     padding-left:10px;
-    overflow-y:scroll;
+}
+
+#availableshots
+{
+    margin-top:50px;
+    position:absolute;
+    width:70px;
+    right:0%;
+    top:20%;
+    z-index:1;
+    min-height:90px;
+    background-color:white;
+    border-radius:8px 0px 0px 8px;
+    box-shadow:0px 0px 10px black;
+    padding:10px;
+}
+
+.shotwrapper
+{
+    width:60px;
+    height:60px;
+    position:relative;
+    display:inline-block;
+    vertical-align:middle;
+    margin-top:5px;
+    margin-bottom:5px;
+    background-color:red;
+    text-align:center;
+    border:1px solid black;
+    cursor:pointer;
+}
+
+.shotcooldownwrapper
+{
+    width:60px;
+    height:60px;
+    position:relative;
+    display:inline-block;
+    vertical-align:middle;
+    margin-top:5px;
+    margin-bottom:5px;
+    background-color:red;
+    text-align:center;
+    border:1px solid black;
+    opacity:0.3;
+}
+
+.shotcooldowntimer
+{
+    display:block;
+    position:relative;
+    color:black;
+    opacity:1.0;
+    margin-top:-50px;
+    margin-left:-8px;
+    padding-bottom:20px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.shot
+{
+    position:relative;
+    height:100%;
+    width:100%;
 }
 
 #tabletop
@@ -26,11 +93,12 @@ body
     background-color:white;
     width:50%;
     min-width:600px;
+    z-index:1000;
     height:75%;
     min-height:550px;
     top:10%;
     left:25%;
-    box-shadow:0px 0px 10px black;
+    box-shadow:0px 10px 0px black;
 }
 
 .board
@@ -85,6 +153,7 @@ body
     top:0%;
     right:0%;
     width:250px;
+    z-index:3;
     height:175px;
     background-color:white;
     box-shadow:0px 0px 10px black;
@@ -135,6 +204,7 @@ td
     cursor:pointer;
     text-align:center;
 }
+
 .shiphit
 {
     background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
@@ -142,6 +212,7 @@ td
     background-image: -o-radial-gradient(circle, #444444, #ff6666);
     background-image: radial-gradient(circle, #444444, #ff6666);
 }
+
 .shipmiss
 {
     background-image: -webkit-radial-gradient(circle, #eeeeee, #ff6666);
@@ -149,6 +220,7 @@ td
     background-image: -o-radial-gradient(circle, #eeeeee, #ff6666);
     background-image: radial-gradient(circle, #eeeeee, #ff6666);
 }
+
 .revealhit
 {
     background-image: -webkit-radial-gradient(circle, #eeeeee, #ff6666);
@@ -156,6 +228,7 @@ td
     background-image: -o-radial-gradient(circle, #eeeeee, #ff6666);
     background-image: radial-gradient(circle, #eeeeee, #ff6666);
 }
+
 .revealmiss
 {
     background-image: -webkit-radial-gradient(circle, #eeeeee, #cde1ff);
@@ -163,6 +236,7 @@ td
     background-image: -o-radial-gradient(circle, #eeeeee, #cde1ff);
     background-image: radial-gradient(circle, #eeeeee, #cde1ff);
 }
+
 .hit
 {
     background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
@@ -170,6 +244,7 @@ td
     background-image: -o-radial-gradient(circle, #444444, #ff6666);
     background-image: radial-gradient(circle, #444444, #ff6666);
 }
+
 .miss
 {
     background-image: -webkit-radial-gradient(circle, #444444, #cde1ff);
@@ -177,6 +252,7 @@ td
     background-image: -o-radial-gradient(circle, #444444, #cde1ff);
     background-image: radial-gradient(circle, #444444, #cde1ff);
 }
+
 .cloud
 {
     background-color:#eeeeee;   

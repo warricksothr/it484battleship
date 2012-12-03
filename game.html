@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Battleship</title>
+    <title id='title'>Battleship</title>
     <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
     <script type="text/javascript" src="js/util.js" rel="javascript"></script>
     <script>
@@ -11,7 +11,10 @@
             || typeof(params.mode) === 'undefined' 
             || typeof(params.players) === 'undefined')
         {
-            alert("No parameters or invalid parameters passed in, this could cause problems.");
+            
+            alert("No parameters or invalid parameters passed in, make sure you access the game from the front page");
+            //redirect to the main page
+            window.location = "./index.html";
         }
         
         if (typeof(params.load) !== 'undefined')
@@ -28,18 +31,22 @@
     <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
     <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
     <script>
+        //set the page title
+        UI.helperGetElementById('title').textContent = params.name;
         //script to handle engine persistence
         //check if we are NOT loading a saved state
-        if (typeof(sessionStorage.gameStateSaved) !== 'undefined' || sessionStorage.gameStateSaved === 'false')
-        {
-            var isMode1 = true;
-            if (params.mode == 2) { isMode1 = false; }
-            //set the player and mode appropriately
-            ENGINE.selectGameMode(params.players,isMode1);
-            //set the default shots to regular shots
-            ENGINE.player1SelectedShot = regularShot;
-            ENGINE.player2SelectedShot = regularShot;
-        }
+        //saved state is disabled so this will always be the case
+        //if (typeof(sessionStorage.gameStateSaved) !== 'undefined' || sessionStorage.gameStateSaved === 'false')
+        //{
+        //setup the engine with the parameters fro mthe url
+        var isMode1 = true;
+        if (params.mode == 2) { isMode1 = false; }
+        //set the player and mode appropriately
+        ENGINE.selectGameMode(params.players,isMode1);
+        //set the default shots to regular shots
+        ENGINE.player1SelectedShot = regularShot;
+        ENGINE.player2SelectedShot = regularShot;
+        //}
     </script>
 </head>
 <body>
