@@ -349,8 +349,8 @@ function UI(engine)
     //show the history for the current player
     this.createHistory = function(gridElementId, historyLimit)
     {
-        //limit of history messages to show a default of 15 unless overridden
-        if (typeof(historyLimit) === 'undefined') { historyLimit = 15; }
+        //limit of history messages to show a default of 99 unless overridden
+        if (typeof(historyLimit) === 'undefined') { historyLimit = 99; }
         //default the tag to "history"
         if (typeof(gridElementId) === 'undefined') { gridElementId = "history"; }
         //get the element defined

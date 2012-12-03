@@ -55,6 +55,153 @@ function AI(engine)
         engine.fireShot(randx, randy);
     };
     
+    ///////////////////////////////
+    // Cheater AI Implementation //
+    ///////////////////////////////
+    
+    /**
+     * implementation of shot that randomly decides if it will hit a ship or not
+     * if it decides to hit a ship it will randomly choose which ship to hit
+     * otherwise it will randomly decide on a cell that has not already been shot at
+     * 
+     * the logic of this AI is a step above the dumb random AI
+     */
+    this.helperFireCheaterShot = function(difficulty)
+    {
+        if (typeof(difficulty) === 'undefined') { difficulty = 0.75; }
+        //get a random shot type
+        var shots = engine.getShotsNotOnCooldown();
+        var numOfShots = shots.length-1;
+        var randomShotIndex = getRandomInt(0, numOfShots);
+        var shot = shots[randomShotIndex];
+        engine.selectShot(shot);
+        
+        //determine the minimum for success
+        var minSuccess = Math.floor(15*difficulty);
+        
+        //determine if we will aim for a ship or not
+        var aimForShip = getRandomInt(0, 15);
+        
+        //get our shot grid and aalisting of enemy ships
+        var shotGrid = engine.getShotGrid();
+        var enemyShips = engine.getEnemyShips();
+        
+        //function tht determines if a location is a valid location
+        function isValidCell(x,y,shotGrid)
+        {
+            //return true if the grid is a fog or the grid is a reveal hit.
+            //since no one in their right mind would shoot at an already existing hit, miss or reveal miss
+            if (shotGrid[x][y] === 0 || shotGrid[x][y] === 4)
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        
+        //choose a random cell that is not already been fired at
+        function chooseRandomCell(shotGrid)
+        {
+            var validCell = false;
+            var randx = 0;
+            var randy = 0;
+            do{
+                validCell = false;
+                randx = getRandomInt(0,shotGrid.length-1);
+                randy = getRandomInt(0,shotGrid.length-1);
+                validCell = isValidCell(randx,randy,shotGrid);
+            } while(!validCell);
+            return {x:randx, y:randy};
+        }
+        
+        //gets all the cells containing a ship
+        function getShipCells(ship)
+        {
+            var cells = [];
+            var shipStartx = ship.startx;
+            var shipStarty = ship.staryy;
+            var shipIsVertical = ship.isVertical;
+            var shipLength = ship.shipLength;
+            if (shipIsVertical)
+            {
+                var shipEndy = shipStarty + shipLength-1;
+                for (var mody = shipStarty; mody <= shipEndy; mody++)
+                {
+                    cells.push({x:shipStartx,y:mody});
+                }
+            }
+            else
+            {
+                var shipEndx = shipStartx + shipLength-1;
+                for (var modx = shipStartx; modx <= shipEndx; modx++)
+                {
+                    cells.push({x:modx,y:shipStarty});
+                }
+            }
+            return cells;
+        }
+        
+        //gets all cells that enemy ships are in
+        function getCellsWithEnemyShips(enemyShips)
+        {
+            var cells = [];
+            //loop through enemy ship
+            for (var i = 0; i < enemyShips.length; i++)
+            {
+                //add the found cells to our list of ship cells
+                cells = cells.concat(getShipCells(enemyShips[i]));
+            }
+            return cells;
+        }
+        
+        //gets all cells that enemy ships are in that we haven't hit
+        function getCellsWithEnemyShipsNotAlreadyHit(shotGrid, enemyShips)
+        {
+            var validCells = [];
+            var j = 0;
+            var cells = getCellsWithEnemyShips(enemyShips);
+            for (var i = 0; i < cells.length; i++)
+            {
+                if (isValidCell(cells[i].x, cells[i].y, shotGrid))
+                {
+                    validCells[j++] = cells[i];
+                }
+            }
+            return cells;
+        }
+        
+        //get a random cell containing an enemy ship that isn't already hit
+        function getRandomShipCellNotAlreadyHit(shotGrid, enemy)
+        {
+            var validCells = getCellsWithEnemyShipsNotAlreadyHit(shotGrid, enemy);
+            var randomEnemyShipCell = getRandomInt(0, validCells.length-1);
+            return validCells[randomEnemyShipCell];
+        }
+        
+        //shoot at a ship
+        if (aimForShip >= minSuccess)
+        {
+            var randShipCell = getRandomShipCellNotAlreadyHit(shotGrid, enemyShips);
+            if(this.debug)
+            {
+                alert("shooting at enemy ship located at ("+randShipCell.x+","+randShipCell.y+")");
+            }
+            engine.fireShot(randShipCell.x, randShipCell.y);
+        }
+        //shoot at a random cell that we haven't already shot at
+        else
+        {
+            var randCell = chooseRandomCell(shotGrid);
+            if(this.debug)
+            {
+                alert("shooting at random cell located at ("+randCell.x+","+randCell.y+")");
+            }
+            engine.fireShot(randCell.x, randCell.y);
+        }
+        
+    };
+    
     ////////////////////////
     // AI Front End Logic //
     ////////////////////////
@@ -153,7 +300,8 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a hunting shot method");
         }
-        this.helperFireRandomShot();
+        //currently using a sub par AI
+        this.helperFireCheaterShot();
         return false;
     };
     
@@ -198,7 +346,8 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a hunting shot method");
         }
-        this.helperFireRandomShot();
+        //currently using a sub par AI
+        this.helperFireCheaterShot();
         return false;
     };
     
