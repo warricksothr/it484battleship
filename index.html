@@ -15,7 +15,7 @@
             var name4 = new Array("", "", "", "", "", "?", "!");
             
             var randomName = name0[Math.floor((Math.random()*8))] + name1[Math.floor((Math.random()*6))] + name2[Math.floor((Math.random()*6))] + name3[Math.floor((Math.random()*4))] + name4[Math.floor((Math.random()*7))];
-            return(randomName);
+            return randomName;
         }
         
         function getRandomSub() {
@@ -24,7 +24,8 @@
                                    "well read, good sir.", "what you looking at?", "daily double", "cats... everywhere", ".....", "it\'s a game", "now with less violence", "my mom said i could make this", "i\'m married, lady",
                                    "did you know I can move?", "i\'m a big kid now", "d00d", "so this one time...", "oh yeah", "S3cr3ts3cr3t is my password", "don't cheat!"); 
             
-            document.write(mottos[Math.floor((Math.random()*31))]);
+            var randomSub = mottos[Math.floor((Math.random()*31))];
+            return randomSub;
         }
         
         function setStyle(bool) {
@@ -72,9 +73,10 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
     <script>
-        $(document).ready(function(){
-            $("#menu").draggable( {containment: "body"} );
-        });
+        //this code was causing the page to fail loading 1 out of every 5 tries and sometimes more
+        //$(document).ready(function(){
+        //    $("#menu").draggable( {containment: "body"} );
+        //});
     </script>
 </head>
 <body>
@@ -85,11 +87,13 @@
     <div id="menu">
         <div id="main">
             <div id="logo" class="rotate">
-                <script>var randomName = getRandomName();
+                <script>
+                var randomName = getRandomName();
                 document.write(randomName);
-                document.getElementById('title').textContent = "Welcome to "+randomName;</script>
+                document.getElementById('title').textContent = "Welcome to "+randomName;
+                </script>
             </div>
-            <div id="motto"><script>getRandomSub();</script></div><br>
+            <div id="motto"><script>document.write(getRandomSub());</script></div><br>
             <center>
             <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
             <div class="tab" onclick="setPage('main', 'options')">Options</a>

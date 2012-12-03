@@ -1152,7 +1152,7 @@ function mode2Ships()
             else
             {
                 //check if going right will go off the board
-                var endx = x - 2;
+                var endx = x + 2;
                 if (endx > 9)
                 {
                     messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);

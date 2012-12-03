@@ -32,6 +32,15 @@ function AI(engine)
     //logic flags for triggering hunting vs killing mode
     this.foundShip = false;
     
+    /////////////////////
+    // General Helpers //
+    /////////////////////
+    
+    this.wasAHit = function(message)
+    {
+        return this.engine.helperFireShotDetermineIsHit(message);
+    };
+    
     /////////////////////////////////////////////////////////////////////////
     // AI: BAD DREW CODE RANDOM FOR TESTING PURPOSES REPLACE ME SOON!!!!!! //
     /////////////////////////////////////////////////////////////////////////
@@ -66,30 +75,41 @@ function AI(engine)
      * 
      * the logic of this AI is a step above the dumb random AI
      */
-    this.helperFireCheaterShot = function(difficulty)
+    this.helperFireHuntingCheaterShot = function(difficulty)
     {
         if (typeof(difficulty) === 'undefined') { difficulty = 0.75; }
-        //get a random shot type
-        var shots = engine.getShotsNotOnCooldown();
-        var numOfShots = shots.length-1;
-        var randomShotIndex = getRandomInt(0, numOfShots);
-        var shot = shots[randomShotIndex];
+        
+        function getRandomShot()
+        {
+            //get a random shot type
+            var shots = engine.getShotsNotOnCooldown();
+            var numOfShots = shots.length-1;
+            var randomShotIndex = getRandomInt(0, numOfShots);
+            return shots[randomShotIndex];
+        }
+        
+        //choose a random shot
+        var shot = getRandomShot();
+        
         if(this.debug){
             alert("I am a slightly smarter AI and a bit of a cheater so I will randomly alternate between firing random shots and shots aimed at ships. Also I will not shoot at the same location twice");
         }
+        
+        // set the random shot as our selected shot
         engine.selectShot(shot);
         
         //determine the minimum for success
-        var minSuccess = Math.floor(15*difficulty);
+        var minSuccess = Math.floor(99*difficulty);
         
         //determine if we will aim for a ship or not
-        var aimForShip = getRandomInt(0, 15);
+        var aimForShip = getRandomInt(0, 99);
         
         //get our shot grid and aalisting of enemy ships
         var shotGrid = engine.getShotGrid();
         var enemyShips = engine.getEnemyShips();
         
         //function tht determines if a location is a valid location
+        //that is if the cell hasn't already been shot or is a revealed hit
         function isValidCell(x,y,shotGrid)
         {
             //return true if the grid is a fog or the grid is a reveal hit.
@@ -118,7 +138,7 @@ function AI(engine)
             return {x:randx, y:randy};
         }
         
-        //gets all the cells containing a ship
+        //gets all the cells containing a specific ship
         function getShipCells(ship)
         {
             var cells = [];
@@ -190,7 +210,12 @@ function AI(engine)
             {
                 alert("shooting at enemy ship located at ("+randShipCell.x+","+randShipCell.y+")");
             }
+            //push the shot onto the history
+            this.shotHistory.push(randShipCell);
+            //fire the shot
             engine.fireShot(randShipCell.x, randShipCell.y);
+            var hit = this.wasAHit(arrayPeek(this.engine.getShotHistory()));
+            return hit;
         }
         //shoot at a random cell that we haven't already shot at
         else
@@ -200,9 +225,19 @@ function AI(engine)
             {
                 alert("shooting at random cell located at ("+randCell.x+","+randCell.y+")");
             }
+            //push the shot onto the history
+            this.shotHistory.push(randCell);
+            //fire the shot
             engine.fireShot(randCell.x, randCell.y);
-        }
-        
+            var hit = this.wasAHit(arrayPeek(this.engine.getShotHistory()));
+            return hit;
+        }  
+    };
+    
+    this.helperFireKillingCheaterShot = function()
+    {
+        //currently the same logic
+        return this.helperFireHuntingCheaterShot();
     };
     
     ////////////////////////
@@ -252,12 +287,11 @@ function AI(engine)
         //check if we need to place ou ships
         if(engine.getPlayerShips().length < 1)
         {
+            //place ships
             this.helperPlaceShips();
-            //and return since this is all we can do on this turn
-            return;
         }
         //check which mode we're in
-        if (engine.isModeOne)
+        else if (engine.isModeOne)
         {
             //mode one logic
             this.helperExecuteTurnModeOne();
@@ -284,7 +318,7 @@ function AI(engine)
         //go into killer mode
         if (this.foundShip === true){
             //TODO: leave killer mode on the confirmation of a destroyed ship
-            var killedShip = this.helperExecuteModeOneKiller();
+            this.foundShip = this.helperExecuteModeOneKiller();
         }
         //we are in hunting mode
         else{
@@ -304,8 +338,7 @@ function AI(engine)
             alert("AI is executing a hunting shot method");
         }
         //currently using a sub par AI
-        this.helperFireCheaterShot();
-        return false;
+        return this.helperFireHuntingCheaterShot();
     };
     
     //return true if we sunk a ship or not
@@ -314,7 +347,7 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a killing shot method");
         }
-        return false;
+        return this.helperFireHuntingCheaterShot();
     };
     
     ////////////////////
@@ -330,7 +363,7 @@ function AI(engine)
         //go into killer mode
         if (this.foundShip === true){
             //TODO: leave killer mode on the confirmation of a destroyed ship
-            var killedShip = this.helperExecuteModeTwoKiller();
+            this.foundShip = this.helperExecuteModeTwoKiller();
         }
         //we are in hunting mode
         else{
@@ -350,8 +383,7 @@ function AI(engine)
             alert("AI is executing a hunting shot method");
         }
         //currently using a sub par AI
-        this.helperFireCheaterShot();
-        return false;
+        return this.helperFireHuntingCheaterShot();
     };
     
     //return true if we sunk a ship or not
@@ -360,7 +392,7 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a killing shot method");
         }
-        return false;
+        return this.helperFireKillingCheaterShot();
     };
 
     this.helperFiringLogic = function()

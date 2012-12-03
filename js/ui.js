@@ -678,10 +678,14 @@ function Ui(engine)
                 //redirect to the index because the game is over
                 window.location = "./index.html";
             }
-            //reset the grids back to normal
-            this.resetGrids();
-            //update ui
-            this.updateInterface();
+            //otherwise continue playing
+            else
+            {
+                //reset the grids back to normal
+                this.resetGrids();
+                //update ui
+                this.updateInterface();
+            }
         };
     }
     
