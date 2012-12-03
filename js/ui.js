@@ -11,6 +11,9 @@ function UI(engine)
     //Always load after engine.js to ensure the latest engine is linked
     this.engine = engine;
     
+    //flag for debugging
+    this.debug = false;
+    
     ////////////////////
     // Global Helpers //
     ////////////////////

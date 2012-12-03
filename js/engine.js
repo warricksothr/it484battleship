@@ -234,6 +234,9 @@ function Engine()
     //current user selected shot
     this.player1SelectedShot;
     this.player2SelectedShot;
+    
+    //setup debuging flag
+    this.debug = false;
 
     /**
      * Select a shot to fire
@@ -790,8 +793,15 @@ function Engine()
             this.turnCounter++;
             this.isFirstPlayer = true;
         }
+        //clear saved cache as a precaution because of previous bugs
+        //remove when bugs are fixed
+        if(sessionStorage.gameStateSaved === 'true')
+        {
+            this.clearLocalStorage();
+        }
         //save the current game state;
-        this.saveToLocalStorage();
+        //temporarily disabled due to bugs
+        //this.saveToLocalStorage();
     };
 
     //This must be called to save the state when switching pages

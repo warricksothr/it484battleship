@@ -12,6 +12,10 @@ function AI(engine)
     //load the engine
     this.engine = engine;
     
+    //indicate if we should debug
+    //this toggles the alerts in the engine
+    this.debug = false;
+    
     // Define a Shot for shot history
     // ie new Shot(1,5,7,'hunt'); A shot at position 5,7 on turn 1 that is hunting
     function Shot(turn, x, y, type)
@@ -38,7 +42,9 @@ function AI(engine)
         var numOfShots = shots.length-1;
         var randomShotIndex = getRandomInt(0, numOfShots);
         var shot = shots[randomShotIndex];
-        alert("I am a dumb AI and I will fire a random shot");
+        if(this.debug){
+            alert("I am a dumb AI and I will fire a random shot");
+        }
         //select the random shot
         engine.selectShot(shot);
         
@@ -58,7 +64,9 @@ function AI(engine)
     {
         //make the engine calls to get a listing of ships and then place them. Perhaps randomly?
         //TODO: really do me. but for now I'll be randomized ship placement
-        alert("AI is placing their ships on the board");
+        if(this.debug){
+            alert("AI is placing their ships on the board");
+        }
         var ships = engine.getAvailableShips();
             
         //place a ship on the grid randomly
@@ -119,7 +127,9 @@ function AI(engine)
     this.helperExecuteTurnModeOne = function()
     {
         //all of the turn information is processed here for mode 1
-        alert("AI is pretending to work and is in mode 1. I fight for the users.");
+        if(this.debug){
+            alert("AI is pretending to work and is in mode 1. I fight for the users.");
+        }
         //go into killer mode
         if (this.foundShip === true){
             //TODO: leave killer mode on the confirmation of a destroyed ship
@@ -139,7 +149,9 @@ function AI(engine)
     //return true if we made a hit and found a ship or not
     this.helperExecuteModeOneHunt = function()
     {
-        alert("AI is executing a hunting shot method");
+        if(this.debug){
+            alert("AI is executing a hunting shot method");
+        }
         this.helperFireRandomShot();
         return false;
     };
@@ -147,7 +159,9 @@ function AI(engine)
     //return true if we sunk a ship or not
     this.helperExecuteModeOneKiller = function()
     {
-        alert("AI is executing a killing shot method");
+        if(this.debug){
+            alert("AI is executing a killing shot method");
+        }
         return false;
     };
     
@@ -158,7 +172,9 @@ function AI(engine)
     this.helperExecuteTurnModeTwo = function()
     {
         //all of the turn information is processed here for mode 2
-        alert("AI is pretending to work and is in mode 1. I fight for the users.");
+        if(this.debug){
+            alert("AI is pretending to work and is in mode 1. I fight for the users.");
+        }
         //go into killer mode
         if (this.foundShip === true){
             //TODO: leave killer mode on the confirmation of a destroyed ship
@@ -178,7 +194,9 @@ function AI(engine)
     //return true if we made a hit and found a ship or not
     this.helperExecuteModeTwoHunt = function()
     {
-        alert("AI is executing a hunting shot method");
+        if(this.debug){
+            alert("AI is executing a hunting shot method");
+        }
         this.helperFireRandomShot();
         return false;
     };
@@ -186,7 +204,9 @@ function AI(engine)
     //return true if we sunk a ship or not
     this.helperExecuteModeTwoKiller = function()
     {
-        alert("AI is executing a killing shot method");
+        if(this.debug){
+            alert("AI is executing a killing shot method");
+        }
         return false;
     };
 
