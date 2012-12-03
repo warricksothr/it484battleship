@@ -1,0 +1,131 @@
+body
+{
+    /* background: url('img/carbon.png'); */
+    background-color:white;
+    font-family:sans-serif;
+}
+/*  */
+#header
+{
+
+}
+/* displays the players last shots */
+#history
+{
+
+}
+/* lists all shots */
+#availableshots
+{
+    
+}
+/* shot is available */
+.shotwrapper
+{
+
+}
+/*  */
+.shotwrapperselected
+{
+
+}
+/*  */
+.shotcooldownwrapper
+{
+
+}
+/*  */
+.shotcooldowntimer
+{
+
+}
+/*  */
+.shot
+{
+    
+}
+/*  */
+#tabletop
+{
+
+}
+/*  */
+.board
+{
+
+}
+/*  */
+#shipgrids
+{
+
+}
+/*  */
+#shipview
+{
+    
+}
+/*  */
+.ship
+{
+
+}
+/*  */
+.segment
+{
+
+}
+/*  */
+.segmenthit
+{
+    
+}
+/*  */
+.headings
+{
+    
+}
+/*  */
+table
+{
+    
+}   
+/*  */
+td
+{
+
+}
+/*  */
+.shiphit
+{
+
+}
+/*  */
+.shipmiss
+{
+
+}
+/*  */
+.revealhit
+{
+
+}
+/*  */
+.revealmiss
+{
+
+}
+/*  */
+.hit
+{
+
+}
+/*  */
+.miss
+{
+
+}
+/*  */
+.cloud
+{
+  
+}

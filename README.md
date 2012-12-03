@@ -16,14 +16,10 @@ Playing a game:
 -------------
 1. Begin the game by launching the index.html file by double-clicking on it
 2. Select "Play Game"
-3. Select a game mode: One Player, Two Player, or Crazy One Player
+3. Select a game mode: One Player, Two Player, Crazy One Player, or Crazy Two Player
 4. To be continued...
 
 - - -
 Credits:
 -------------
-- __Aaron Willcutt__
-- __Blake Grotewold__
-- __Drew Short__ <warrick@sothr.com>
-- __Jordan Ruedy__
-- __Tyler Jackson__
+See humans.txt

@@ -25,6 +25,26 @@
             
             document.write(mottos[Math.floor((Math.random()*31))]);
         }
+        
+        function setStyle(bool) {
+            if (bool) {
+                sessionStorage.menuStyle = "styles/menu.css";
+                sessionStorage.gameStyle = "styles/game.css";
+            }
+            else {
+                sessionStorage.menuStyle = "styles/mmenu.css";
+                sessionStorage.menuStyle = "styles/mgame.css";
+            }
+        }
+        
+        function setPage(pageIn, pageTo) {
+            document.getElementById(pageIn).style.display = "none";
+            document.getElementById(pageTo).style.display = "block";
+        }
+        
+        function setSound(bool) {
+            sessionStorage.sound = bool
+        }
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
@@ -40,24 +60,27 @@
         <div id="logo" class="rotate"><script>var randomName = getRandomName(); document.write(randomName); document.getElementById('title').textContent = "Welcome to " + randomName;</script></div>
         <div id="motto"><script>getRandomSub();</script></div><br>
         <center>
-        <script>document.write("<a class=\"tab\" href=\"play.html?name="+randomName+"\">Play Game</a><br><br><br>");</script>
-        <a class="tab" href="options.html">Options</a>
+        <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
+        <div class="tab" onclick="setPage('main', 'options')">Options</a>
         </center>
     </div>
-    <div id="play">
-        <div id="menu">
+    <div id="play" style="display:none;">
         <div id="logo" class="rotate">Select Your Game!</div>
         <center>
         <script>document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");</script>
         <script>document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");</script>
         <script>document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");</script>
         <script>document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");</script>
-        <div class="tab" onclick="">Return to Home</a>
+        <div class="tab" onclick="setPage('play', 'main')">Return to Home</div>
         </center>
     </div>
-    </div>
-    <div id="options">
-        
+    <div id="options" style="display:none;">
+        <div id="logo" class="rotate">Options</div><br><br>
+        <center>
+        <a class="tab" href="#">Change Theme</a><br><br>
+        <a class="tab" href="#">Turn Sound On/Off</a><br><br>
+        <div class="tab" onclick="setPage('options', 'main')">Return to Home</div>
+        </center>
     </div>
     </div
     <div id="footer">to enjoy this game bug-free, please use the <a id="footera" href="https://www.google.com/intl/en/chrome/browser/" target="_blank">Google Chrome</a> browser</div><br>

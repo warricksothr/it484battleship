@@ -74,6 +74,9 @@ function AI(engine)
         var numOfShots = shots.length-1;
         var randomShotIndex = getRandomInt(0, numOfShots);
         var shot = shots[randomShotIndex];
+        if(this.debug){
+            alert("I am a slightly smarter AI and a bit of a cheater so I will randomly alternate between firing random shots and shots aimed at ships. Also I will not shoot at the same location twice");
+        }
         engine.selectShot(shot);
         
         //determine the minimum for success
