@@ -80,6 +80,31 @@ function Ui(engine)
             }
     };
     
+    //////////////////////////////////////////////////////////////////////////////////
+    // Methods for reading the version file and displaying it in a specific element //
+    //////////////////////////////////////////////////////////////////////////////////
+    
+    //ajax request to load the version info from the version file
+    this.displayVersion = function(versionElementId)
+    {
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', './version');
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    if(typeof(versionElementId) === 'undefined') { versionElementId = 'version'; }
+                    var rootElement = ui.helperGetElementById(versionElementId);
+                    ui.helperEmptyElement(rootElement);
+                    var versionElement = ui.helperCreateElement("span", {}, "Version: "+req.responseText);
+                    ui.helperAppendChildElement(rootElement, versionElement);
+                }
+            }
+        };
+        req.send(null);
+    };
+    
     //////////////////////////////////////////////
     // Methods for changing the stylesheet used //
     //////////////////////////////////////////////

@@ -78,40 +78,44 @@
     </script>
 </head>
 <body>
+    <div id="version">
+        <!-- version will go here -->
+    </div>
+    <script>UI.displayVersion('version')</script>
     <div id="menu">
-    <div id="main">
-        <div id="logo" class="rotate">
-            <script>var randomName = getRandomName();
-            document.write(randomName);
-            document.getElementById('title').textContent = "Welcome to "+randomName;</script>
+        <div id="main">
+            <div id="logo" class="rotate">
+                <script>var randomName = getRandomName();
+                document.write(randomName);
+                document.getElementById('title').textContent = "Welcome to "+randomName;</script>
+            </div>
+            <div id="motto"><script>getRandomSub();</script></div><br>
+            <center>
+            <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
+            <div class="tab" onclick="setPage('main', 'options')">Options</a>
+            </center>
         </div>
-        <div id="motto"><script>getRandomSub();</script></div><br>
-        <center>
-        <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
-        <div class="tab" onclick="setPage('main', 'options')">Options</a>
-        </center>
-    </div>
-    <div id="play" style="display:none;">
-        <div id="logo" class="rotate">Select Your Game!</div>
-        <center>
-        <script>
-            //write links to the game versions
-            document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");
-            document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");
-            document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");
-            document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");
-        </script>
-        <div class="tab" onclick="setPage('play', 'main')">Return to Home</div>
-        </center>
-    </div>
-    <div id="options" style="display:none;">
-        <div id="logo" class="rotate">Options</div><br><br>
-        <center>
-        <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
-        <a class="tab" href="#">Turn Sound On/Off</a><br><br>
-        <div class="tab" onclick="setPage('options', 'main')">Return to Home</div>
-        </center>
-    </div>
+        <div id="play" style="display:none;">
+            <div id="logo" class="rotate">Select Your Game!</div>
+            <center>
+            <script>
+                //write links to the game versions
+                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");
+            </script>
+            <div class="tab" onclick="setPage('play', 'main')">Return to Home</div>
+            </center>
+        </div>
+        <div id="options" style="display:none;">
+            <div id="logo" class="rotate">Options</div><br><br>
+            <center>
+            <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
+            <a class="tab" href="#">Turn Sound On/Off</a><br><br>
+            <div class="tab" onclick="setPage('options', 'main')">Return to Home</div>
+            </center>
+        </div>
     </div>
     <div id="footer">to enjoy this game bug-free, please use the <a id="footera" href="https://www.google.com/intl/en/chrome/browser/" target="_blank">Google Chrome</a> browser</div><br>
     <div style="position:absolute;right:5px;bottom:5px;">
