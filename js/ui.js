@@ -607,5 +607,13 @@ function Ui(engine)
 }
 
 //create a new UI instance and import ENGINE into it
-var UI = new Ui();
-UI.engine = ENGINE;
+var UI;
+//instantiate the correct instance of the UI object
+if (typeof(ENGINE) !== 'undefined')
+{
+    UI = new Ui(ENGINE);
+}
+else
+{
+    UI = new Ui();
+}
