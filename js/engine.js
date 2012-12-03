@@ -981,8 +981,7 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
     //TODO: initialize the AI as player 2
     if (numberOfPlayers == 1)
     {
-        //remove me later
-        alert("Single Player is not implemented. The AI may not be function or be super buggy. You have been warned, pray I don't warn you further.");
+        //AI is now considered stable enough that we don't need a notice
         this.numberOfPlayers = 1;
     }
     else if (numberOfPlayers == 2)

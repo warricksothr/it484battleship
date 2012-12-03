@@ -5,6 +5,7 @@
     <link href="styles/menu.css" rel="stylesheet" type="text/css" id="stylesheet">
     <title id='title'>Welcome to Battleships</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script src="js/ui.js"></script>
     <script>
         function getRandomName() {
             var name0 = new Array("","","","","","","","");
@@ -37,6 +38,28 @@
             }
         }
         
+        function switchStyles()
+        {
+            //if the style hasn't been set default to switching styles
+            if(typeof(sessionStorage.isStyle1) === 'undefined')
+            {
+                sessionStorage.isStyle1 = false;
+            }
+            //switch between styles
+            else
+            {
+                if (sessionStorage.isStyle1 === false)
+                {
+                    sessionStorage.isStyle1 = true;
+                }
+                else
+                {
+                    sessionStorage.isStyle1 = false;
+                }
+            }
+            setStyle(sessionStorage.isStyle1);
+        }
+        
         function setPage(pageIn, pageTo) {
             document.getElementById(pageIn).style.display = "none";
             document.getElementById(pageTo).style.display = "block";
@@ -57,7 +80,11 @@
 <body>
     <div id="menu">
     <div id="main">
-        <div id="logo" class="rotate"><script>var randomName = getRandomName(); document.write(randomName); document.getElementById('title').textContent = "Welcome to " + randomName;</script></div>
+        <div id="logo" class="rotate">
+            <script>var randomName = getRandomName();
+            document.write(randomName);
+            document.getElementById('title').textContent = "Welcome to "+randomName;</script>
+        </div>
         <div id="motto"><script>getRandomSub();</script></div><br>
         <center>
         <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
@@ -67,17 +94,20 @@
     <div id="play" style="display:none;">
         <div id="logo" class="rotate">Select Your Game!</div>
         <center>
-        <script>document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");</script>
-        <script>document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");</script>
-        <script>document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");</script>
-        <script>document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");</script>
+        <script>
+            //write links to the game versions
+            document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");
+            document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");
+            document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");
+            document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");
+        </script>
         <div class="tab" onclick="setPage('play', 'main')">Return to Home</div>
         </center>
     </div>
     <div id="options" style="display:none;">
         <div id="logo" class="rotate">Options</div><br><br>
         <center>
-        <a class="tab" href="#">Change Theme</a><br><br>
+        <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
         <a class="tab" href="#">Turn Sound On/Off</a><br><br>
         <div class="tab" onclick="setPage('options', 'main')">Return to Home</div>
         </center>
