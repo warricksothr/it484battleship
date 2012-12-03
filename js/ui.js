@@ -481,7 +481,7 @@ function UI(engine)
             }
             else
             {
-                if (shot.name === engine.player2ShotGrid.name)
+                if (shot.name === engine.player1SelectedShot.name)
                 {
                     wrapperClass = "shotwrapperselected";
                 }
