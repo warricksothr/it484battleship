@@ -73,9 +73,10 @@ function AI(engine)
         //check validity of position before placing it
         function placeShipRandomly(ship)
         {
+            var validPlacement = false;
             do
             {
-                var validPlacement = false;
+                validPlacement = false;
                 //it will complain about these since they exist getRandomInt
                 var rx = getRandomInt(0, 9);
                 var ry = getRandomInt(0, 9);

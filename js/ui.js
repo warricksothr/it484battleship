@@ -544,6 +544,13 @@ function UI(engine)
     // Shot Grid Firing Functions //
     ////////////////////////////////
     
+    this.helperResetDefaultShots = function()
+    {
+        //set shots back to the default
+        engine.player1SelectedShot = regularShot;
+        engine.player2SelectedShot = regularShot;
+    };
+    
     //all the logic behind firing a shot then handing the turn over to the next player
     this.helperFireShot = function(x,y)
     {
@@ -559,6 +566,8 @@ function UI(engine)
         alert("I'm really changing turn now. Don't Cheat.");
         //change turn
         var gameOver = engine.changePlayers();
+        //reset each player's selected shot to the default shot
+        this.helperResetDefaultShots();
         //check if the game is over
         if (typeof(gameOver) !== 'undefined' && gameOver === true)
         {
