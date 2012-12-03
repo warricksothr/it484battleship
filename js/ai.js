@@ -120,7 +120,7 @@ function AI(engine)
         {
             var cells = [];
             var shipStartx = ship.startx;
-            var shipStarty = ship.staryy;
+            var shipStarty = ship.starty;
             var shipIsVertical = ship.isVertical;
             var shipLength = ship.shipLength;
             if (shipIsVertical)
@@ -168,7 +168,7 @@ function AI(engine)
                     validCells[j++] = cells[i];
                 }
             }
-            return cells;
+            return validCells;
         }
         
         //get a random cell containing an enemy ship that isn't already hit
