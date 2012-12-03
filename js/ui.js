@@ -662,9 +662,12 @@ function Ui(engine)
             //show the alerts
             var hist = engine.getShotHistory();
             alert("ending turn for " + hist[hist.length-1]);
-            //hide the grids between turns
-            this.hideGrids();
-            alert("I'm really changing turn now. Don't Cheat.");
+            //only show the second alert in 2 player mode
+            if (engine.numberOfPlayers > 1){
+                this.hideGrids();
+                //hide the grids between turns
+                alert("I'm really changing turn now. Don't Cheat.");
+            }
             //change turn
             var gameOver = engine.changePlayers();
             //reset each player's selected shot to the default shot
