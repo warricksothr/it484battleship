@@ -4,7 +4,19 @@ body
     background-color:black;
     font-family:monospace;
 }
-
+#header
+{
+    position:absolute;
+    width:350px;
+    left:50px;
+    margin:-175px;
+    font-size:24px;
+    text-align:center;
+    padding-bottom:10px;
+    border-radius:0px 0px 8px 8px;
+    box-shadow:0px 0px 10px black;
+    top:0px;
+}
 #history
 {
     position:absolute;
@@ -16,7 +28,10 @@ body
     min-height:300px;
     background-color:white;
     border-radius:0px 8px 8px 0px;
-    box-shadow:0px 0px 10px black;
+    box-shadow: 0px 1px 3px 0px rgb(34,34,34), /* 1st Shadow */  
+                0px 0px 10px 0px rgb(17,17,17), /* 1nd Shadow */  
+                inset 0px 1px 1px 0px rgba(250, 250, 250, .2), /* 3rd Shadow */   
+                inset 0px -10px 24px 0px rgba(0, 0, 0, .5); /* 4th Shadow */ 
     padding-left:10px;
 }
 
@@ -28,41 +43,60 @@ body
     right:0%;
     top:20%;
     z-index:1;
-    min-height:90px;
-    background-color:white;
-    border-radius:8px 0px 0px 8px;
-    box-shadow:0px 0px 10px black;
     padding:10px;
 }
 
 .shotwrapper
 {
+    padding:1em .5em 0em .5em;
     width:60px;
-    height:60px;
+    height:50px;
     position:relative;
     display:inline-block;
     vertical-align:middle;
     margin-top:5px;
     margin-bottom:5px;
-    background-color:red;
+    background-color:white;
     text-align:center;
-    border:1px solid black;
+    border-radius:36px;
     cursor:pointer;
+    box-shadow: 0px 1px 3px 0px rgb(34,34,34), /* 1st Shadow */  
+                0px 0px 10px 0px rgb(17,17,17), /* 1nd Shadow */  
+                inset 0px 1px 1px 0px rgba(250, 250, 250, .2), /* 3rd Shadow */   
+                inset 0px -12px 35px 0px rgba(0, 0, 0, .5); /* 4th Shadow */ 
+}
+
+.shotwrapperselected
+{
+    padding:1em .5em 0em .5em;
+    width:60px;
+    height:50px;
+    position:relative;
+    display:inline-block;
+    vertical-align:middle;
+    margin-top:5px;
+    margin-bottom:5px;
+    background-color:#73A1AF;
+    text-align:center;
+    border-radius:36px;
+    cursor:pointer;
+    box-shadow:inset 1px 1px 8px black;
 }
 
 .shotcooldownwrapper
 {
     width:60px;
-    height:60px;
+    height:50px;
     position:relative;
     display:inline-block;
     vertical-align:middle;
     margin-top:5px;
     margin-bottom:5px;
-    background-color:red;
+    background-color:#d1d1d1;
     text-align:center;
-    border:1px solid black;
+    border-radius:8px;
     opacity:0.3;
+    box-shadow:inset 1px 1px 8px black;
 }
 
 .shotcooldowntimer
@@ -98,7 +132,7 @@ body
     min-height:550px;
     top:10%;
     left:25%;
-    box-shadow:0px 10px 0px black;
+    box-shadow:0px 0px 15px black;
 }
 
 .board
@@ -120,7 +154,10 @@ body
     width:100px;
     height:75px;
     background-color:#eeeeee;
-    box-shadow:0px 0px 10px black;
+    box-shadow: 0px 1px 3px 0px rgb(34,34,34), /* 1st Shadow */  
+                0px 0px 10px 0px rgb(17,17,17), /* 1nd Shadow */  
+                inset 0px 1px 1px 0px rgba(250, 250, 250, .2), /* 3rd Shadow */   
+                inset 0px -12px 35px 0px rgba(0, 0, 0, .5); /* 4th Shadow */ 
     border-radius:10px 0px 0px 0px;
     font-size:30px;
     text-align:center;
@@ -154,9 +191,12 @@ body
     right:0%;
     width:250px;
     z-index:3;
-    height:175px;
+    margin-bottom:10px;
     background-color:white;
-    box-shadow:0px 0px 10px black;
+    box-shadow: 0px 1px 3px 0px rgb(34,34,34), /* 1st Shadow */  
+                0px 0px 10px 0px rgb(17,17,17), /* 1nd Shadow */  
+                inset 0px 1px 1px 0px rgba(250, 250, 250, .2), /* 3rd Shadow */   
+                inset 0px -10px 24px 0px rgba(0, 0, 0, .5); /* 4th Shadow */ 
     border-radius:0px 0px 0px 8px;
 }
 
@@ -164,23 +204,23 @@ body
 {
     position:relative;
     background-color:#d1d1d1;
-    width:20px;
+    width:25px;
     z-index:1000;
-    margin:14px;
+    margin:12px;
     float:left;
 }
 
 .segment
 {
     border: 1px solid black;
-    width: 20px;
+    width: 23px;
     height: 25px;
 }
 
 .segmenthit
 {
     border: 1px solid black;
-    width: 20px;
+    width: 23px;
     height: 25px;
     background-image: -webkit-radial-gradient(circle, #444444, #ff6666);
     background-image: -moz-radial-gradient(circle, #444444, #ff6666);

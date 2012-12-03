@@ -369,7 +369,7 @@ function UI(engine)
         //otherwise print the history
         else
         {
-            //need to implement a limit (aka. recent history otherwise we will over flow, we could also make it a scrollable box)
+            //need to implement a limit (aka. recent history otherwise we will over flow, we could also make it a scrollable box)(aka. recent history otherwise we will over flow, we could also make it a scrollable box)
             for (var i = history.length-1; i >= 0; i--)
             {
                 //leave loop if we've printed historyLimit messages
@@ -441,7 +441,11 @@ function UI(engine)
     this.helperSelectShot = function(index)
     {
         engine.selectShot(engine.getAvailableShots()[index]);
-        alert("selected shot: " + engine.getAvailableShots()[index].name);
+        //refresh shots
+        this.createAvailableShots();
+        if(this.debug){
+            alert("selected shot: " + engine.getAvailableShots()[index].name);
+        }
     };
     
     this.helperGetShotElement = function(shot,index)
@@ -463,7 +467,23 @@ function UI(engine)
         //non cooldown shots
         else
         {
-            shotWrapper = this.helperCreateElement("div", {"class":"shotwrapper"}, "");
+            //determine if shot is the selected one
+            var wrapperClass = "shotwrapper";
+            if (engine.isFirstPlayer)
+            {
+                if (shot.name === engine.player1SelectedShot.name)
+                {
+                    wrapperClass = "shotwrapperselected";
+                }
+            }
+            else
+            {
+                if (shot.name === engine.player2ShotGrid.name)
+                {
+                    wrapperClass = "shotwrapperselected";
+                }
+            }
+            shotWrapper = this.helperCreateElement("div", {"class":wrapperClass}, "");
             var shotElement = this.helperCreateElement("span", {"class":"shot"}, shot.name);
             //add the onclick method to the wrapper to select a specific shot
             this.helperAddAttributesToElement(shotWrapper, {"onclick":"UI.helperSelectShot("+index+")"});
@@ -504,7 +524,7 @@ function UI(engine)
         var hist = engine.getShotHistory();
         alert("ending turn for " + hist[hist.length-1]);
         //hide the grids between turns
-        this.hideGrids();
+        //hide the grids between turns
         alert("I'm really changing turn now. Don't Cheat.");
         //change turn
         var gameOver = engine.changePlayers();
@@ -514,6 +534,8 @@ function UI(engine)
             //redirect to the index because the game is over
             window.location = "./index.html";
         }
+        //reset the grids back to normal
+        this.resetGrids();
         //reset the grids back to normal
         this.resetGrids();
         //update ui
