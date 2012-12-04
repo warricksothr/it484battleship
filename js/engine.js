@@ -1229,13 +1229,14 @@ function mode2Ships()
         
     };
     
-    //Submarine Special Shot
+    //Destroyer Special Shot
     var destroyerShot = new Shot("Plasma Salvo", 4);
     destroyerShot.fire = function(x, y, targetShipGrid, shotGrid)
     {
         //Player independently chooses 3 locations for "regular" shots
         
-        //player chooses one location, and then two other locations are chosen at random (but will not shoot at a space other than occupied by a 0 (fog of war)) ~DS
+        //player chooses one location, and then two other locations are chosen at random (but will not shoot at a space other than occupied by a 0 (fog of war))
+        //also those random shots will try and target shown hits before shooting randomly ~DS
         
         function getRandomCell(exclude, shotGrid)
         {
@@ -1243,13 +1244,13 @@ function mode2Ships()
             var valid = false;
             do
             {
-                var randomx = getRandomInt(0,9);
-                var randomy = getRandomInt(0,9);
+                var randomx = getRandomInt(0,shotGrid.length-1);
+                var randomy = getRandomInt(0,shotGrid.length-1);
                 var alreadyHave = false;
                 //check if it is in the excludes
                 for (var i = 0; i < exclude.length; i++)
                 {
-                    if (exclude[i][0] === randomx && exclude[i][1] === randomy)
+                    if (exclude[i].x === randomx && exclude[i].y === randomy)
                     {
                         alreadyHave = true;
                         break;
@@ -1278,17 +1279,52 @@ function mode2Ships()
             return cell;
         }
         
+        //get cells that are known to be hits
+        function getKnownHits(shotGrid)
+        {
+            var cells = [];
+            //walk through the shot grid to find reveal hits...
+            for (var x = 0; x < shotGrid.length; x++)
+            {
+                for (var y = 0; y < shotGrid.length; y++)
+                {
+                    //if reveal hit, add it to our listing
+                    if (shotGrid[x][y] === 4)
+                    {
+                        cells.push({x:x, y:y});
+                    }
+                }
+            }
+            return cells;
+        }
+        
+        //get <count> cells that are known to be hits
+        //choose the cells randomly and if count cells are not available, then supplement with random cells
+        function getRandomKnownHits(count, shotGrid)
+        {
+            var knownHits = getKnownHits(shotGrid);
+            var cells = [];
+            //pad the end of knownHits with random shots if count is larger than knownHits
+            while (knownHits.length < count)
+            {
+                knownHits.push(getRandomCell(knownHits, shotGrid));
+            }
+            while (cells.length < count)
+            {
+                var randIndex = getRandomInt(0,knownHits.length-1);
+                cells.push(knownHits.splice(randIndex,1)[0]);
+            }
+            return cells;
+        }
+        
         var messages = [];
-        var exclude = [];
-        exclude[0] = [x,y];
-        var cell1 = getRandomCell(exclude, shotGrid);
-        exclude[1] = [cell1.x, cell1.y];
-        var cell2 = getRandomCell(exclude, shotGrid);
-        
-        messages[0] = fireGenericShot(x, y, targetShipGrid, shotGrid);
-        messages[1] = fireGenericShot(cell1.x, cell1.y, targetShipGrid, shotGrid);
-        messages[2] = fireGenericShot(cell2.x, cell2.y, targetShipGrid, shotGrid);
-        
+        var shots = [];
+        shots[0] = {x:x,y:y};
+        shots = shots.concat(getRandomKnownHits(2,shotGrid));
+        for (var i = 0; i < shots.length; i++)
+        {
+            messages[i] = fireGenericShot(shots[i].x, shots[i].y, targetShipGrid, shotGrid);
+        }
         return messages;
     };
     
