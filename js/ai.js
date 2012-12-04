@@ -202,6 +202,44 @@ function AI(engine)
             return validCells[randomEnemyShipCell];
         }
         
+        //get cells that are known to be hits
+        function getKnownHits(shotGrid)
+        {
+            var cells = [];
+            //walk through the shot grid to find reveal hits...
+            for (var x = 0; x < shotGrid.length; x++)
+            {
+                for (var y = 0; y < shotGrid.length; y++)
+                {
+                    //if reveal hit, add it to our listing
+                    if (shotGrid[x][y] === 4)
+                    {
+                        cells.push({x:x, y:y});
+                    }
+                }
+            }
+            return cells;
+        }
+        
+        //get <count> cells that are known to be hits
+        //choose the cells randomly and if count cells are not available, then supplement with random cells
+        function getRandomKnownHits(count, shotGrid)
+        {
+            var knownHits = getKnownHits(shotGrid);
+            var cells = [];
+            //pad the end of knownHits with random shots if count is larger than knownHits
+            while (knownHits.length < count)
+            {
+                knownHits.push(chooseRandomCell(shotGrid));
+            }
+            while (cells.length < count)
+            {
+                var randIndex = getRandomInt(0,knownHits.length-1);
+                cells.push(knownHits.splice(randIndex,1)[0]);
+            }
+            return cells;
+        }
+        
         //shoot at a ship
         if (aimForShip >= minSuccess)
         {
@@ -220,10 +258,11 @@ function AI(engine)
         //shoot at a random cell that we haven't already shot at
         else
         {
-            var randCell = chooseRandomCell(shotGrid);
+            //try to shoot at known hits before anything else
+            var randCell = getRandomKnownHits(1,shotGrid)[0];
             if(this.debug)
             {
-                alert("shooting at random cell located at ("+randCell.x+","+randCell.y+")");
+                alert("shooting randomly at cell ("+randCell.x+","+randCell.y+")");
             }
             //push the shot onto the history
             this.shotHistory.push(randCell);
