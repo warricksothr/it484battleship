@@ -107,6 +107,27 @@ function Ui(engine)
         req.send(null);
     };
     
+    //ajax request to display timestamp if it exists
+    this.displayTimestamp = function(versionElementId)
+    {
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', './timestamp');
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    if(typeof(versionElementId) === 'undefined') { versionElementId = 'version'; }
+                    var rootElement = ui.helperGetElementById(versionElementId);
+                    ui.helperAppendHTMLToElement(rootElement,"<br>");
+                    var versionElement = ui.helperCreateElement("span", {}, "last updated: "+req.responseText);
+                    ui.helperAppendChildElement(rootElement, versionElement);
+                }
+            }
+        };
+        req.send(null);
+    };
+    
     //////////////////////////////////////////////
     // Methods for changing the stylesheet used //
     //////////////////////////////////////////////
