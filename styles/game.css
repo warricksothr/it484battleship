@@ -226,6 +226,23 @@ body
     border-radius:0px 0px 0px 8px;
 }
 /*  */
+#shipplacement
+{
+    margin-top:38px;   
+}
+input[type=checkbox]
+{
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    margin-left:10px;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+  
+}
+/*  */
 .ship
 {
     position:relative;

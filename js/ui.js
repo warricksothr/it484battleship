@@ -684,7 +684,7 @@ function Ui(engine)
                 this.helperAppendChildElement(shipElement, shipCellElement);
             }
             var shipPlacementOptionsElement = this.helperCreateElement("div", {id:"shipplacement"}, "");
-            var shipNameElement = this.helperCreateElement("span", {id:"shipplacementname"}, ship.name);
+            var shipNameElement = this.helperCreateElement("span", {id:"shipplacementname"}, ship.name+":");
             this.helperAppendChildElement(shipPlacementOptionsElement, shipNameElement);
             this.helperAppendHTMLToElement(shipPlacementOptionsElement, "<br>");
             var shipIsVerticalLabelElement = this.helperCreateElement("label", {"for":"vertCheckBox"}, "Place Vertically");
@@ -887,9 +887,13 @@ function Ui(engine)
                     {
                         //increment ship placement counter
                         this.shipPlacementCount++;
+                        //hide the board //fixme later, use a helper to do this
+                        this.helperGetElementById('ship').style.display = "none";
                         alert("player 2, place your ships");
                         //start again for player 2
                         this.placeNextPlayerShip(0, false);
+                        //display the board again //fixme later, use a helper to do this
+                        this.helperGetElementById('ship').style.display = "block";
                         return;
                     }
                     //otherwise show the grids and return

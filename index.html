@@ -3,6 +3,7 @@
 <head>
     <link rel="author" href="humans.txt" />
     <link href="styles/menu.css" rel="stylesheet" type="text/css" id="stylesheet">
+    <link href="styles/forkit.css" rel="stylesheet" type="text/css" id="stylesheet">
     <title id='title'>Welcome to Battleships</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <script src="js/ui.js"></script>
@@ -101,8 +102,8 @@
             </div>
             <div id="motto"><script>document.write(getRandomSub());</script></div><br>
             <center>
-            <div class="tab" onclick="setPage('main', 'play')">Play Game</div><br>
-            <div class="tab" onclick="setPage('main', 'options')">Options</a>
+            <span class="tab" onclick="setPage('main', 'play')">Play Game</span><br>
+            <span class="tab" onclick="setPage('main', 'options')">Options</span>
             </center>
         </div>
         <div id="play" style="display:none;">
@@ -115,7 +116,7 @@
                 document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");
                 document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");
             </script>
-            <div class="tab" onclick="setPage('play', 'main')">Return to Home</div>
+            <span class="tab" onclick="setPage('play', 'main')">Return to Home</span>
             </center>
         </div>
         <div id="options" style="display:none;">
@@ -123,15 +124,18 @@
             <center>
             <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
             <a class="tab" href="#">Turn Sound On/Off</a><br><br>
-            <div class="tab" onclick="setPage('options', 'main')">Return to Home</div>
+            <span class="tab" onclick="setPage('options', 'main')">Return to Home</span>
             </center>
         </div>
     </div>
-    <div id="footer">to enjoy this game bug-free, please use the <a id="footera" href="https://www.google.com/intl/en/chrome/browser/" target="_blank">Google Chrome</a> browser</div><br>
+    <div id="footer">to enjoy this game bug-free, please use the <a id="footera" href="https://www.google.com/intl/en/chrome/browser/" target="_blank">Google Chrome</a> browser<br>
+                      to test our system we have <a target="_blank" id="footera" href="test/manual_test_scripts.html">a few tests</a> anyone can walk through</div>
     <div style="position:absolute;right:5px;bottom:5px;">
     <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics-storage.png" width="98" height="32" alt="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage"></a>
     <a href="humans.txt" target="_blank"><img src="styles/img/humans.png" alt="humans.txt supported" width="98" height="32"></a>
-    <a href="https://github.com/warricksothr/it484battleship" target="_blank"><img src="styles/img/github_logo_social_coding_outlined.png" alt="Join us in development" width="98" height="32"></a>
     </div>
+    <a class="forkit" data-text="Fork us on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
+    <script src="js/forkit.js"></script>
+    <!--<a href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>-->
 </body>
 </html>
