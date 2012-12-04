@@ -320,7 +320,102 @@ function AI(engine)
             alert("AI is placing their ships on the board");
         }
         var ships = engine.getAvailableShips();
-            
+        
+        //function to get the cells a ship would occupy
+        function getShipCells(x,y,isVertical,ship, shipGrid)
+        {
+            var cells = [];
+            var shipLength = ship.shipLength;
+            if (isVertical)
+            {
+                var shipEndy = y + shipLength-1;
+                for (var mody = y; mody <= shipEndy; mody++)
+                {
+                    cells.push({x:x,y:mody});
+                }
+            }
+            else
+            {
+                var shipEndx = x + shipLength-1;
+                for (var modx = x; modx <= shipEndx; modx++)
+                {
+                    cells.push({x:modx,y:y});
+                }
+            }
+            return cells;
+        }
+        
+        //in place addition only if the cell is unique
+        function addOnlyIfUnique(addMe, toMe)
+        {
+            for (var i = 0; i < toMe.length; i++)
+            {
+                if (toMe[i].x === addMe.x && toMe[i].y === addMe.y)
+                {
+                    //addMe is not unique
+                    return;
+                }
+            }
+            toMe.push(addMe);
+        }
+        
+        //find the cells we need to check for adjacency
+        function getCellsToCheck(cells)
+        {
+            var shipGrid = engine.getShipGrid();
+            var cellsToCheck = [];
+            for (var i = 0; i < cells.length; i++)
+            {
+                var currentCell = cells.pop();
+                cellsToCheck.push(currentCell);
+                if (cellsToCheck.x-1 > 0 && cellsToCheck.y-1 > 0)
+                {
+                    addOnlyIfUnique({x:cellsToCheck.x-1,y:cellsToCheck.y-1},cellsToCheck);
+                }
+                if (cellsToCheck.x+1 < shipGrid.length && cellsToCheck.y-1 > 0)
+                {
+                    addOnlyIfUnique({x:cellsToCheck.x+1,y:cellsToCheck.y-1},cellsToCheck);
+                }
+                    if (cellsToCheck.x-1 > 0 && cellsToCheck.y+1 < shipGrid.length)
+                {
+                    addOnlyIfUnique({x:cellsToCheck.x-1,y:cellsToCheck.y+1},cellsToCheck);
+                }
+                if (cellsToCheck.x-1 < shipGrid.length && cellsToCheck.y+1 < shipGrid.length)
+                {
+                    addOnlyIfUnique({x:cellsToCheck.x+1,y:cellsToCheck.y+1},cellsToCheck);
+                }
+            }
+            return cellsToCheck;
+        }
+        
+        //make the verification smarter by only occasionally allowing a ship to be placed right next to another
+        function isValidShipPlacement(x,y,isVertical,ship)
+        {
+            //one in ten chance of allowing placement next to another ship
+            var allowPlacementNextToAnotherShip = (getRandomInt(0,100) < 5);
+            //if the position isn't valid return false
+            if (!engine.validateShipPlacement(x,y,isVertical,ship)) { return false; }
+            //do additional checking
+            //our current shipGrid
+            var shipGrid = engine.getShipGrid();
+            //if we're not allowed to be next to another ship we need to check the cells around our ship for other ships
+            if (!allowPlacementNextToAnotherShip)
+            {
+                var cells = getShipCells(x,y,isVertical,ship, shipGrid);
+                var cellsToCheck = getCellsToCheck(cells);
+                for (var i = 0; i < cellsToCheck.length; i++)
+                {
+                    //if the adjacent cell is occupied we should not place our ship there
+                    var cell = cellsToCheck[i];
+                    if (shipGrid[cell.x][cell.y] !== 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
         //place a ship on the grid randomly
         //check validity of position before placing it
         function placeShipRandomly(ship)
@@ -333,7 +428,7 @@ function AI(engine)
                 var rx = getRandomInt(0, 9);
                 var ry = getRandomInt(0, 9);
                 var rvertical = getRandomInt(0,1);
-                validPlacement = engine.validateShipPlacement(rx,ry,rvertical,ship);
+                validPlacement = isValidShipPlacement(rx,ry,rvertical,ship);
                 if (validPlacement)
                 {
                     engine.placeShip(rx, ry, rvertical, ship);

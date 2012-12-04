@@ -1,9 +1,17 @@
 RELEASE BUILDS
 
+0.2.5.dev
+--in progress
+
+
 BETA BUILDS
 0.2.4.dev
---in progress
+04.12.12
 Added this file and linked it to the version display
+Made the AI a little smarter in placing its ships
+Added a script to load the timestamp if available for the development version
+Tweaked ship placement subroutines
+Fixed random lockup bug on AI attempting an incorrect placement of a shipgia
 
 0.2.3.dev
 04.12.12
