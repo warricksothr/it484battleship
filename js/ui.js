@@ -710,8 +710,9 @@ function Ui(engine)
                 //onclick to actually place the ship there
                 gridElement = this.helperCreateElement("td"
                     , {"class":cellData.classType
-                        , onmouseover:"UI.helperPlaceShipsCreateShipGrid("+shipIndex+","+isVertical+",true,"+x+","+y+")"
                         , onclick:"UI.placeNextPlayerShip("+shipIndex+","+isVertical+","+x+","+y+")"
+                        , onmouseover:"UI.helperPlaceShipsUpdateGrid("+shipIndex+","+isVertical+","+x+","+y+",true)"
+                        , onmouseout:"UI.helperPlaceShipsUpdateGrid("+shipIndex+","+isVertical+","+x+","+y+")"
                     }, cellData.name);
             }
             //otherwise it is not a valid placement cells
@@ -762,12 +763,51 @@ function Ui(engine)
             return false;
         };
         
+        //update the style on the grid to show the ship placement
+        this.helperPlaceShipsUpdateGrid = function(shipIndex, isVertical, x, y, show, shipGridElementId)
+        {
+            if (typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+            if (typeof(show) === 'undefined') { show = false; }
+            //get the ship being referenced
+            var ship = this.engine.getAvailableShips()[shipIndex];
+            //root element container
+            var rootElement = this.helperGetElementById(shipGridElementId);
+            //grab the required cells
+            var shipCells = this.helperPlaceShipsGetShipsCells(ship, isVertical, x, y);
+            //loop through ship cells to update
+            for (var i = 0; i < shipCells.length; i++)
+            {
+                var cell = shipCells[i];
+                //get the element representing the cell
+                var table = rootElement.childNodes[0];
+                var row = table.childNodes[cell.y];
+                var gridCell = row.childNodes[cell.x];
+                //now update the style on the cell
+                //show a ship in the cell
+                if (show)
+                {
+                    gridCell.className = "shipmiss";
+                    gridCell.textContent = ship.abbreviation;
+                }
+                //hide the cell
+                else
+                {
+                    //check to see if we filled that cell
+                    //only update if that cell hasn't been filled
+                    if (gridCell.textContent !== "")
+                    {
+                        gridCell.className = "cloud";
+                        gridCell.textContent = "";
+                    }
+                }
+            }
+        };
+        
         //create the ship grid for placement
-        this.helperPlaceShipsCreateShipGrid = function(shipIndex, isVertical, isUpdate, x, y, shipGridElementId)
+        this.helperPlaceShipsCreateShipGrid = function(shipIndex, isVertical, shipGridElementId)
         {
             if (typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
             //default is not an update
-            if (typeof(isUpdate) === 'undefined') { isUpdate = false; }
             //get the ship grid
             var grid = this.engine.getShipGrid();
             //calculate the percent width of each cell
@@ -778,13 +818,6 @@ function Ui(engine)
             var rootElement = this.helperGetElementById(shipGridElementId);
             //empty the grid
             this.helperEmptyElement(rootElement);
-            //ship cells for the requested update
-            var shipCells;
-            //check if this is an update request, if so get the cells that fullfill that request
-            if (isUpdate)
-            {
-                shipCells = this.helperPlaceShipsGetShipsCells(ship, isVertical, x, y);
-            }
             //create the table
             var table = this.helperCreateElement("table", {}, "");
             //i = y
@@ -799,16 +832,6 @@ function Ui(engine)
                     var gridCell = this.helperGetPlaceShipsGridCell(shipIndex, grid[j][i], j, i, isVertical, validPlacement);
                     gridCell.style.width = cellWidth + "%";
                     gridCell.style.height = cellWidth + "%";
-                    //if it is a cell that a ship would occupy give it a unique style
-                    if (isUpdate)
-                    {
-                        //if the cell is one of the cells the ship would occupy then replace its class to indicate it is where the ship would go
-                        if (this.helperPlaceShipsIsCellOnShip(j,i,shipCells))
-                        {
-                            gridCell.className = "shipmiss";
-                            gridCell.textContent = ship.abbreviation;
-                        }
-                    }
                     this.helperAppendChildElement(row, gridCell);
                 }
                 //add the row to the table
@@ -827,6 +850,10 @@ function Ui(engine)
                 var ship = this.engine.getAvailableShips()[shipIndex++];
                 //place the ship
                 this.engine.placeShip(x, y, isVertical, ship);
+                //get the cell
+                var cell = this.helperGetElementById("ship").childNodes[0].childNodes[y].childNodes[x];
+                //remove the onmouseout event because it causes bugs in chrome
+                cell.onmouseout = "";
                 //check the index
                 if (shipIndex >= this.engine.getAvailableShips().length)
                 {
