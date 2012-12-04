@@ -217,8 +217,7 @@ function Engine()
     this.player2ShotGrid = [];
 
     //a history of shots for each player
-    this.player1ShotHistory = [];
-    this.player2ShotHistory = [];
+    this.shotHistory = [];
 
     //an array of ships for each player
     this.player1Ships = [];
@@ -279,13 +278,13 @@ function Engine()
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.player1ShotHistory.push("p1_t"+this.turnCounter+": "+message[i]);
+                    this.shotHistory.push("p1_t"+this.turnCounter+": "+message[i]);
                     i++;
                 }
             }
             else
             {
-                this.player1ShotHistory.push("p1_t"+this.turnCounter+": "+message);
+                this.shotHistory.push("p1_t"+this.turnCounter+": "+message);
             }
             var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player2Ships);
             //check if we have sunk any ships and if so add a message and return the ship that was sunk
@@ -298,12 +297,12 @@ function Engine()
                 {
                     for(var i = 0; i < sunkShips.length; i++)
                     {
-                        this.player1ShotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                        this.shotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
                     }
                 }
                 else
                 {
-                    this.player1ShotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                    this.shotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips.name);
                 }
             }
             //indicate that we have fired this shot
@@ -332,13 +331,13 @@ function Engine()
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.player2ShotHistory.push("p2_t"+this.turnCounter+": "+message[i]);
+                    this.shotHistory.push("p2_t"+this.turnCounter+": "+message[i]);
                     i++;
                 }
             }
             else
             {
-                this.player2ShotHistory.push("p2_t"+this.turnCounter+": "+message);
+                this.shotHistory.push("p2_t"+this.turnCounter+": "+message);
             }
             var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player1Ships);
             //check if we have sunk any ships and if so add a message and return the ship that was sunk
@@ -351,12 +350,12 @@ function Engine()
                 {
                     for(var i = 0; i < sunkShips.length; i++)
                     {
-                        this.player2ShotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                        this.shotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
                     }
                 }
                 else
                 {
-                    this.player2ShotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                    this.shotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips.name);
                 }
             }
             //indicate that we have fired this shot
@@ -555,8 +554,7 @@ function Engine()
     //return the shot history of the current player
     this.getShotHistory = function()
     {
-        if (this.isFirstPlayer) { return this.player1ShotHistory; }
-        return this.player2ShotHistory;
+        return this.shotHistory;
     };
 
     //return the shot types that are available for the current player
@@ -773,7 +771,6 @@ function Engine()
         {
             //decrement all shot timers for current players ships
             this.decShipShotTimers(this.player1Ships);
-            this.turnCounter++;
             this.isFirstPlayer = false;
             
             //implement the ai call here so that the ai player is always the second player
@@ -790,6 +787,7 @@ function Engine()
         else
         {
             this.decShipShotTimers(this.player2Ships);
+            //only increment the turn counters after the second player has gone... turns are really rounds
             this.turnCounter++;
             this.isFirstPlayer = true;
         }
