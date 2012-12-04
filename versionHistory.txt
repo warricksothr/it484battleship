@@ -1,10 +1,13 @@
 RELEASE BUILDS
 
+BETA BUILDS
 0.2.5.dev
 --in progress
+Added GitHub logo for linking to project repository
+Added image link to GitHub repository on index and game pages
+Fixed draggable menu on index for FireFox
+Fixed draggable menu going off sright side of screen in Chrome
 
-
-BETA BUILDS
 0.2.4.dev
 04.12.12
 Added this file and linked it to the version display

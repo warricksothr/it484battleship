@@ -1,5 +1,9 @@
 body
 {
+    position:absolute;
+    margin:0px;
+    width:100%;
+    height:100%;
     background: url('img/carbon.png');
     background-color:black;
     font-family:monospace;
