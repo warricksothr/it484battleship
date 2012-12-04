@@ -1,19 +1,20 @@
-http://cloc.sourceforge.net v 1.56  T=0.5 s (24.0 files/s, 7474.0 lines/s)
+http://cloc.sourceforge.net v 1.56  T=0.5 s (26.0 files/s, 8542.0 lines/s)
 ----------------------------------------------------------------------------------
 File                                           blank        comment           code
 ----------------------------------------------------------------------------------
 .\js\engine.js                                   110            353           1031
-.\js\ui.js                                        61            191            448
-.\js\ai.js                                        78            120            322
-.\styles\game.css                                  0             27            298
+.\js\ui.js                                        75            262            642
+.\js\ai.js                                        84            131            337
+.\styles\game.css                                  0             27            299
+.\test\manual_text_scripts.html                    9              0            201
 .\styles\menu.css                                 16              0            130
-.\index.html                                       7              1            118
-.\game.html                                        4             11             93
+.\index.html                                       8              1            127
+.\game.html                                        3             11             84
 .\styles\mgame.css                                25             26             80
+.\results.html                                     2              0             66
 .\js\util.js                                       4             16             53
-.\test\manual_text_scripts.html                    4              0             52
 .\styles\mmenu.css                                14              1             42
 .\runCloc.bat                                      0              0              1
 ----------------------------------------------------------------------------------
-SUM:                                             323            746           2668
+SUM:                                             350            828           3093
 ----------------------------------------------------------------------------------
