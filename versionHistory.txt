@@ -3,7 +3,8 @@ RELEASE BUILDS
 BETA BUILDS
 0.2.5.dev
 --in progress
-
+Added GitHub logo for linking to project repository
+Added image link to GitHub repository on index and game pages
 
 0.2.4.dev
 04.12.12

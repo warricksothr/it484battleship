@@ -1,5 +1,10 @@
 body
 {
+    position:fixed;
+    top:-8px;
+    left:-8px;
+    width:99%;
+    height:99%;
     background: url('img/carbon.png');
     background-color:black;
     font-family:monospace;
