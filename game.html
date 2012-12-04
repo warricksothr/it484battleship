@@ -1,108 +1,98 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title id='title'>Battleship</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
-    <script type="text/javascript" src="js/util.js" rel="javascript"></script>
-    <script>
-        //grab the parameters from the URL and alert if we don't have them
-        var params = getParamsFromURL();
-        if (typeof(params) === 'undefined' 
-            || typeof(params.mode) === 'undefined' 
-            || typeof(params.players) === 'undefined')
-        {
+    <head>
+        <title id='title'>Battleship</title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <link href="styles/game.css" rel="stylesheet" type="text/css" id="stylesheet">
+        <script type="text/javascript" src="js/util.js" rel="javascript"></script>
+        <script>
+            //grab the parameters from the URL and alert if we don't have them
+            var params = getParamsFromURL();
+            if (typeof(params) === 'undefined' 
+                || typeof(params.mode) === 'undefined' 
+                || typeof(params.players) === 'undefined')
+            {
+                
+                alert("No parameters or invalid parameters passed in, make sure you access the game from the front page");
+                //redirect to the main page
+                window.location = "./index.html";
+            }
             
-            alert("No parameters or invalid parameters passed in, make sure you access the game from the front page");
-            //redirect to the main page
-            window.location = "./index.html";
-        }
-        
-        if (typeof(params.load) !== 'undefined')
-        {
-            sessionStorage.gameStateSaved = params.load;
-        }
-        //deafult state is not to load from memory
-        else
-        {
-            sessionStorage.gameStateSaved = false;
-        }
-    </script>
-    <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
-    <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
-    <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
-    <script>
-        //set the page title
-        UI.helperGetElementById('title').textContent = params.name;
-        //script to handle engine persistence
-        //check if we are NOT loading a saved state
-        //saved state is disabled so this will always be the case
-        //if (typeof(sessionStorage.gameStateSaved) !== 'undefined' || sessionStorage.gameStateSaved === 'false')
-        //{
-        //setup the engine with the parameters fro mthe url
-        var isMode1 = true;
-        if (params.mode == 2) { isMode1 = false; }
-        //set the player and mode appropriately
-        ENGINE.selectGameMode(params.players,isMode1);
-        //set the default shots to regular shots
-        ENGINE.player1SelectedShot = regularShot;
-        ENGINE.player2SelectedShot = regularShot;
-        //}
-    </script>
-</head>
-<body>
-    <script>
-        //this is the game setup script, either move this into the UI or update it here to handle ship placement for the players
-        
-        //UI call to place the first players ships and change to the second player
-        UI.placePlayerShips();
-        
-        //if the second player is an AI they will do this themselves
-        if (ENGINE.numberOfPlayers !== 1)
-        {
-            //UI call to place the second player's ships
+            if (typeof(params.load) !== 'undefined')
+            {
+                sessionStorage.gameStateSaved = params.load;
+            }
+            //deafult state is not to load from memory
+            else
+            {
+                sessionStorage.gameStateSaved = false;
+            }
+        </script>
+        <script type="text/javascript" src="js/ai.js" rel="javascript"></script>
+        <script type="text/javascript" src="js/engine.js" rel="javascript"></script>
+        <script type="text/javascript" src="js/ui.js" rel="javascript"></script>
+        <script>
+            //set the page title
+            UI.helperGetElementById('title').textContent = params.name;
+            //script to handle engine persistence
+            //check if we are NOT loading a saved state
+            //saved state is disabled so this will always be the case
+            //if (typeof(sessionStorage.gameStateSaved) !== 'undefined' || sessionStorage.gameStateSaved === 'false')
+            //{
+            //setup the engine with the parameters fro mthe url
+            var isMode1 = true;
+            if (params.mode == 2) { isMode1 = false; }
+            //set the player and mode appropriately
+            ENGINE.selectGameMode(params.players,isMode1);
+            //set the default shots to regular shots
+            ENGINE.player1SelectedShot = regularShot;
+            ENGINE.player2SelectedShot = regularShot;
+            //}
+        </script>
+    </head>
+    <body>
+        <div id="version">
+            <!-- version will go here -->
+        </div>
+        <div id="forfeit" onclick="UI.forfit()"><span>Forfeit</span></div>
+        <script>UI.displayVersion('version')</script>
+        <div id="header">
+            <!-- Programatically generated by UI.createHeader("header") -->
+        </div>
+        <!-- this is the list of previous shots -->
+        <div id="history">
+        <!-- programatically generated by UI.createHistory("history") -->
+        </div>
+        <div id="tabletop">
+        <!-- this is the tabletop that holds the two boards -->
+            <div id="shot" class="board">
+            <!-- programatically generated by UI.createShotGrid("shot") -->
+            </div>
+            <div id="ship" class="board">
+            <!-- programatically generated by UI.createShipGrid("ship") -->
+            </div>
+        </div>
+        <div id="shipview">
+        <!-- this is the view of the ships and hits on ships -->
+        <!-- programatically generated by UI.createShipViews("shipview") -->
+        </div>
+        <div id="availableshots">
+            <!-- This div should contain the shots available to the player -->
+            <!-- Programatically generated by UI.createAvailableShots("availableshots") -->
+        </div>
+        <div id="shipgrids" onmouseover="UI.showShipGrid()" onmouseout="UI.hideShipGrid()">
+            Ship Views
+        </div>
+        <div style="margin-left:5px;position:absolute;left:5px;bottom:5px;">
+        <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics-storage.png" width="98" height="32" alt="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage"></a>
+        <a href="humans.txt" target="_blank"><img src="styles/img/humans.png" alt="humans.txt supported" width="98" height="32"></a>
+        </div>
+        <script>
+            //call at the end of the page
+            //this is the game setup script, either move this into the UI or update it here to handle ship placement for the players
+            
+            //UI call to place player ships
             UI.placePlayerShips();
-        }
-    </script>
-    <div id="version">
-        <!-- version will go here -->
-    </div>
-    <div id="forfeit" onclick="UI.forfit()"><span>Forfeit</span></div>
-    <script>UI.displayVersion('version')</script>
-    <div id="header">
-        <!-- Programatically generated by UI.createHeader("header") -->
-    </div>
-    <!-- this is the list of previous shots -->
-    <div id="history">
-    <!-- programatically generated by UI.createHistory("history") -->
-    </div>
-    <div id="tabletop">
-    <!-- this is the tabletop that holds the two boards -->
-        <div id="shot" class="board">
-        <!-- programatically generated by UI.createShotGrid("shot") -->
-        </div>
-        <div id="ship" class="board">
-        <!-- programatically generated by UI.createShipGrid("ship") -->
-        </div>
-    </div>
-    <div id="shipview">
-    <!-- this is the view of the ships and hits on ships -->
-    <!-- programatically generated by UI.createShipViews("shipview") -->
-    </div>
-    <div id="availableshots">
-        <!-- This div should contain the shots available to the player -->
-        <!-- Programatically generated by UI.createAvailableShots("availableshots") -->
-    </div>
-    <script>
-        //call update interface method and pass it the ids of
-        UI.updateInterface({historyID:"history", shipID:"ship", shotID:"shot", shipViewID:"shipview", availableShotID:"availableshots", headerID:"header"});
-    </script>
-    <div id="shipgrids" onmouseover="UI.showShipGrid()" onmouseout="UI.hideShipGrid()">
-        Ship Views
-    </div>
-    <div style="margin-left:5px;position:absolute;left:5px;bottom:5px;">
-    <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics-storage.png" width="98" height="32" alt="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage"></a>
-    <a href="humans.txt" target="_blank"><img src="styles/img/humans.png" alt="humans.txt supported" width="98" height="32"></a>
-    </div>
-</body>
+        </script>
+    </body>
 </html>

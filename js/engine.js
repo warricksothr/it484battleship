@@ -455,11 +455,11 @@ function Engine()
         //check if the positioning is valid for a vertical placement
         if(isVertical)
         {
-            var endy = starty + ship.shipLength;
+            var endy = starty + ship.shipLength - 1;
             //if it will be positioned off the grid it is an immediate false
             if (endy > 9) { return false; }
             //make sure there are no ships already in these cells
-            for (var i = starty; i < endy; i++)
+            for (var i = starty; i <= endy; i++)
             {
                 if (shipGrid[startx][i] !== 0) { return false; }
             }
@@ -467,11 +467,11 @@ function Engine()
         //check if the positioning is valid for a horizontal placement
         else
         {
-            var endx = startx + ship.shipLength;
+            var endx = startx + ship.shipLength - 1;
              //if it will be positioned off the grid it is an immediate false
             if (endx > 9) { return false; }
             //make sure there are no ships already in these cells
-            for (var i = startx; i < endx; i++)
+            for (var i = startx; i <= endx; i++)
             {
                 if (shipGrid[i][starty] !== 0) { return false; }
             }

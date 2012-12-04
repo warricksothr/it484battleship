@@ -3,8 +3,12 @@
 Your Title: Aaron Willcutt:
 Site: 
 Twitter: 
-Location: 
+Location: Faribault, MN, USA
 Responsibilities:
+    Architectural Design;
+    Module Design;
+    Mode1 Shot implementation
+    AI Implementation
 
 Your Title: Blake Grotewold:
 Site: www.blakegrotewold.com

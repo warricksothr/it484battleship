@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Manual Test Scripts</title>
@@ -20,6 +21,10 @@
              padding:5px;
              width:49%;
             }
+            li
+            {
+             padding-bottom:5px;   
+            }
         </style>
     </head>
     <body>
@@ -32,25 +37,174 @@
                 </td>
                 <td> <!-- THE SECOND TD TAG IS YOUR TEST STEPS -->
                     <ol> <!-- MAKE AN ORDERED LIST  -->
-                        <li>Click Options</li> <!-- A LIST ITEM IS FOR EACH STEP -->
+                        <li>Click 'Options'</li> <!-- A LIST ITEM IS FOR EACH STEP -->
                         <li>Click 'Change Style'</li>
                         <li><strong>Verify style change</strong></li> <!-- USE THE STRONG TAG TO REPRESENT VERIFICATIONS -->
                     </ol>
                 </td>
             </tr>
             
-            <tr id="">
+            <tr id="test2">
                 <td>
-                    
+                    Test Two: Main Menu
                 </td>
                 <td>
                     <ol>
-                        <li> </li>
-                        <li><strong> </strong></li>
+                        <li><strong>Verify 'Play Game', 'Options' buttons are present</strong></li>
+                        <li>Click 'Options'</li>
+                        <li><strong>Verify 'Change Theme', 'Turn Sound On/Off, and 'Return to Home' options are present.</strong></li>
+                        <li>Click 'Return to Home'</li>
+                        <li>Click 'Play Game'</li>
+                        <li><strong>Verify user is given 'One Player', 'Two Player', 'Crazy One Player', 'Crazy Two Player', and 'Return to Home' options</strong></li>
                     </ol>
                 </td>
             </tr>
             
+            <tr id="test3">
+                <td>
+                    Test Three: Game Interface
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Two Player Game'</li>
+                        <li><strong>Verify players are given 1 visible grid (centered) with a 'Ship Views' button in lower right corner</strong></li>
+                        <li>Hover over 'Grid Views' button</li>
+                        <li><strong>Verify grid view changes to show ships</strong></li>
+                        <li><strong>Verify each grid is 10x10 squares</strong></li>
+                        <li><strong>Verify columns are identified with numbers(1-10)</strong></li>
+                        <li><strong>Verify rows are identified with letters (A-J)</strong></li>
+                        <li><strong>Verify each player is given exactly 5 ships of sizes (5, 4, 3, 3, 2)</strong></li>
+                        <li><strong>Verify 'Take Your Shot...' at top of screen changes correctly for each player</strong></li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test4">
+                <td>
+                    Test Four: Ship Placement
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Two Player Game'</li>
+                        <li><strong>Verify user has the ability to move ship onto, and around grid ship grid</strong></li>
+                        <li><strong>Verify ships can only be placed vertically or horizontally</strong></li>
+                        <li><strong>Verify user cannot place ship off of grid</strong></li>
+                        <li><strong>Verify user cannot stack ships on top of one another</strong></li>
+                        <li><strong>Verify user must place exactly 5 ships on board (no more, no less)</strong></li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test5">
+                <td>
+                    Test Five: Shot Taking
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Two Player Game'</li>
+                        <li>Set up initial ship positions for each player</li>
+                        <li><strong>Verify ships are displayed on the ship grid</strong></li>
+                        <li><strong>Verify user takes a shot by clicking a grid cell on their shot grid</strong></li>
+                        <li><strong>Verify a graphical display is shown to indicate a shot was taken at that spot (colored box), and differentiate if it was a hit or miss (gray box vs. red box)</strong></li>
+                        <li>Take a shot at the same square more than once</li>
+                        <li><strong>Verify that this doesn't cause any functionality issues. This should be allowed, and not cause ship to take a new damaging hit</strong></li>
+                        <li><strong>Verify that shots are being recorded correctly in 'History' section on left side of screen</strong></li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test6">
+                <td>
+                    Test Six: Ship Sinking
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Two Player Game'</li>
+                        <li>Set up initial ship positions for each player</li>
+                        <li>Continue clicking on a ship's squares until the ship is sunk</li>
+                        <li><strong>Verify that a prompt is displayed alerting the player that they have sunk a ship. Also make sure the ship name is correct for the sunk ship</strong></li>
+                        <li>Repeat this for all ships</li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test7">
+                <td>
+                    Test Seven: Human vs. Computer
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'One Player Game'</li>
+                        <li><strong>Verify player is required to place ships (in accordance with placement test)</strong></li>
+                        <li><strong>Verify computer ships are placed automatically (User should not see any prompts)</strong></li>
+                        <li><strong>Verify that player gets the first shot</strong></li>
+                        <li>Take a shot as the player</li>
+                        <li>Hover over 'Ship Views' during next turn </li>
+                        <li><strong>Verify that a gray box is displayed, indicating that the computer has taken a shot</strong></li>
+                        <li><strong>Continue taking several shots. Verify that the computer is taking a shot after every player shot</strong></li>
+                        <li><strong>Verify game ends appropriately when either user ships are all sunk, or computer ships are all sunk (whichever comes first)</strong></li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test8">
+                <td>
+                    Test Eight: Special Abilities
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Crazy One Player'</li>
+                        <li>Place ships on board and start game</li>
+                        <li>Click each special shot without firing</li>
+                        <li><strong>Verify the highlighted selection changes correctly</strong></li>
+                        <li>Click and fire 'Photon Bomb Run'</li>
+                        <li><strong>Verify length of shot is 3 squares and that cooldown timer is says 7</strong></li>
+                        <li>Click and fire 'Black Hole'</li>
+                        <li><strong>Verify a 5-shot plus shaped area is shot and that cooldown timer says 11</strong></li>
+                        <li><strong>Verify photon bomb run cooldown decreases by 1</strong></li>
+                        <li>Click and fire 'Scrap Radar'</li>
+                        <li><strong>Verify a 5-shot plus shaped area is highlighted and that cooldown timer says 5</strong></li>
+                        <li><strong>Verify previous shot cooldowns all decrease by 1</strong></li>
+                        <li>Click and fire 'Plasma Salvo'</li>
+                        <li><strong>Verify 3 random squares on the grid are shot and that cooldown timer says 3</strong></li>
+                        <li><strong>Verify previous shot cooldowns all decrease by 1</strong></li>
+                        <li>Click and fire 'Homing Missile'</li>
+                        <li><strong>Verify a ship is hit and that cooldown timer says 5</strong></li>
+                        <li><strong>Verify previous shot cooldowns all decrease by 1</strong></li>
+                        <li>Continue firing regular shot until cooldowns expire</li>
+                        <li><strong>Verify that use of the shots is gained again when cooldown expires</strong></li>
+                    </ol>
+                </td>
+            </tr>
+            
+            <tr id="test8">
+                <td>
+                    Test Nine: Ship Sunk = Shot Gone
+                </td>
+                <td>
+                    <ol>
+                        <li>Click 'Play Game'</li>
+                        <li>Click 'Crazy One Player'</li>
+                        <li>Place ships on board and start game</li>
+                        <li>Only take regular shots, make sure not to win the game</li>
+                        <li><strong>As game progresses, verify that when a ship is sunk, its ability is removed from the special shots menu. Continue until all of your ships are sunk. The ships/shots are as follows:</strong>
+                            <ul>
+                                <li>Stardust Goliath (length 5) - Photon Bomb Run</li>
+                                <li>Galaxy Ravager (length 4) - Black Hole</li>
+                                <li>Scrap Harvester (length 3) - Scrap Radar</li>
+                                <li>Star Destroyer (length 3) - Plasma Salvo</li>
+                                <li>Interceptor (length 2) - Homing Missile</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </td>
+            </tr>
         </table>
     </body>
 </html>

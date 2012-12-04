@@ -202,7 +202,7 @@ function Ui(engine)
             if(typeof(shotGridElementId) === 'undefined') { shotGridElementId = "shot"; }
             if(typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
             this.helperGetElementById(shotGridElementId).style.display = "block";
-            this.helperGetElementById(shipGridElementId).style.display = "block";
+            this.helperGetElementById(shipGridElementId).style.display = "none";
         };
         
         ////////////////////////////
@@ -454,6 +454,7 @@ function Ui(engine)
             }
         };
         
+        //
         this.createShipView = function(shipViewElementId)
         {
             if(typeof(shipViewElementId) === 'undefined') { shipViewElementId = "shipview"; }
@@ -564,20 +565,29 @@ function Ui(engine)
         // Header Functions //
         //////////////////////
         
+        //create a header element span with a custom message
+        this.helperGetHeaderWithCustomTextElement = function(message)
+        {
+            var element = this.helperCreateElement("span", {}, message);
+            return element;
+        };
+        
+        //create a header element to notify players
         this.helperGetHeaderElement = function(isFirstPlayer)
         {
             var element;
             if (isFirstPlayer)
             {
-                element = this.helperCreateElement("span", {}, "Take your shot, Player 1.");
+                element = this.helperGetHeaderWithCustomTextElement("Take your shot, Player 1.");
             }
             else
             {
-                element = this.helperCreateElement("span", {}, "Take your shot, Player 2.");
+                element = this.helperGetHeaderWithCustomTextElement("Take your shot, Player 2.");
             }
             return element;
         };
         
+        //create the header element
         this.createHeader = function(headerElementId)
         {
             if(typeof(headerElementId) === 'undefined') { headerElementId = "header"; }
@@ -588,47 +598,284 @@ function Ui(engine)
             this.helperAppendChildElement(rootElement, headerElement);
         };
         
+        //create the header element with custom text
+        this.createHeaderWithCustomText = function(message, headerElementId)
+        {
+            if(typeof(headerElementId) === 'undefined') { headerElementId = "header"; }
+            var rootElement = this.helperGetElementById(headerElementId);
+            //empty the element
+            this.helperEmptyElement(rootElement);
+            var headerElement = this.helperGetHeaderWithCustomTextElement(message);
+            this.helperAppendChildElement(rootElement, headerElement);
+        };
+        
         //////////////////////////////
         // Ship Placement Functions //
         //////////////////////////////
         
-        this.helperPlacePlayerShipsRandom = function(ship)
+        //hide the grids for ship placement
+        this.helperPlaceShipsHideGrids= function(shotGridElementId, shipGridElementId, shipViewElementId, shipGridsElementId)
         {
-            //place a ship on the grid randomly
-            //check validity of position before placing it
-            var validPlacement = false;
-            do
-            {
-                validPlacement = false;
-                var rx = getRandomInt(0, 9);
-                var ry = getRandomInt(0, 9);
-                var rvertical = getRandomInt(0,1);
-                validPlacement = this.engine.validateShipPlacement(rx,ry,rvertical,ship);
-                if (validPlacement)
-                {
-                    this.engine.placeShip(rx, ry, rvertical, ship);
-                }
-            } while(!validPlacement);
+            this.showShipGrid(shotGridElementId, shipGridElementId);
+            if (typeof(shipViewElementId) === 'undefined') { shipViewElementId = 'shipview' }
+            this.helperGetElementById(shipViewElementId).style.display = "block";
+            if (typeof(shipGridsElementId) === 'undefined') { shipGridsElementId = 'shipgrids' }
+            this.helperGetElementById(shipGridsElementId).style.display = "none";
+            
         };
         
-        //this is where the logic will go for iterating through the shipPlacement for the current player
-        //for two players this code will be called twice
+        //show the grids after ship placement
+        this.helperPlaceShipsRestoreGrids = function(shotGridElementId, shipGridElementId, shipViewElementId, shipGridsElementId)
+        {
+            this.resetGrids(shotGridElementId, shipGridElementId);
+            if (typeof(shipViewElementId) === 'undefined') { shipViewElementId = 'shipview' }
+            this.helperGetElementById(shipViewElementId).style.display = "block";
+            if (typeof(shipGridsElementId) === 'undefined') { shipGridsElementId = 'shipgrids' }
+            this.helperGetElementById(shipGridsElementId).style.display = "block";
+        };
+        
+        this.helperPlaceShipCreateShipViewRadioChecked = function(shipIndex, isVertical)
+        {
+            this.helperPlaceShipsCreateShipGrid(shipIndex, !isVertical);
+            this.helperPlaceShipsCreateShipView(shipIndex, !isVertical);
+        };
+        
+        //create the shipView for placement (upper right corner with place vertically box)
+        this.helperPlaceShipsCreateShipView = function(shipIndex, isVertical, shipViewElementId)
+        {
+            if (typeof(shipViewElementId) === 'undefined') { shipViewElementId = "shipview"; }
+            //get access to the root element in the DOM
+            var rootElement = this.helperGetElementById(shipViewElementId);
+            //empty the element
+            this.helperEmptyElement(rootElement);
+            //get the ship
+            var ship = this.engine.getAvailableShips()[shipIndex];
+            //create an element for this ship
+            var shipElement = this.helperCreateElement("div", {id:ship.name, "class":"ship", title:ship.name}, "");
+            //loop through each cell in the length of the ship
+            for (var x = 0; x < ship.shipLength; x++)
+            {
+                //create the cell for the ship
+                var shipCellElement = this.helperCreateElement("div", {id:"p"+(x+1), "class":"segment"}, "");
+                //append it to the ship
+                this.helperAppendChildElement(shipElement, shipCellElement);
+            }
+            var shipPlacementOptionsElement = this.helperCreateElement("div", {id:"shipplacement"}, "");
+            var shipNameElement = this.helperCreateElement("span", {id:"shipplacementname"}, ship.name);
+            this.helperAppendChildElement(shipPlacementOptionsElement, shipNameElement);
+            this.helperAppendHTMLToElement(shipPlacementOptionsElement, "<br>");
+            var shipIsVerticalLabelElement = this.helperCreateElement("label", {"for":"vertCheckBox"}, "Place Vertically");
+            this.helperAppendChildElement(shipPlacementOptionsElement, shipIsVerticalLabelElement);
+            var shipIsVerticalElement = this.helperCreateElement("input", {type:"checkbox", id:"vertCheckBox", onclick:"UI.helperPlaceShipCreateShipViewRadioChecked("+shipIndex+","+isVertical+")"}, "");
+            //add the checked attribute only if section is vertical
+            if (isVertical) { this.helperAddAttributesToElement(shipIsVerticalElement,{checked:isVertical}); }
+            this.helperAppendChildElement(shipPlacementOptionsElement, shipIsVerticalElement);
+            //append the ship to the root
+            this.helperAppendChildElement(rootElement, shipElement);
+            this.helperAppendChildElement(rootElement, shipPlacementOptionsElement);
+        };
+        
+        //helper method to create the correct grid type from the cell
+        this.helperGetPlaceShipGridCellClass = function(type)
+        {
+            var obj = {};
+            obj.classType = "";
+            obj.name = "";
+            //switch on the type in the cell
+            switch(type)
+            {
+                //fog of war
+                case 0: 
+                    obj.classType = "cloud";
+                    break;
+                //must be a ship
+                default: 
+                    obj.classType = "shipmiss";
+                    obj.name = type.abbreviation;
+                    break;
+            }
+            return obj;
+        };
+        
+        //get a cell for the grid
+        this.helperGetPlaceShipsGridCell = function(shipIndex, shipCellContents, x, y, isVertical, isValidPlacement)
+        {
+            if (typeof(isValidPlacement) === 'undefined') { isValidPlacement = false; }
+            var gridElement;
+            var cellData = this.helperGetPlaceShipGridCellClass(shipCellContents);
+            //check if this cell is a valid placement cell
+            if (isValidPlacement)
+            {
+                //onmouseover to show what the ship placement looks like
+                //onclick to actually place the ship there
+                gridElement = this.helperCreateElement("td"
+                    , {"class":cellData.classType
+                        , onmouseover:"UI.helperPlaceShipsCreateShipGrid("+shipIndex+","+isVertical+",true,"+x+","+y+")"
+                        , onclick:"UI.placeNextPlayerShip("+shipIndex+","+isVertical+","+x+","+y+")"
+                    }, cellData.name);
+            }
+            //otherwise it is not a valid placement cells
+            else
+            {
+                //create an empty cell with no functions to indicate that it is not a valid placement cell
+                gridElement = this.helperCreateElement("td", {"class":cellData.classType}, cellData.name);
+            }
+            return gridElement;
+        };
+        
+        //find the cells that a ship would occupy if placed starting at x,y
+        this.helperPlaceShipsGetShipsCells = function(ship, isVertical, x, y)
+        {
+            var cells = [];
+            var shipLength = ship.shipLength;
+            if (isVertical)
+            {
+                var shipEndy = y + shipLength-1;
+                for (var mody = y; mody <= shipEndy; mody++)
+                {
+                    cells.push({x:x,y:mody});
+                }
+            }
+            else
+            {
+                var shipEndx = x + shipLength-1;
+                for (var modx = x; modx <= shipEndx; modx++)
+                {
+                    cells.push({x:modx,y:y});
+                }
+            }
+            return cells;
+        };
+        
+        //determine if a specified cell would be a ship cell
+        this.helperPlaceShipsIsCellOnShip = function(x, y, cells)
+        {
+            for (var i = 0; i < cells.length; i++)
+            {
+                //return true if the cell is part of a ship
+                if (x === cells[i].x && y === cells[i].y)
+                {
+                    return true;
+                }
+            }
+            //otherwise return false
+            return false;
+        };
+        
+        //create the ship grid for placement
+        this.helperPlaceShipsCreateShipGrid = function(shipIndex, isVertical, isUpdate, x, y, shipGridElementId)
+        {
+            if (typeof(shipGridElementId) === 'undefined') { shipGridElementId = "ship"; }
+            //default is not an update
+            if (typeof(isUpdate) === 'undefined') { isUpdate = false; }
+            //get the ship grid
+            var grid = this.engine.getShipGrid();
+            //calculate the percent width of each cell
+            var cellWidth = Math.floor(100 / grid.length);
+            //get the ship being referenced
+            var ship = this.engine.getAvailableShips()[shipIndex];
+            //root element container
+            var rootElement = this.helperGetElementById(shipGridElementId);
+            //empty the grid
+            this.helperEmptyElement(rootElement);
+            //ship cells for the requested update
+            var shipCells;
+            //check if this is an update request, if so get the cells that fullfill that request
+            if (isUpdate)
+            {
+                shipCells = this.helperPlaceShipsGetShipsCells(ship, isVertical, x, y);
+            }
+            //create the table
+            var table = this.helperCreateElement("table", {}, "");
+            //i = y
+            for (var i = 0; i < 10; i++) {
+                //write the row to the table body
+                var row = this.helperCreateElement("tr", {id:"r"+i},"");
+                //j = x
+                for (var j = 0; j < 10; j++) {
+                    //write a column to the table
+                    //get the appropriate cell contents and write the column
+                    var validPlacement = this.engine.validateShipPlacement(j, i, isVertical, ship);
+                    var gridCell = this.helperGetPlaceShipsGridCell(shipIndex, grid[j][i], j, i, isVertical, validPlacement);
+                    gridCell.style.width = cellWidth + "%";
+                    gridCell.style.height = cellWidth + "%";
+                    //if it is a cell that a ship would occupy give it a unique style
+                    if (isUpdate)
+                    {
+                        //if the cell is one of the cells the ship would occupy then replace its class to indicate it is where the ship would go
+                        if (this.helperPlaceShipsIsCellOnShip(j,i,shipCells))
+                        {
+                            gridCell.className = "shipmiss";
+                            gridCell.textContent = ship.abbreviation;
+                        }
+                    }
+                    this.helperAppendChildElement(row, gridCell);
+                }
+                //add the row to the table
+                this.helperAppendChildElement(table, row);
+            }
+            //finally write the table to the root element
+            this.helperAppendChildElement(rootElement, table);
+        };
+        
+        //create the ui to place the provided ship
+        this.placeNextPlayerShip = function(shipIndex, isVertical, x, y)
+        {
+            if (typeof(x) !== 'undefined' && typeof(y) !== 'undefined')
+            {
+                //get the ship to place and increment the index
+                var ship = this.engine.getAvailableShips()[shipIndex++];
+                //place the ship
+                this.engine.placeShip(x, y, isVertical, ship);
+                //check the index
+                if (shipIndex >= this.engine.getAvailableShips().length)
+                {
+                    //change to the next player because there are no more ships to place
+                    this.engine.changePlayers();
+                    //check how many times we've placed ships, if the counter is still on 0 and if there are two players switch to the second player ship placement
+                    if (this.shipPlacementCount < 1 && this.engine.numberOfPlayers === 2)
+                    {
+                        //increment ship placement counter
+                        this.shipPlacementCount++;
+                        alert("player 2, place your ships");
+                        //start again for player 2
+                        this.placeNextPlayerShip(0, false);
+                        return;
+                    }
+                    //otherwise show the grids and return
+                    else{
+                        this.helperPlaceShipsRestoreGrids();
+                        //now build the rest of the game UI
+                        //call update interface method and pass it the ids of
+                        this.updateInterface({historyID:"history", shipID:"ship", shotID:"shot", shipViewID:"shipview", availableShotID:"availableshots", headerID:"header"});
+                        //leave the function because there is nothing left to do
+                        return;
+                    }
+                }
+            }
+            //this is where the UI is updated between ship placements
+            //set the header message for the player
+            if (this.engine.isFirstPlayer) { this.createHeaderWithCustomText("Player 1, place your: " + this.engine.getAvailableShips()[shipIndex].name); }
+            else { this.createHeaderWithCustomText("Player 2, place your: " + this.engine.getAvailableShips()[shipIndex].name); }
+            // redraw the interfaces for the next ship
+            this.helperPlaceShipsCreateShipView(shipIndex,false);
+            this.helperPlaceShipsCreateShipGrid(shipIndex,false);
+        };
+        
+        //this is the start for ship placement and only gets called once
         this.placePlayerShips = function()
         {
-            //get an array of available ships to place
-            var availableShips = this.engine.getAvailableShips();
+            //the number of times we've placed ships
+            if (typeof(this.shipPlacementCount) === 'undefined') { this.shipPlacementCount = 0 }
             
-            //loop through the array of available ships
-            for (var i = 0; i < availableShips.length; i++)
-            {
-                //for testing purposes this is random at the moment
-                this.helperPlacePlayerShipsRandom(availableShips[i]);
-                
-                //now show the interface to place the ship
-                //consisting of the current ship grid and highlighting where the ship will go
-            }
-            //once the ships are placed the turn is over, indicate that to the engine
-            this.engine.changePlayers();
+            //hide the grids
+            this.helperPlaceShipsHideGrids();
+            
+            //alert the player about ship placement
+            alert("player 1, place your ships");
+            
+            //start the ship placement loop
+            this.placeNextPlayerShip(0, false); //TODO: fixme
         };
         
         //////////////////////
@@ -677,6 +924,7 @@ function Ui(engine)
             {
                 //redirect to the index because the game is over
                 window.location = "./index.html";
+                return;
             }
             //otherwise continue playing
             else
