@@ -98,6 +98,8 @@ function Ui(engine)
                     var rootElement = ui.helperGetElementById(versionElementId);
                     ui.helperEmptyElement(rootElement);
                     var versionElement = ui.helperCreateElement("span", {}, "Version: "+req.responseText);
+                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./versionHistory.txt','_blank')"});
+                    rootElement.style.cursor = "pointer";
                     ui.helperAppendChildElement(rootElement, versionElement);
                 }
             }

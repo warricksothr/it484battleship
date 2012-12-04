@@ -1,0 +1,56 @@
+RELEASE BUILDS
+
+BETA BUILDS
+0.2.4.dev
+--in progress
+Added this file and linked it to the version display
+
+0.2.3.dev
+04.12.12
+Fix for AI finishing game and the UI taking the player to the AI's player screen
+
+0.2.2.dev
+04.12.12
+Changed history to include both players recent history
+Changed turn counter to act as a round counter instead of incrementing each turn
+Upgraded the logic behind the Plasma Salvo to automatically choose cells that are known to be hits before firing random shots
+Added some brains to the lazyAI to present more of a challenge during game play
+
+0.2.1.dev
+04.12.12
+Fix for critical error in Chrome where users could not place a ship
+Optimized ship display code for placement, significantly improving performance
+Cleaned up randomization code in index.html
+
+0.2.0.dev
+03.12.12
+First edition with player ship placement
+Fixed random crash when Photon Bombing Run was used near the right edge of the board
+
+ALPHA BUILDS
+0.1d
+03.12.12
+Added a forfeit button to the game page
+Started moving ship placement code into the UI and out of game.html
+Attempted implementation of minimum window size
+Fixed a spelling issue in the UI
+Reduced the number of alerts in single player mode
+
+0.1c
+03.12.12
+Fixed footer on front page
+Added version indicator to the upper left corner of game and index
+
+0.1b
+03.12.12
+Removed extra files from repository
+
+0.1a
+03.12.12
+First official alpha release
+Ship placement randomized at startup
+First implementation of lazyAI which was an upgrade from the dumb AI where shots are simply fired at random
+Single player modes are very buggy
+Two player for mode 1 exists, two player for mode 2 does not
+Shot selection is ugly and broken
+Game will randomly freeze

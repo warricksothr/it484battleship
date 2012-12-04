@@ -88,6 +88,34 @@ function AI(engine)
             return shots[randomShotIndex];
         }
         
+  
+  
+  /**
+       //Function to create a weighted array of shots to choose shots based on effectiveness rather than randomness. 
+        function getWeightedShot()
+        {
+            //get a weighted shot type
+            var shots = engine.getShotsNotOnCooldown();
+            var numOfShots = shots.length-1;
+            var weightedShotIndex = getRandomInt(0, numOfShots);
+    		var currentShot = 0;
+			
+			while (currentShot<shots.length)
+			{
+				for (var i = 0; i < shots.length-1; i++)
+				{
+		
+					//TODO implement setting the weight of each shot object to a specific value. 
+		
+				}
+				currentShot++;
+			}
+			
+            return shots[weightedShotIndex];
+        }
+        
+  */
+        
         //choose a random shot
         var shot = getRandomShot();
         
