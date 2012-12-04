@@ -760,7 +760,7 @@ function Engine()
     //trigger a player switch
     this.changePlayers = function()
     {
-        //check if he game has ended
+        //check if the game has ended
         if (this.isGameOver())
         {
             //return true to indicate that the game is over
@@ -778,6 +778,8 @@ function Engine()
             {
                 //AI magic here pl0x
                 this.ai.executeTurn();
+                //check if the game has ended
+                if (this.isGameOver()) { return true; }
                 //return control to the first player
                 this.changePlayers();
             }
