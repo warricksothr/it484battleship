@@ -7,6 +7,8 @@ Added GitHub logo for linking to project repository
 Added image link to GitHub repository on index and game pages
 Fixed draggable menu on index for FireFox
 Fixed draggable menu going off sright side of screen in Chrome
+Forkme added to the page
+Integrated forkit.js for interactive forking tag (https://github.com/hakimel/forkit.js)
 
 0.2.4.dev
 04.12.12
