@@ -7,6 +7,7 @@ body
     background: url('img/carbon.png');
     background-color:black;
     font-family:monospace;
+    overflow:hidden;
 }
 
 #version
