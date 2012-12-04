@@ -7,14 +7,20 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <script src="js/ui.js"></script>
     <script>
+        //get a random element from an array
+        function getRandomFromArray(ary)
+        {
+            return ary[Math.floor((Math.random()*ary.length))];
+        }
+    
         function getRandomName() {
             var name0 = new Array("","","","","","","","");
-            var name1 = new Array("BATTLE", "BOTTLE", "BITTLE", "BUTTLE", "BETTLE", "847713");
-            var name2 = new Array("SHIP", "SHAP", "SHOP", "SHEP", "SHUP", "5H1P");
-            var name3 = new Array("S", "Z", "5", "_2.0", ".exe");
+            var name1 = new Array("BATTLE", "BOTTLE", "BITTLE", "BEETLE", "BUTTLE", "BETTLE", "847713");
+            var name2 = new Array("SHIP", "SHAP", "SHOP", "SHAT", "SHEP", "SHUP", "5H1P");
+            var name3 = new Array("S", "Z", "5", "-2.0", ".exe");
             var name4 = new Array("", "", "", "", "", "?", "!");
             
-            var randomName = name0[Math.floor((Math.random()*8))] + name1[Math.floor((Math.random()*6))] + name2[Math.floor((Math.random()*6))] + name3[Math.floor((Math.random()*5))] + name4[Math.floor((Math.random()*7))];
+            var randomName = getRandomFromArray(name0) + getRandomFromArray(name1) + getRandomFromArray(name2) + getRandomFromArray(name3) + getRandomFromArray(name4);
             return randomName;
         }
         
@@ -24,7 +30,7 @@
                                    "well read, good sir.", "what you looking at?", "daily double", "cats... everywhere", ".....", "it\'s a game", "now with less violence", "my mom said i could make this", "i\'m married, lady",
                                    "did you know I can move?", "i\'m a big kid now", "d00d", "so this one time...", "oh yeah", "S3cr3ts3cr3t is my password", "don't cheat!"); 
             
-            var randomSub = mottos[Math.floor((Math.random()*31))];
+            var randomSub = getRandomFromArray(mottos);
             return randomSub;
         }
         
