@@ -165,6 +165,8 @@ function Ui(engine)
                     ui.helperAppendChildElement(rootElement, previousVersionElement);
                     //add a link to the previous version
                     ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../"+req.responseText+"','_blank')"});
+                    //set the style to a cursor
+                    rootElement.style.cursor = "pointer";
                     //make sure the element is displayed
                     rootElement.style.display = "block";
                 }
