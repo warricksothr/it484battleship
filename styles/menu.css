@@ -27,6 +27,24 @@ body
         inset 0px 0px 5px black;
 }
 
+#previousversion
+{
+    display:none;
+    position:absolute;
+    left:0px;
+    bottom:0px;
+    width:auto;
+    padding-left:8px;
+    padding-right:8px;
+    padding-top:3px;
+    padding-bottom:3px;
+    background-color:white;
+    border-radius:0px 0px 8px 0px;
+    box-shadow:
+        0px 0px 10px black,
+        inset 0px 0px 5px black;
+}
+
 #menu
 {
     position:absolute;
@@ -114,8 +132,8 @@ body
 {
     text-align: center;
     color:white;
-    background: rgba( 0, 0, 0, 0.95 );
-    padding-top: 10%;
+    background:rgba( 0, 0, 0, 0.96 );
+    padding-top:5%;
 }
 
 .forkit-curtain .close-button
@@ -162,8 +180,8 @@ body
 #forkit-contents
 {
     text-align:left;
-    margin-left:15%;
-    width:70%;
+    margin-left:35%;
+    width:30%;
     height:90%;
     overflow-y:scroll;
     overflow-x:hidden;

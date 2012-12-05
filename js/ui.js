@@ -149,6 +149,29 @@ function Ui(engine)
         req.send(null);
     };
     
+    this.displayLinkToPreviousVersion = function(lastVersionElementId)
+    {
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', './previousVersion');
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    if(typeof(lastVersionElementId) === 'undefined') { lastVersionElementId = 'previousversion'; }
+                    var rootElement = ui.helperGetElementById(lastVersionElementId);
+                    var previousVersionElement = ui.helperCreateElement("span", {}, "previous version: " + req.responseText);
+                    ui.helperAppendChildElement(rootElement, previousVersionElement);
+                    //add a link to the previous version
+                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../'"+req.responseText+",'_blank')"});
+                    //make sure the element is displayed
+                    rootElement.style.display = "block";
+                }
+            }
+        };
+        req.send(null);
+    };
+    
     //////////////////////////////////////////////
     // Methods for changing the stylesheet used //
     //////////////////////////////////////////////

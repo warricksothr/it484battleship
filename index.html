@@ -92,7 +92,11 @@
     <div id="version">
         <!-- version will go here -->
     </div>
-    <script>UI.displayVersion('version'); UI.displayTimestamp('version');</script>
+    <script>
+        UI.displayVersion('version');
+        //remove me when we hit production
+        UI.displayTimestamp('version');
+    </script>
     <div id="menu">
         <div id="main">
             <div id="logo" class="rotate">
@@ -146,6 +150,12 @@
     </div>
     <a class="forkit" data-text="Fork us on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
     <script src="js/forkit.js"></script>
+    <div id='previousversion'></div>
+    <script>
+        //remove me when we hit production
+        //display link to previous version if available
+        UI.displayLinkToPreviousVersion('previousversion');
+    </script>
     <!--<a href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>-->
 </body>
 </html>
