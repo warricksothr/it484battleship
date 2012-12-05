@@ -96,7 +96,7 @@ function Ui(engine)
                 if (req.status == 200) {
                     if(typeof(versionElementId) === 'undefined') { versionElementId = 'version'; }
                     var rootElement = ui.helperGetElementById(versionElementId);
-                    var versionElement = ui.helperCreateElement("span", {}, "Version: "+req.responseText);
+                    var versionElement = ui.helperCreateElement("span", {}, "Version: "+req.responseText.trim());
                     ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./versionHistory.txt','_blank')"});
                     rootElement.style.cursor = "pointer";
                     ui.helperAppendChildElement(rootElement, versionElement);
@@ -121,7 +121,7 @@ function Ui(engine)
                     if(typeof(versionElementId) === 'undefined') { versionElementId = 'version'; }
                     var rootElement = ui.helperGetElementById(versionElementId);
                     ui.helperAppendHTMLToElement(rootElement,"<br>");
-                    var versionElement = ui.helperCreateElement("span", {}, "last updated: "+req.responseText);
+                    var versionElement = ui.helperCreateElement("span", {}, "last updated: "+req.responseText.trim());
                     ui.helperAppendChildElement(rootElement, versionElement);
                 }
             }
@@ -161,10 +161,10 @@ function Ui(engine)
                 if (req.status == 200) {
                     if(typeof(lastVersionElementId) === 'undefined') { lastVersionElementId = 'previousversion'; }
                     var rootElement = ui.helperGetElementById(lastVersionElementId);
-                    var previousVersionElement = ui.helperCreateElement("span", {}, "previous version: " + req.responseText);
+                    var previousVersionElement = ui.helperCreateElement("span", {}, "previous version: " + req.responseText.trim());
                     ui.helperAppendChildElement(rootElement, previousVersionElement);
                     //add a link to the previous version
-                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../"+req.responseText+"','_blank')"});
+                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../"+req.responseText.trim()+"','_blank')"});
                     //set the style to a cursor
                     rootElement.style.cursor = "pointer";
                     //make sure the element is displayed
