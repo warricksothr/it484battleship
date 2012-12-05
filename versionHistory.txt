@@ -3,6 +3,7 @@ RELEASE BUILDS
 BETA BUILDS
 0.2.6.dev
 --in progress
+Started adding a how-to guide on the front page
 
 0.2.5.dev
 04.12.12

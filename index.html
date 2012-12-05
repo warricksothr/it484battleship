@@ -15,7 +15,8 @@
             return ary[Math.floor((Math.random()*ary.length))];
         }
     
-        function getRandomName() {
+        function getRandomName()
+        {
             var name0 = new Array("","","","","","","","");
             var name1 = new Array("BATTLE", "BOTTLE", "BITTLE", "BEETLE", "BUTTLE", "BETTLE", "847713");
             var name2 = new Array("SHIP", "SHAP", "SHOP", "SHAT", "SHEP", "SHUP", "5H1P");
@@ -26,7 +27,8 @@
             return randomName;
         }
         
-        function getRandomSub() {
+        function getRandomSub()
+        {
             var mottos = new Array("like a barrel of monkeys, but battleships", "now comes in banana flavor", "\'merica!", "deathtothespacebar!!!", "full of vitamin C",  "001110111101101", "hello, world",
                                    "sweet oogly moogly", "piratebay with limits", "lord vader 2012", "dalt", "humans.txt", "[enter comment]", "one ship to rule them all", "you look sick, are you okay?!", 
                                    "well read, good sir.", "what you looking at?", "daily double", "cats... everywhere", ".....", "it\'s a game", "now with less violence", "my mom said i could make this", "i\'m married, lady",
@@ -37,7 +39,8 @@
             return randomSub;
         }
         
-        function setStyle(bool) {
+        function setStyle(bool)
+        {
             if (bool) {
                 sessionStorage.menuStyle = "styles/menu.css";
                 sessionStorage.gameStyle = "styles/game.css";
@@ -70,12 +73,28 @@
             setStyle(sessionStorage.isStyle1);
         }
         
-        function setPage(pageIn, pageTo) {
+        function setPage(pageIn, pageTo)
+        {
             document.getElementById(pageIn).style.display = "none";
             document.getElementById(pageTo).style.display = "block";
         }
         
-        function setSound(bool) {
+        function controlLightBox(elementId, show)
+        {
+            if(show)
+            {
+                document.getElementById(elementId).style.display='block';
+                document.getElementById('lightBoxDarken').style.display='block';
+            }
+            else
+            {
+                document.getElementById(elementId).style.display='none';
+                document.getElementById('lightBoxDarken').style.display='none';
+            }
+        }
+        
+        function setSound(bool)
+        {
             sessionStorage.sound = bool
         }
     </script>
@@ -106,8 +125,9 @@
             </div>
             <div id="motto"><script>document.write(getRandomSub());</script></div><br>
             <center>
-            <span class="tab" onclick="setPage('main', 'play')">Play Game</span><br>
-            <span class="tab" onclick="setPage('main', 'options')">Options</span>
+                <span class="tab" onclick="setPage('main', 'play')">Play Game</span><br>
+                <span class="tab" onclick="controlLightBox('howto',true)">How To Play</span><br>
+                <span class="tab" onclick="setPage('main', 'options')">Options</span>
             </center>
         </div>
         <div id="play" style="display:none;">
@@ -115,10 +135,10 @@
             <center>
             <script>
                 //write links to the game versions
-                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br><br>");
-                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br><br>");
-                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br><br>");
-                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=1&name="+randomName+"\">One Player</a><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=1&players=2&name="+randomName+"\">Two Player</a><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=1&name="+randomName+"\">Crazy One Player</a><br>");
+                document.write("<a class=\"tab\" href=\"game.html?mode=2&players=2&name="+randomName+"\">Crazy Two Player</a><br>");
             </script>
             <span class="tab" onclick="setPage('play', 'main')">Return to Home</span>
             </center>
@@ -126,17 +146,13 @@
         <div id="options" style="display:none;">
             <div id="logo" class="rotate">Options</div><br><br>
             <center>
-            <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
-            <a class="tab" href="#">Turn Sound On/Off</a><br><br>
-            <span class="tab" onclick="setPage('options', 'main')">Return to Home</span>
+                <a class="tab" href="#" onclick="switchStyles()">Change Theme</a><br><br>
+                <a class="tab" href="#">Turn Sound On/Off</a><br><br>
+                <span class="tab" onclick="setPage('options', 'main')">Return to Home</span>
             </center>
         </div>
     </div>
-    <div style="position:absolute;right:5px;bottom:5px;">
-        <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics-storage.png" width="98" height="32" alt="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage"></a>
-        <a href="humans.txt" target="_blank"><img src="styles/img/humans.png" alt="humans.txt supported" width="98" height="32"></a>
-    </div>
-        <!-- The contents (if there's no contents the ribbon acts as a link) -->
+    <!-- The contents (if there's no contents the ribbon acts as a link) -->
     <div class="forkit-curtain">
         <div class="close-button"></div>
         <div id="forkit-contents">
@@ -144,17 +160,32 @@
         </div>
         <script>UI.displayHumansTXT('forkit-contents')</script>
     </div>
-    <a class="forkit" data-text="Fork us on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
+    <a class="forkit" data-text="Fork this on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
     <script src="js/forkit.js"></script>
     <div id="footer">
-        to enjoy this game bug-free, please use
-        <a id="footera" href="http://abetterbrowser.org" target="_blank">a better browser</a><br>
-        to test our system we have <a target="_blank" id="footera" href="test/manual_test_scripts.html">a few tests</a>anyone can walk through
+        <p>to enjoy this game bug-free, please use
+            <a id="footera" href="http://abetterbrowser.org" target="_blank">a better browser</a>
+        </p>
+        <p>to test our system we have <a target="_blank" id="footera" href="test/manual_test_scripts.html">a few tests</a> anyone can walk through</p>
+    </div>
+    <div style="position:absolute;right:5px;bottom:5px;z-index:1;">
+        <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics-storage.png" width="98" height="32" alt="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage"></a>
+        <a href="humans.txt" target="_blank"><img src="styles/img/humans.png" alt="humans.txt supported" width="98" height="32"></a>
     </div>
     <div id='previousversion'></div>
     <script>
         //display development info only if the dev file exists
         UI.showDevInfo('version','previousversion');
     </script>
+    <!-- how to popup -->
+    <div id="howto" class="lightbox_content">
+        <center>
+            <span class="tab" onclick="controlLightBox('howto',false)">Return to Home</span>
+        </center>
+        <hr>
+        <div id="howToContent" class="markdownContent"></div>
+        <script>UI.displayExternalMarkdownContent('howToContent','./docs/howTo.md')</script>
+    </div>
+    <div id="lightBoxDarken" class="lightbox_overlay"></div>
 </body>
 </html>

@@ -190,6 +190,26 @@ function Ui(engine)
         req.send(null);
     };
     
+    this.displayExternalMarkdownContent = function(elementId, contentPath)
+    {
+        if(typeof(elementId) === 'undefined' || typeof(contentPath) === 'undefined') { return }
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', contentPath);
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    var rootElement = ui.helperGetElementById(elementId);
+                    var converter = new Showdown.converter();
+                    var temp = converter.makeHtml(req.responseText.trim());
+                    ui.helperAppendHTMLToElement(rootElement, temp);
+                }
+            }
+        };
+        req.send(null);
+    };
+    
     //////////////////////////////////////////////
     // Methods for changing the stylesheet used //
     //////////////////////////////////////////////
