@@ -164,7 +164,7 @@ function Ui(engine)
                     var previousVersionElement = ui.helperCreateElement("span", {}, "previous version: " + req.responseText);
                     ui.helperAppendChildElement(rootElement, previousVersionElement);
                     //add a link to the previous version
-                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../'"+req.responseText+",'_blank')"});
+                    ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./../"+req.responseText"','_blank')"});
                     //make sure the element is displayed
                     rootElement.style.display = "block";
                 }
