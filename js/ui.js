@@ -100,8 +100,6 @@ function Ui(engine)
                     ui.helperAddAttributesToElement(rootElement,{onclick:"window.open('./versionHistory.txt','_blank')"});
                     rootElement.style.cursor = "pointer";
                     ui.helperAppendChildElement(rootElement, versionElement);
-                    //TODO: remove me when we hit production
-                    ui.displayTimestamp(versionElementId);
                 }
             }
         };
@@ -169,6 +167,23 @@ function Ui(engine)
                     rootElement.style.cursor = "pointer";
                     //make sure the element is displayed
                     rootElement.style.display = "block";
+                }
+            }
+        };
+        req.send(null);
+    };
+    
+    this.showDevInfo = function(versionElementId, lastVersionElementId)
+    {
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', './dev');
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    ui.displayLinkToPreviousVersion(lastVersionElementId);
+                    ui.displayTimestamp(versionElementId);
                 }
             }
         };

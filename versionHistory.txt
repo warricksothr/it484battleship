@@ -16,6 +16,7 @@ Integrated Showdown (A markdown javascript library) for displaying markdown with
 Added a markdown display of humans.txt when you pull down on the forkit widget
 Fixed some styling
 Added white bullet marks to the stylesheet
+Added code to check if we are in a development version and display relevent development information on the index page
 
 0.2.4.dev
 04.12.12
