@@ -1,14 +1,21 @@
 RELEASE BUILDS
 
 BETA BUILDS
-0.2.5.dev
+0.2.6.dev
 --in progress
+
+0.2.5.dev
+04.12.12
 Added GitHub logo for linking to project repository
 Added image link to GitHub repository on index and game pages
 Fixed draggable menu on index for FireFox
-Fixed draggable menu going off sright side of screen in Chrome
+Fixed draggable menu going off the right side of screen in Chrome
 Forkme added to the page
 Integrated forkit.js for interactive forking tag (https://github.com/hakimel/forkit.js)
+Integrated Showdown (A markdown javascript library) for displaying markdown within our pages. (https://github.com/coreyti/showdown)
+Added a markdown display of humans.txt when you pull down on the forkit widget
+Fixed some styling
+Added white bullet marks to the stylesheet
 
 0.2.4.dev
 04.12.12

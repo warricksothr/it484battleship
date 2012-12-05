@@ -128,6 +128,27 @@ function Ui(engine)
         req.send(null);
     };
     
+    //ajax request to display timestamp if it exists
+    this.displayHumansTXT = function(elmentId)
+    {
+        var ui = this;
+        var req = new XMLHttpRequest();
+        req.open('GET', './humans.txt');
+        req.onreadystatechange = function()
+        {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    if(typeof(elmentId) === 'undefined') { elmentId = 'forkit-contents'; }
+                    var rootElement = ui.helperGetElementById(elmentId);
+                    var converter = new Showdown.converter();
+                    var temp = converter.makeHtml(req.response);
+                    ui.helperAppendHTMLToElement(rootElement, temp);
+                }
+            }
+        };
+        req.send(null);
+    };
+    
     //////////////////////////////////////////////
     // Methods for changing the stylesheet used //
     //////////////////////////////////////////////
