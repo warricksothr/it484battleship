@@ -38,7 +38,14 @@ function AI(engine)
     this.hitShots = [];
     
     //store the last hit we made
-    this.lastHit;
+    this.getLastHit = function()
+    {
+        if (this.hitShots.length < 1)
+        {
+            return;
+        }
+        return this.hitShots[this.hitShots.length-1];
+    }
     
     //store the last shot
     this.lastShot;
@@ -646,7 +653,7 @@ function AI(engine)
             secondShot.vertical = true;
         }
         //the shot was to the up
-        else if ((firstShot.x - secondShot.x) >= 1)
+        else if ((firstShot.y - secondShot.y) >= 1)
         {
             firstShot.vertical = true;
             secondShot.vertical = true;
@@ -680,17 +687,15 @@ function AI(engine)
                 if (shot.type === 2)
                 {
                     //determine which direction the hit was in and add that info to the shot
-                    if(typeof(this.lastHit) !== 'undefined')
+                    if(typeof(this.getLastHit()) !== 'undefined')
                     {
                         //set the direction if this was a continued shot that hit
-                        this.helperDetermineDirection(this.lastHit, shot);
+                        this.helperDetermineDirection(this.getLastHit(), shot);
                     }
                     //make sure to disable hunting
                     this.areHunting = false;
-                    if(this.helperAddCellOnlyIfUnique(shot, this.hitShots))
-                    {
-                        this.lastHit = shot;
-                    }
+                    //add this shot to the hitShots if it is unique
+                    this.helperAddCellOnlyIfUnique(shot, this.hitShots)
                 }
                 //put us in killing mode to take out revealed hits
                 else if (shot.type === 4)
@@ -709,7 +714,7 @@ function AI(engine)
             this.getNextLastHit();
         }
         //reset to hunting mode if have no shots available in hitShots array
-        if (this.hitShots.length < 1 || typeof(this.lastHit) === 'undefined')
+        if (this.hitShots.length < 1)
         {
             this.hitShots = [];
             //reset and go back to hunting mode
@@ -724,9 +729,9 @@ function AI(engine)
      */
     this.getNextLastHit = function()
     {
-        this.lastHit = this.hitShots.pop();
-        this.hitShots.push(this.lastHit);
-        return this.lastHit;
+        //remove the last hit
+        this.hitShots.pop();
+        return this.getLastHit();
     };
     
     //in place addition only if the cell is unique
@@ -956,14 +961,15 @@ function AI(engine)
         }
         if (horizontalCheck && cell.horizontal)
         {
-            //check up
-            if (cell.x+1 >= grid.length)
+            //check right
+            if (cell.x+1 < grid.length)
             {
                 if ( grid[cell.x+1][cell.y] === 0)
                 {
                     return true;
                 }
             }
+            //check left
             if (cell.x-1 >= 0)
             {
                 if (grid[cell.x-1][cell.y] === 0)
@@ -1111,19 +1117,19 @@ function AI(engine)
         var validCell = true;
         do
         {
-            if (this.hitShots.length < 1 || typeof(this.lastHit) === 'undefined')
+            if (this.hitShots.length < 1)
             {
                 this.hitShots = [];
                 //if none of the hits work out we need to go back to hunting
                  this.helperExecuteModeOneHunt();
                  return;
             }
-            var validCell = this.helperModeOneIsCellValid(this.lastHit, this.engine.getShotGrid());
+            var validCell = this.helperModeOneIsCellValid(this.getLastHit(), this.engine.getShotGrid());
             if (!validCell) { this.getNextLastHit(); }
             
         } while (!validCell);
         //now start hunting according to the lastHit
-        cellToShootAt = this.helperModeOneGetCellToShootAt(this.lastHit, this.engine.getShotGrid());
+        cellToShootAt = this.helperModeOneGetCellToShootAt(this.getLastHit(), this.engine.getShotGrid());
         //fire this shot
         var results = this.engine.fireShot(cellToShootAt.x,cellToShootAt.y);
         this.helperParseShotResults(results);
