@@ -1,11 +1,9 @@
 /**
- * 
  * Home of the IT484 Battleship AI Code Base
  * 
  * @author Drew Short <warrick@sothr.com>
  * @author Aaron Willcutt
  */
-// This is the home of the AI code //
 
 function AI(engine)
 {
@@ -18,28 +16,39 @@ function AI(engine)
     
     // Define a Shot for shot history
     // ie new Shot(1,5,7,'hunt'); A shot at position 5,7 on turn 1 that is hunting
-    function Shot(turn, x, y, type)
+    function Shot(x, y, type, message)
     {
-        this.turn = turn;
         this.x = x;
         this.y = y;
         this.type = type;
+        this.message = message;
     }
     
     //history of shots the AI has made in the form of [shot{x:x,y:y},shot{x:x,y:y}]
     this.shotHistory = [];
     
     //logic flags for triggering hunting vs killing mode
-    this.foundShip = false;
+    //always start the AI in hunting mode
+    this.areHunting = true;
+    
+    //indicator that the ship we are hunting is vertical
+    this.killingIsVertical = false;
+    
+    //a log of all useful hit shots
+    this.hitShots = [];
+    
+    //store the last hit we made
+    this.lastHit;
+    
+    //store the last shot
+    this.lastShot;
+    
+    //hits that are no longer useful
+    this.exhaustedHitShots = [];
     
     /////////////////////
     // General Helpers //
     /////////////////////
-    
-    this.wasAHit = function(message)
-    {
-        return this.engine.helperFireShotDetermineIsHit(message);
-    };
     
     /////////////////////////////////////////////////////////////////////////
     // AI: BAD DREW CODE RANDOM FOR TESTING PURPOSES REPLACE ME SOON!!!!!! //
@@ -87,8 +96,6 @@ function AI(engine)
             var randomShotIndex = getRandomInt(0, numOfShots);
             return shots[randomShotIndex];
         }
-        
-  
   
   /**
        //Function to create a weighted array of shots to choose shots based on effectiveness rather than randomness. 
@@ -277,11 +284,10 @@ function AI(engine)
                 alert("shooting at enemy ship located at ("+randShipCell.x+","+randShipCell.y+")");
             }
             //push the shot onto the history
-            this.shotHistory.push(randShipCell);
+            //this.shotHistory.push(randShipCell);
             //fire the shot
-            engine.fireShot(randShipCell.x, randShipCell.y);
-            var hit = this.wasAHit(arrayPeek(this.engine.getShotHistory()));
-            return hit;
+            var result = engine.fireShot(randShipCell.x, randShipCell.y);
+            this.helperParseShotResults(result);
         }
         //shoot at a random cell that we haven't already shot at
         else
@@ -293,11 +299,10 @@ function AI(engine)
                 alert("shooting randomly at cell ("+randCell.x+","+randCell.y+")");
             }
             //push the shot onto the history
-            this.shotHistory.push(randCell);
+            //this.shotHistory.push(randCell);
             //fire the shot
-            engine.fireShot(randCell.x, randCell.y);
-            var hit = this.wasAHit(arrayPeek(this.engine.getShotHistory()));
-            return hit;
+            var result = engine.fireShot(randCell.x, randCell.y);
+            this.helperParseShotResults(result);
         }  
     };
     
@@ -305,6 +310,438 @@ function AI(engine)
     {
         //currently the same logic
         return this.helperFireHuntingCheaterShot();
+    };
+    
+    ////////////////////
+    // AI Helper Code //
+    ////////////////////
+    
+    ///////////////////////////
+    // AI Helper Parity Code //
+    ///////////////////////////
+    
+    /**
+     * checks outward in a t pattern. if it encounters a non 0 it returns false
+     */
+    this.helperCellCheckParityOutward = function(x,y,parityGrid,distance)
+    {
+        //check left,right,up,and down
+        return (this.helperCellCheckParityUp(x,y,parityGrid,distance)
+            && this.helperCellCheckParityDown(x,y,parityGrid,distance)
+            && this.helperCellCheckParityLeft(x,y,parityGrid,distance)
+            && this.helperCellCheckParityRight(x,y,parityGrid,distance));
+    };
+    
+    /**
+     * checks outward in a horizontal line to the left. if it encounters a non 0 it returns false
+     */
+    this.helperCellCheckParityUp = function(x,y,parityGrid,distance)
+    {
+        // Check Up
+        //make sure up isn't off the grid
+        if (y-distance >= 0)
+        {
+            // check Up //
+            for(var i = 1; i <= distance; i++)
+            {
+                var mody = y - i;
+                //if the cell is not empty then we we 
+                if (parityGrid[x][mody] !== 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     * checks outward in a vertical line to the down. if it encounters a non 0 it returns false
+     */
+    this.helperCellCheckParityDown = function(x,y,parityGrid,distance)
+    {
+        // Check Down //
+        //make sure up isn't off the grid
+        if (y+distance < parityGrid.length)
+        {
+            // check Up //
+            for(var i = 1; i <= distance; i++)
+            {
+                var mody = y + i;
+                //if the cell is not empty then we we 
+                if (parityGrid[x][mody] !== 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     * checks outward in a horizontal line to the left. if it encounters a non 0 it returns false
+     */
+    this.helperCellCheckParityLeft = function(x,y,parityGrid,distance)
+    {
+        // Check left //
+        //make sure up isn't off the grid
+        if (x-distance >= 0)
+        {
+            // check Up //
+            for(var i = 1; i <= distance; i++)
+            {
+                var modx = x - i;
+                //if the cell is not empty then we we 
+                if (parityGrid[modx][y] !== 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     * checks outward in a horizontal line to the right. if it encounters a non 0 it returns false
+     */
+    this.helperCellCheckParityRight = function(x,y,parityGrid,distance)
+    {
+        // Check left //
+        //make sure up isn't off the grid
+        if (x+distance < parityGrid.length)
+        {
+            // check Up //
+            for(var i = 1; i <= distance; i++)
+            {
+                var modx = x + i;
+                //if the cell is not empty then we we 
+                if (parityGrid[modx][y] !== 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    
+    /**
+     * Determine if a cell should be shot at for the sake of parity
+     */
+    this.helperFillParityCell = function(x,y,parityGrid,parityDistance)
+    {
+        //no need to calculate parity on cells that have already been shot at or recommended
+        if (parityGrid[x][y] !== 0)
+        {
+            //this should never happen but is here just in case
+            return;
+        }
+        //check up,down,left,and right for parity
+        //if this cell is centered and there is no room to the left,right,up,and down then the cell is not parity
+        if(!this.helperCellCheckParityOutward(x,y,parityGrid,parityDistance))
+        {
+            /**
+             * Because the grid is built down and to the right from the top-left corner,
+             * therefore we only need to check up and left
+             */
+            if(y-parityDistance >= 0)
+            {
+                if(this.helperCellCheckParityUp(x,y,parityGrid,parityDistance))
+                {
+                    //was a valid vertical parity cell
+                    parityGrid[x][y] = 1;
+                    return;
+                }
+            }
+            //make sure it's not off the grid
+            if(x-parityDistance >= 0)
+            {
+                if(this.helperCellCheckParityLeft(x,y,parityGrid,parityDistance))
+                {
+                    //was a valid horizontal cell
+                    parityGrid[x][y] = 1;
+                    return;
+                }
+            }
+            parityGrid[x][y] = 0;
+            return;
+        }
+        parityGrid[x][y] = 1;
+    };
+    
+    /**
+     * Generate a parity grid.
+     * Useful for determining hunting shots
+     */
+    this.helperGenerateParityGrid = function(shotGrid)
+    {
+        var parityGrid = [];
+        //find the smallest ship not destroyed
+        var eShips = this.engine.getAliveEnemyShips();
+        //the parity to catch a ship of min length
+        var minLength = eShips[0].shipLength;
+        for (var shipIndex = 0; shipIndex < eShips.length; shipIndex++)
+        {
+            if (eShips[shipIndex].shipLength < minLength) { minLength = eShips[shipIndex].shipLength; }
+        }
+        //parity distance to check
+        var parityDistance = minLength - 1;
+        //create starting parity grid (-1 in every location that has already been shot at regardless of outcome)
+        for (var i = 0; i < shotGrid.length; i++)
+        {
+            parityGrid[i] = [];
+            for (var j = 0; j < shotGrid.length; j++)
+            {
+                if (shotGrid[i][j] !== 0)
+                {
+                    parityGrid[i][j] = -1;
+                }
+                else
+                {
+                    parityGrid[i][j] = 0;
+                }
+            }
+        }
+        //populate the parity grid
+        for (var x = 0; x < shotGrid.length; x++)
+        {
+            for (var y = 0; y < shotGrid.length; y++)
+            {
+                //fill the parity cell
+                this.helperFillParityCell(x,y,parityGrid,parityDistance);
+            }
+        }
+        return parityGrid;
+    };
+    
+    /**
+     * Get a list of shots that are ideal according to the parity grid
+     */
+    this.helperGetParityShots = function(shotGrid)
+    {
+        var parityGrid = this.helperGenerateParityGrid(shotGrid);
+        var parityShots = [];
+        var index = 0;
+        //loop over the parity grid and generate the shots that are valid
+        for (var x = 0; x < parityGrid.length; x++)
+        {
+            for (var y = 0; y < parityGrid[x].length; y++)
+            {
+                if (parityGrid[x][y] > 0)
+                {
+                    parityShots[index++] = {x:x, y:y};
+                }
+            }
+        }
+        return parityShots;
+    };
+    
+    //////////////////////////////////
+    // SHOOTING AI HELPER FUNCTIONS //
+    //////////////////////////////////
+    
+    /**
+     * Get an array of cells that are known to be hits
+     * important for mode 2
+     */ 
+    this.helperGetKnownHitCells = function(shotGrid)
+    {
+        var cells = [];
+        //walk through the shot grid to find reveal hits...
+        for (var x = 0; x < shotGrid.length; x++)
+        {
+            for (var y = 0; y < shotGrid.length; y++)
+            {
+                //if reveal hit, add it to our listing
+                if (shotGrid[x][y] === 4)
+                {
+                    cells.push({x:x, y:y});
+                }
+            }
+        }
+        return cells;
+    };
+    
+    /**
+     * Gets all cells for a particular ship
+     */
+    this.helperGetShipCells = function(ship)
+    {
+        var cells = [];
+        var shipStartx = ship.startx;
+        var shipStarty = ship.starty;
+        var shipIsVertical = ship.isVertical;
+        var shipLength = ship.shipLength;
+        if (shipIsVertical)
+        {
+            var shipEndy = shipStarty + shipLength-1;
+            for (var mody = shipStarty; mody <= shipEndy; mody++)
+            {
+                cells.push({x:shipStartx,y:mody});
+            }
+        }
+        else
+        {
+            var shipEndx = shipStartx + shipLength-1;
+            for (var modx = shipStartx; modx <= shipEndx; modx++)
+            {
+                cells.push({x:modx,y:shipStarty});
+            }
+        }
+        return cells;
+    };
+    
+    /**
+     * Remove ship cells from a hits array for the AI
+     */
+    this.helperRemoveShipCellsFromHitsArray = function(shipCells, arrayToRemoveFrom)
+    {
+        for (var i = 0; i < shipCells.length; i++)
+        {
+            var shipCell = shipCells[i];
+            for (var j = 0; j < arrayToRemoveFrom.length; j++)
+            {
+                this.helperRemoveCellFromArray(shipCell, arrayToRemoveFrom);
+            }
+        }
+    };
+    
+    /**
+     * Remove a cell from the specified array if it exists in it
+     */
+    this.helperRemoveCellFromArray = function(cell, arrayToRemoveFrom)
+    {
+        for (var i = 0; i < arrayToRemoveFrom.length; i++)
+        {
+            var cellCompare = arrayToRemoveFrom[i];
+            if (cell.x === cellCompare.x && cell.y === cellCompare.y)
+                {
+                    //remove it from the array
+                    arrayToRemoveFrom.splice(i,1);
+                }
+        }
+    };
+    
+    this.helperDetermineDirection = function(firstShot, secondShot)
+    {
+        //the shot was to the right
+        if ((firstShot.x - secondShot.x) <= -1)
+        {
+            firstShot.horizontal = true;
+            secondShot.horizontal = true;
+        }
+        //the shot was to the left
+        else if ((firstShot.x - secondShot.x) >= 1)
+        {
+            firstShot.horizontal = true;
+            secondShot.horizontal = true;
+        }
+        //the shot was to the down
+        else if ((firstShot.y - secondShot.y) <= -1)
+        {
+            firstShot.vertical = true;
+            secondShot.vertical = true;
+        }
+        //the shot was to the up
+        else if ((firstShot.x - secondShot.x) >= 1)
+        {
+            firstShot.vertical = true;
+            secondShot.vertical = true;
+        }
+    };
+    
+    /**
+     * Goes through the list of shots returned from the fire function
+     * Then determines if we have hit a ship
+     * if we have it sets the booleans 
+     * and stores the shots in an array to be used as reference points
+     * 
+     * If it finds that we have sunk a ship it reads the x,y pairs 
+     * and removes all cells of that ship from the array of hits
+     */
+    this.helperParseShotResults = function(shotResults)
+    {
+        //get most recent shot history from the engine
+        var lastShots = this.engine.getPlayerLastShots();
+        //parse shot history
+        if (lastShots.length > 0)
+        {
+            for (var i = 0; i < lastShots.length; i++)
+            {
+                var shot = lastShots[i];
+                this.lastShot = shot;
+                this.helperAddCellOnlyIfUnique(shot, this.shotHistory);
+                //we have a hit
+                //we don't care about revealed hits since 
+                //there will be a seperate method for those
+                if (shot.type === 2)
+                {
+                    //determine which direction the hit was in and add that info to the shot
+                    if(typeof(this.lastHit) !== 'undefined')
+                    {
+                        //set the direction if this was a continued shot that hit
+                        this.helperDetermineDirection(this.lastHit, shot);
+                    }
+                    //make sure to disable hunting
+                    this.areHunting = false;
+                    if(this.helperAddCellOnlyIfUnique(shot, this.hitShots))
+                    {
+                        this.lastHit = shot;
+                    }
+                }
+                //put us in killing mode to take out revealed hits
+                else if (shot.type === 4)
+                {
+                    this.areHunting = false;
+                }
+            }
+        }
+        //we sunk a ship!!!!!!!
+        if (typeof(shotResults.name) !== 'undefined')
+        {
+            var cells = this.helperGetShipCells(shotResults);
+            //remove the sunk ship cells from the hit shots
+            this.helperRemoveShipCellsFromHitsArray(cells, this.hitShots);
+            //finally pop the last hit
+            this.getNextLastHit();
+        }
+        //reset to hunting mode if have no shots available in hitShots array
+        if (this.hitShots.length < 1 || typeof(this.lastHit) === 'undefined')
+        {
+            this.hitShots = [];
+            //reset and go back to hunting mode
+            this.areHunting = true;
+            this.killingIsVertical = false;
+        }
+    };
+    
+    /**
+     * removes the current hit from the list of valid hits
+     * grabs the next valid hit
+     */
+    this.getNextLastHit = function()
+    {
+        this.lastHit = this.hitShots.pop();
+        this.hitShots.push(this.lastHit);
+        return this.lastHit;
+    };
+    
+    //in place addition only if the cell is unique
+    this.helperAddCellOnlyIfUnique = function(addMe, toMe)
+    {
+        for (var i = 0; i < toMe.length; i++)
+        {
+            if (toMe[i].x === addMe.x && toMe[i].y === addMe.y)
+            {
+                //addMe is not unique
+                return false;
+            }
+        }
+        toMe.push(addMe);
+        return true;
     };
     
     ////////////////////////
@@ -446,7 +883,7 @@ function AI(engine)
     //this single "magic" function that performs the ai moves.
     this.executeTurn = function()
     {
-        //check if we need to place ou ships
+        //check if we need to place our ships
         if(engine.getPlayerShips().length < 1)
         {
             //place ships
@@ -477,15 +914,13 @@ function AI(engine)
         if(this.debug){
             alert("AI is pretending to work and is in mode 1. I fight for the users.");
         }
-        //go into killer mode
-        if (this.foundShip === true){
-            //TODO: leave killer mode on the confirmation of a destroyed ship
-            this.foundShip = this.helperExecuteModeOneKiller();
+        //go into hunter mode
+        if (this.areHunting === true){
+            this.helperExecuteModeOneHunt();
         }
-        //we are in hunting mode
+        //we are in killer mode
         else{
-            //TODO: set found ship when we get a hit and go into killer mode
-            this.foundShip = this.helperExecuteModeOneHunt();
+            this.helperExecuteModeOneKiller();
         }
     };
     
@@ -493,14 +928,169 @@ function AI(engine)
     // Mode One Logic and Helpers //
     ////////////////////////////////
     
+    /**
+     * determine if the provided cell is a valid target.
+     * paricularly if at least one cell next to it hasn't been hit
+     */
+    this.helperModeOneIsCellValid = function(cell, grid)
+    {
+        var verticalCheck = typeof(cell.vertical) !== 'undefined';
+        var horizontalCheck = typeof(cell.horizontal) !== 'undefined';
+        if (verticalCheck && cell.vertical)
+        {
+            //check up
+            if (cell.y-1 >= 0)
+            {
+                if ( grid[cell.x][cell.y-1] === 0)
+                {
+                    return true;
+                }
+            }
+            if (cell.y+1 < grid.length)
+            {
+                if (grid[cell.x][cell.y+1] === 0)
+                {
+                    return true;
+                }
+            }
+        }
+        if (horizontalCheck && cell.horizontal)
+        {
+            //check up
+            if (cell.x+1 >= grid.length)
+            {
+                if ( grid[cell.x+1][cell.y] === 0)
+                {
+                    return true;
+                }
+            }
+            if (cell.x-1 >= 0)
+            {
+                if (grid[cell.x-1][cell.y] === 0)
+                {
+                    return true;
+                }
+            }
+        }
+        if (!verticalCheck && !horizontalCheck)
+        {
+            if (cell.y-1 >= 0)
+            {
+                if (grid[cell.x][cell.y-1] === 0)
+                {
+                    return true;
+                }
+            }
+            //chcek right
+            if (cell.x+1 < grid.length)
+            {
+                if (grid[cell.x+1][cell.y] === 0)
+                {
+                    return true;
+                }
+            }
+            //check down
+            if (cell.y+1 < grid.length)
+            {
+                if (grid[cell.x][cell.y+1] === 0)
+                {
+                    return true;
+                }
+            }
+            //check left
+            if (cell.x-1 >= 0)
+            {
+                if (grid[cell.x-1][cell.y] === 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    
+    /**
+     * 
+     */
+    this.helperModeOneGetCellToShootAt = function(cell, grid)
+    {
+        var target;
+        //use orientation information if it is available
+        var verticalCheck = typeof(cell.vertical) !== 'undefined';
+        var horizontalCheck = typeof(cell.horizontal) !== 'undefined';
+        if (verticalCheck)
+        {
+            if (verticalCheck && cell.vertical)
+            {
+                //check up
+                if (cell.y-1 >= 0 && grid[cell.x][cell.y-1] === 0)
+                {
+                    target = {x:cell.x,y:cell.y-1};
+                }
+                else if (cell.y+1 < grid.length && grid[cell.x][cell.y+1] === 0)
+                {
+                    target = {x:cell.x,y:cell.y+1};
+                }
+            }
+        }
+        if (horizontalCheck)
+        {
+            if (horizontalCheck && cell.horizontal)
+            {
+                if (cell.x+1 < grid.length && grid[cell.x+1][cell.y] === 0)
+                {
+                    target = {x:cell.x+1,y:cell.y};
+                }
+                else if (cell.x-1 >= 0 && grid[cell.x-1][cell.y] === 0)
+                {
+                    target = {x:cell.x-1,y:cell.y};
+                }
+            }
+        }
+        //no information available so search around a little
+        if (!verticalCheck && !horizontalCheck)
+        {
+            //check up
+            if (cell.y-1 >= 0 && grid[cell.x][cell.y-1] === 0)
+            {
+                target = {x:cell.x,y:cell.y-1};
+            }
+            //chcek right
+            else if (cell.x+1 < grid.length && grid[cell.x+1][cell.y] === 0)
+            {
+                target = {x:cell.x+1,y:cell.y};
+            }
+            //check down
+            else if (cell.y+1 < grid.length && grid[cell.x][cell.y+1] === 0)
+            {
+                target = {x:cell.x,y:cell.y+1};
+            }
+            //check left
+            else
+            {
+                target = {x:cell.x-1,y:cell.y};
+            }
+        }
+        //choose a target
+        return target;
+    };
+    
+    //logic for hunting mode for mode one
     //return true if we made a hit and found a ship or not
     this.helperExecuteModeOneHunt = function()
     {
         if(this.debug){
             alert("AI is executing a hunting shot method");
         }
-        //currently using a sub par AI
-        return this.helperFireHuntingCheaterShot();
+        //hunt according to parity
+        //get a list of parity cell we can use to search for a ship
+        var parityShots = this.helperGetParityShots(this.engine.getShotGrid());
+        //choose a parity shot at random
+        var randIndex = getRandomInt(0,parityShots.length-1);
+        var cellToShootAt = parityShots[randIndex];
+        //fire this shot
+        var results = this.engine.fireShot(cellToShootAt.x,cellToShootAt.y);
+        this.helperParseShotResults(results);
     };
     
     //return true if we sunk a ship or not
@@ -509,7 +1099,34 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a killing shot method");
         }
-        return this.helperFireHuntingCheaterShot();
+        var cellToShootAt;
+        //shoot at known avaialable cells first
+        var knownAvailableHits = this.helperGetKnownHitCells(this.engine.getShotGrid());
+        if (knownAvailableHits.length > 0)
+        {
+            var knownAvailableHits = this.helperGetKnownHitCells(this.engine.getShotGrid());
+            var randIndex = getRandomInt(0,knownAvailableHits.length-1);
+            cellToShootAt = knownAvailableHits[randIndex];
+        }
+        var validCell = true;
+        do
+        {
+            if (this.hitShots.length < 1 || typeof(this.lastHit) === 'undefined')
+            {
+                this.hitShots = [];
+                //if none of the hits work out we need to go back to hunting
+                 this.helperExecuteModeOneHunt();
+                 return;
+            }
+            var validCell = this.helperModeOneIsCellValid(this.lastHit, this.engine.getShotGrid());
+            if (!validCell) { this.getNextLastHit(); }
+            
+        } while (!validCell);
+        //now start hunting according to the lastHit
+        cellToShootAt = this.helperModeOneGetCellToShootAt(this.lastHit, this.engine.getShotGrid());
+        //fire this shot
+        var results = this.engine.fireShot(cellToShootAt.x,cellToShootAt.y);
+        this.helperParseShotResults(results);
     };
     
     ////////////////////
@@ -522,15 +1139,13 @@ function AI(engine)
         if(this.debug){
             alert("AI is pretending to work and is in mode 1. I fight for the users.");
         }
-        //go into killer mode
-        if (this.foundShip === true){
-            //TODO: leave killer mode on the confirmation of a destroyed ship
-            this.foundShip = this.helperExecuteModeTwoKiller();
+        //go into hunter mode
+        if (this.areHunting === true){
+            this.helperExecuteModeTwoHunt();
         }
-        //we are in hunting mode
+        //we are in killer mode
         else{
-            //TODO: set found ship when we get a hit and go into killer mode
-            this.foundShip = this.helperExecuteModeTwoHunt();
+            this.helperExecuteModeTwoKiller();
         }
     };
     
@@ -544,8 +1159,28 @@ function AI(engine)
         if(this.debug){
             alert("AI is executing a hunting shot method");
         }
-        //currently using a sub par AI
-        return this.helperFireHuntingCheaterShot();
+        //add logic to choose shots based on weight
+        var cellToShootAt;
+        //shoot at known avaialable cells first
+        var knownAvailableHits = this.helperGetKnownHitCells(this.engine.getShotGrid());
+        if (knownAvailableHits.length > 0)
+        {
+            var knownAvailableHits = this.helperGetKnownHitCells(this.engine.getShotGrid());
+            var randIndex = getRandomInt(0,knownAvailableHits.length-1);
+            cellToShootAt = knownAvailableHits[randIndex];
+        }
+        //otherwise hunt according to parity
+        else
+        {
+            //get a list of parity cell we can use to search for a ship
+            var parityShots = this.helperGetParityShots(this.engine.getShotGrid());
+            //choose a parity shot at random
+            var randIndex = getRandomInt(0,parityShots.length-1);
+            cellToShootAt = parityShots[randIndex];
+        }
+        //fire this shot
+        var results = this.engine.fireShot(cellToShootAt.x,cellToShootAt.y);
+        this.helperParseShotResults(results);
     };
     
     //return true if we sunk a ship or not
@@ -575,7 +1210,7 @@ function AI(engine)
     // Shot Selection Code Mode 1 //
     ////////////////////////////////
     
-    //This function fires in a diagonal x+1, y+1 pattern with the starting point specified in the parameters   
+    //This function fires in a diagonal x+1, y+1 pattern with the starting point specified in the parameters
     this.helperCheckDiagonal = function(xCoord, yCoord)
     {
         while (xCoord<=9 && yCoord>=0)
@@ -589,7 +1224,7 @@ function AI(engine)
     };
     
     //NOTE: There must be a better way to go about performing this. I can't find the pattern right now, however.
-    //These calls will perform diagonal searching with the parameters given indicating the starting point. 
+    //These calls will perform diagonal searching with the parameters given indicating the starting point.
     //These shots should check most cells on the board
     
     
@@ -670,7 +1305,7 @@ function AI(engine)
     
     
         
-         //   once ship is hit we search for orientation. We limit shots to cells within the grid which are affected by fog of war.
+         // once ship is hit we search for orientation. We limit shots to cells within the grid which are affected by fog of war.
          
           //While a ship is hit but not sunk we check one cell north of it
             if ((yCoord-1) > 0 && engine.player2ShotGrid[xCoord][yCoord-1] === 0)

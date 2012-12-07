@@ -189,6 +189,7 @@ body
     color:white;
     background:rgba( 0, 0, 0, 0.96 );
     padding-top:5%;
+    z-index:1;
 }
 
 .forkit-curtain .close-button

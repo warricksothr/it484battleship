@@ -1,9 +1,23 @@
-RELEASE BUILDS
+RELEASE BUILDS:
 
-BETA BUILDS
+BETA BUILDS:
+--planned or in-progress features
+A results page at the end of a game
+Scores for players
+A help button on the game page that displays a translated markdown file with information about the current game type
+Play sounds corresponding to certain player actions
+Intelligently determine multiple messages and display them for the player at the end of the turn
+Randomly choose which player will start a game
+Improved Photon Bomb Run
+Improved AI
+Modified Scrap Harvester shot that behaves according to the specifications document
+
 0.2.6.dev
 --in progress
-Started adding a how-to guide on the front page
+Implemented a light box that shows a simple how to page on the front screen
+Implemented a parity engine in the AI code base
+Implemented multiple shot results shown in turn end window
+Implemented 'smart' AI for mode 1
 
 0.2.5.dev
 04.12.12
@@ -49,7 +63,7 @@ Cleaned up randomization code in index.html
 First edition with player ship placement
 Fixed random crash when Photon Bombing Run was used near the right edge of the board
 
-ALPHA BUILDS
+ALPHA BUILDS:
 0.1d
 03.12.12
 Added a forfeit button to the game page

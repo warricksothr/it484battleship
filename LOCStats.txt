@@ -1,20 +1,24 @@
-http://cloc.sourceforge.net v 1.56  T=1.0 s (13.0 files/s, 4492.0 lines/s)
+http://cloc.sourceforge.net v 1.56  T=0.5 s (34.0 files/s, 13420.0 lines/s)
 ----------------------------------------------------------------------------------
 File                                           blank        comment           code
 ----------------------------------------------------------------------------------
 .\js\engine.js                                   110            362           1058
-.\js\ui.js                                        76            263            663
+.\js\ui.js                                        77            266            684
+.\js\showdown.js                                 253            688            513
 .\js\ai.js                                        98            169            447
-.\styles\game.css                                  0             27            299
+.\styles\game.css                                  1             28            313
+.\js\forkit.js                                    81             34            244
+.\test\manual_test_scripts.html                    9              0            206
 .\test\manual_text_scripts.html                    9              0            201
-.\styles\menu.css                                 16              0            130
-.\index.html                                       8              1            127
-.\game.html                                        3             11             84
+.\styles\menu.css                                 21              0            184
+.\index.html                                       8              3            140
+.\game.html                                        3             11             85
 .\styles\mgame.css                                25             26             80
 .\results.html                                     2              0             66
+.\styles\forkit.css                               11              0             63
 .\js\util.js                                       4             16             53
 .\styles\mmenu.css                                14              1             42
 .\runCloc.bat                                      0              0              1
 ----------------------------------------------------------------------------------
-SUM:                                             365            876           3251
+SUM:                                             726           1604           4380
 ----------------------------------------------------------------------------------

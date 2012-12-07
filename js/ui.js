@@ -1031,28 +1031,35 @@ function Ui(engine)
         this.helperResetDefaultShots = function()
         {
             //set shots back to the default
-            engine.player1SelectedShot = regularShot;
-            engine.player2SelectedShot = regularShot;
+            this.engine.player1SelectedShot = regularShot;
+            this.engine.player2SelectedShot = regularShot;
         };
         
         //all the logic behind firing a shot then handing the turn over to the next player
         this.helperFireShot = function(x,y)
         {
             //fire the shot
-            var result = engine.fireShot(x,y);
+            var result = this.engine.fireShot(x,y);
             //if the result of the shot is undefined, then the shot failed because the user didn't select a shot. let them try again
             if (typeof(result) === 'undefined') { return; }
             //show the alerts
-            var hist = engine.getShotHistory();
-            alert("ending turn for " + hist[hist.length-1]);
+            var hist = this.engine.getPlayerShotHistory();
+            var history = "";
+            for (var i = 0; i < hist.length; i++)
+            {
+                history += hist[i] + "\n";
+            }
+            var player = "player 2:\n";
+            if (this.engine.isFirstPlayer) { player = "player 1:\n"; }
+            alert("ending turn " + player + history);
             //only show the second alert in 2 player mode
-            if (engine.numberOfPlayers > 1){
+            if (this.engine.numberOfPlayers > 1){
                 this.hideGrids();
                 //hide the grids between turns
                 alert("I'm really changing turn now. Don't Cheat.");
             }
             //change turn
-            var gameOver = engine.changePlayers();
+            var gameOver = this.engine.changePlayers();
             //reset each player's selected shot to the default shot
             this.helperResetDefaultShots();
             //check if the game is over
@@ -1072,7 +1079,11 @@ function Ui(engine)
             }
         };
     }
-    
+
+    /////////////////////////////////////////////
+    // METHODS BELOW THIS ARE FOR RESULTS.HTML //
+    /////////////////////////////////////////////
+
 }
 
 //create a new UI instance and import ENGINE into it

@@ -218,6 +218,14 @@ function Engine()
 
     //a history of shots for each player
     this.shotHistory = [];
+    
+    //history containing shot objects
+    this.player1LastShotHistory = [];
+    this.player2LastShotHistory = [];
+    
+    //round specific player shots
+    this.player1LastShotHistoryMessages = [];
+    this.player2LastShotHistoryMessages = [];
 
     //an array of ships for each player
     this.player1Ships = [];
@@ -250,8 +258,8 @@ function Engine()
      * Fire the selected shot at the opponenet
      * returns an undefined if there was an error
      * returns the ship(s) destroyed if any were destroyed
-     * returns false if no ships were destroyed
-     * TODO: I can be minimized and made easier to read by using a helper function
+     * if no ships were destroyed returns an object like this {hit:true/false, x:x, y:y}
+     * TODO: I can be minimized and made easier to read by using helper functions
      */
     this.fireShot = function(x, y)
     {
@@ -273,18 +281,29 @@ function Engine()
                 return;
             }
             message = this.player1SelectedShot.fire(x, y, this.player2ShipGrid, this.player1ShotGrid);
+            //clear player 1 recent history
+            this.player1LastShotHistory = [];
+            this.player1LastShotHistoryMessages = [];
             if (message instanceof Array)
             {
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.shotHistory.push("p1_t"+this.turnCounter+": "+message[i]);
+                    var messageContents = "("+message[i].x+","+message[i].y+") " + message[i].message;
+                    var engineMessage = "p1_t"+this.turnCounter+": "+messageContents;
+                    this.shotHistory.push(engineMessage);
+                    this.player1LastShotHistoryMessages.push(engineMessage);
+                    this.player1LastShotHistory.push(message[i]);
                     i++;
                 }
             }
             else
             {
-                this.shotHistory.push("p1_t"+this.turnCounter+": "+message);
+                var messageContents = "("+message.x+","+message.y+") " + message.message;
+                var engineMessage = "p1_t"+this.turnCounter+": "+messageContents;
+                this.shotHistory.push(engineMessage);
+                this.player1LastShotHistoryMessages.push(engineMessage);
+                this.player1LastShotHistory.push(message);
             }
             var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player2Ships);
             //check if we have sunk any ships and if so add a message and return the ship that was sunk
@@ -298,11 +317,13 @@ function Engine()
                     for(var i = 0; i < sunkShips.length; i++)
                     {
                         this.shotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                        this.player1LastShotHistoryMessages.push("p1_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
                     }
                 }
                 else
                 {
                     this.shotHistory.push("p1_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                    this.player1LastShotHistoryMessages.push("p1_t"+this.turnCounter+": Sunk "+sunkShips.name);
                 }
             }
             //indicate that we have fired this shot
@@ -326,18 +347,29 @@ function Engine()
                 return;
             }
             message = this.player2SelectedShot.fire(x, y, this.player1ShipGrid, this.player2ShotGrid);
+            //clear player 2 recent history
+            this.player2LastShotHistory = [];
+            this.player2LastShotHistoryMessages = [];
             if (message instanceof Array)
             {
                 var i = 0;
                 while ( i < message.length )
                 {
-                    this.shotHistory.push("p2_t"+this.turnCounter+": "+message[i]);
+                    var messageContents = "("+message[i].x+","+message[i].y+") " + message[i].message;
+                    var engineMessage = "p2_t"+this.turnCounter+": "+messageContents;
+                    this.shotHistory.push(engineMessage);
+                    this.player2LastShotHistoryMessages.push(engineMessage);
+                    this.player2LastShotHistory.push(message[i]);
                     i++;
                 }
             }
             else
             {
-                this.shotHistory.push("p2_t"+this.turnCounter+": "+message);
+                var messageContents = "("+message.x+","+message.y+") " + message.message;
+                var engineMessage = "p2_t"+this.turnCounter+": "+messageContents;
+                this.shotHistory.push(engineMessage);
+                this.player2LastShotHistoryMessages.push(engineMessage);
+                this.player2LastShotHistory.push(message);
             }
             var shipsAfterShot = this.helperDetermineShipsNotSunk(this.player1Ships);
             //check if we have sunk any ships and if so add a message and return the ship that was sunk
@@ -351,11 +383,13 @@ function Engine()
                     for(var i = 0; i < sunkShips.length; i++)
                     {
                         this.shotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
+                        this.player2LastShotHistoryMessages.push("p2_t"+this.turnCounter+": Sunk "+sunkShips[i].name);
                     }
                 }
                 else
                 {
                     this.shotHistory.push("p2_t"+this.turnCounter+": Sunk "+sunkShips.name);
+                    this.player2LastShotHistoryMessages.push("p2_t"+this.turnCounter+": Sunk "+sunkShips.name);
                 }
             }
             //indicate that we have fired this shot
@@ -363,16 +397,6 @@ function Engine()
             //return the sunk ship(s)
             return sunkShips;
         }
-    };
-    
-    this.helperFireShotDetermineIsHit = function(message)
-    {
-        //check the message for "Hit"
-        if (message.indexOf("Hit") !== -1)
-        {
-            return true;
-        }
-        return false;
     };
     
     //get an array of ships that are not destroyed
@@ -555,6 +579,19 @@ function Engine()
     this.getShotHistory = function()
     {
         return this.shotHistory;
+    };
+    
+    this.getPlayerShotHistory = function()
+    {
+        if(this.isFirstPlayer) { return this.player1LastShotHistoryMessages; }
+        return this.player2LastShotHistoryMessages;
+    };
+    
+    //get shots from the last round
+    this.getPlayerLastShots = function()
+    {
+        if(this.isFirstPlayer) { return this.player1LastShotHistory; }
+        return this.player2LastShotHistory;
     };
 
     //return the shot types that are available for the current player
@@ -995,41 +1032,43 @@ Engine.prototype.selectGameMode = function(numberOfPlayers, modeOne)
 };
 
 //fire a generic shot
+//returns an object {x:x, y:y, message:message}
 function fireGenericShot(x, y, targetShipGrid, shotGrid)
 {
-    var message = "("+x+","+y+") ";
+    var shot = {x:x, y:y};
     //implementation of a regular shot and how it interacts with the grid
     if (shotGrid[x][y] === 1 || shotGrid[x][y] === 2)
     {
-        message += ShotMessages[shotGrid[x][y]];
+        shot.message = ShotMessages[shotGrid[x][y]];
     }
     //reveal miss converted to actual miss
     else if (shotGrid[x][y] === 3)
     {
         shotGrid[x][y] = 1;
-        message += ShotMessages[1];
+        shot.message = ShotMessages[1];
     }
     //reveal hit converted to actual hit
     else if (shotGrid[x][y] === 4)
     {
         targetShipGrid[x][y].damage++;
         shotGrid[x][y] = 2;
-        message += ShotMessages[2];
+        shot.message = ShotMessages[2];
     }
     //miss
     else if (targetShipGrid[x][y] === 0)
     {
         shotGrid[x][y] = 1;
-        message += ShotMessages[1];
+        shot.message = ShotMessages[1];
     }
     //hit
     else if (targetShipGrid[x][y].name !== 0)
     {
         targetShipGrid[x][y].damage++;
         shotGrid[x][y] = 2;
-        message += ShotMessages[2];
+        shot.message = ShotMessages[2];
     }
-    return message;
+    shot.type = shotGrid[x][y];
+    return shot;
 }
 
 //define a regular shot
@@ -1199,25 +1238,26 @@ function mode2Ships()
         
         function fireScrapShot(x, y, targetShipGrid, shotGrid)
         {
-            var message = "("+x+","+y+") ";
+            var shot = {x:x, y:y};
             //implementation of a regular shot and how it interacts with the grid
             if (shotGrid[x][y] > 0 && shotGrid[x][y] < 5)
             {
-                message += ShotMessages[shotGrid[x][y]];
+                shot.message = ShotMessages[shotGrid[x][y]];
             }
             //reveal miss
             else if (targetShipGrid[x][y] === 0)
             {
                 shotGrid[x][y] = 3;
-                message += ShotMessages[3];
+                shot.message = ShotMessages[3];
             }
             //reveal hit
             else if (targetShipGrid[x][y].name !== 0)
             {
                 shotGrid[x][y] = 4;
-                message += ShotMessages[4];
+                shot.message = ShotMessages[4];
             }
-            return message;
+            shot.type = shotGrid[x][y];
+            return shot;
         }
         
         var messages = [];
@@ -1478,10 +1518,11 @@ function mode2Ships()
         }
         
         var target = hitSearch(x, y, targetShipGrid, shotGrid);
-        var message = "("+target.x+","+target.y+") ";
+        var shot = {x:target.x, y:target.y};
         shotGrid[target.x][target.y] = 4;
-        message += ShotMessages[4];
-        return message;
+        shot.message = ShotMessages[4];
+        shot.type = 4;
+        return shot;
     };
 
     //define the ships in mode 2. This array of ships will be copied onto the grid of each players

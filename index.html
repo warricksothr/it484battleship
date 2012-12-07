@@ -152,16 +152,6 @@
             </center>
         </div>
     </div>
-    <!-- The contents (if there's no contents the ribbon acts as a link) -->
-    <div class="forkit-curtain">
-        <div class="close-button"></div>
-        <div id="forkit-contents">
-            <h1>Humans.txt</h1>
-        </div>
-        <script>UI.displayHumansTXT('forkit-contents')</script>
-    </div>
-    <a class="forkit" data-text="Fork this on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
-    <script src="js/forkit.js"></script>
     <div id="footer">
         <p>to enjoy this game bug-free, please use
             <a id="footera" href="http://abetterbrowser.org" target="_blank">a better browser</a>
@@ -177,6 +167,17 @@
         //display development info only if the dev file exists
         UI.showDevInfo('version','previousversion');
     </script>
+    <!-- The interactive forkit widget -->
+    <div class="forkit-curtain">
+        <div class="close-button"></div>
+        <div id="forkit-contents">
+            <h1>Humans.txt</h1>
+        </div>
+        <script>UI.displayHumansTXT('forkit-contents')</script>
+    </div>
+    <a class="forkit" data-text="Fork this on Github" data-text-detached="You know you want to" href="https://github.com/warricksothr/it484battleship"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork us on GitHub"></a>
+    <script src="js/forkit.js"></script>
+    <!-- all the popups are defined below here -->
     <!-- how to popup -->
     <div id="howto" class="lightbox_content">
         <center>
@@ -186,6 +187,7 @@
         <div id="howToContent" class="markdownContent"></div>
         <script>UI.displayExternalMarkdownContent('howToContent','./docs/howTo.md')</script>
     </div>
+    <!-- The lightbox overlay element -->
     <div id="lightBoxDarken" class="lightbox_overlay"></div>
 </body>
 </html>
