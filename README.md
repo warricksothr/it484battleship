@@ -1,4 +1,4 @@
-it484battleship
+battleship
 ===============
 
 Introduction:
@@ -7,10 +7,11 @@ An implementation of a battleship-like game written in JavaScript and HTML5
 
 Installation:
 -------------
-1. Visit http://www.sothr.com/projects/it484battleship/ with in a Google Chrome browser
+1. Visit http://www.sothr.com/projects/it484battleship/ with in [a better browser](http://abetterbrowser.org/)
 OR
 1. Unzip all files to a directory of your choosing.
-2. To start the game, double-click on the index.html file or right-click > open with Google Chrome
+2. To start the game, double-click on the index.html file or right-click > open with a browser
+
 Note: The game is designed to be played in Google Chrome. Using other browsers may
 result in unexpected results. Use other browsers at your own risk.
 
@@ -25,7 +26,7 @@ Playing a game:
 7. In crazy mode, use your special shots to hunt ships and sink them faster!
 8. Be careful, in crazy mode if you lose a ship, you lose that ship's special shot!
 9. After you're done, why not play another game of Battleship? :)
-- - -
+
 Credits:
 -------------
 See [humans.txt](./humans.txt)
