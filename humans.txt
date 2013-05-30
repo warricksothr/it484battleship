@@ -1,58 +1,19 @@
 /* TEAM */
 
 Your Title: Aaron Willcutt:  
-Site:  
-Twitter:  
+Site:  N/A
+Twitter:  N/A
 Location: Faribault, MN, USA  
-Responsibilities:  
-
-  - Architectural Design;
-  - Module Design;
-  - Mode1 Shot implementation
-  - AI Implementation
 
 Your Title: Blake Grotewold:  
 Site: <http://www.blakegrotewold.com>  
 Twitter: @bgrotewold  
 Location: Mankato, MN, USA  
-Responsibilities:  
-
-  - Architectural Design; 
-  - Module Design; 
-  - User Interface Design;
-  - Front-End UX implimentation;
 
 Your Title: Drew Short:  
 Site: <http://www.sothr.com>  
 Twitter: @WarrickSothr  
 Location: Mankato, MN, USA  
-Responsibilities:  
-
-  - Function Analysis;
-  - Technical Specifications;
-  - Complete Game Engine;
-  - AI Implementation;
-  - Front-End JavaScript;
-  - Mode1 and Mode2 Ship + Shot Implementations;
-  - Front-End <-> Engine Hookup + Translation;
-  - Front-End Game Flow Code;
-
-Your Title: Jordan Ruedy:  
-Site: N/A  
-Twitter: N/A  
-Location: Mankato, MN, USA  
-Responsibilities:  
-
-  - Proof-Reading Documentation
-  - Tracking Requirements Through Project
-  - Testing Menus/Interface
-  - Testing One Player and Two Player(normal and modified)
-
-Your Title: Tyler Jackson:  
-Site:  
-Twitter:  
-Location:  
-Responsibilities:  
 
 
 
@@ -61,14 +22,11 @@ Responsibilities:
 Name: Internet  
 Reason: No medium without it.  
 
-Name: Susan Schiling  
-Reason: Critisism makes us grow.  
-
 
 
 /* SITE */
 
-Last update: 2012/12/04             
+Last update: 2013/05/30             
 Standards: HTML5, CSS3, JavaScript  
 Components: jQuery, [forkit.js](https://github.com/hakimel/forkit.js), [Showdown](https://github.com/coreyti/showdown)  
-Software: Cloud9, GitHub  
+Software: GitHub  
