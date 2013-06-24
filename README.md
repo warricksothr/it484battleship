@@ -7,7 +7,7 @@ An implementation of a battleship-like game written in JavaScript and HTML5
 
 Installation:
 -------------
-1. Visit http://www.sothr.com/projects/it484battleship/ with in [a better browser](http://abetterbrowser.org/)
+1. Visit http://grotr.github.io/battleship with in [a better browser](http://abetterbrowser.org/)
 OR
 1. Unzip all files to a directory of your choosing.
 2. To start the game, double-click on the index.html file or right-click > open with a browser
