@@ -15,14 +15,20 @@ Site: <http://www.sothr.com>
 Twitter: @WarrickSothr  
 Location: Mankato, MN, USA  
 
+Your Title: Jordan Ruedy:  
+Site: N/A  
+Twitter: N/A  
+Location: Mankato, MN, USA  
 
+Your Title: Tyler Jackson:  
+Site: N/A
+Twitter: N/A 
+Location: N/A
 
 /* THANKS */
 
 Name: Internet  
-Reason: No medium without it.  
-
-
+Reason: To which our medium would be nothing.
 
 /* SITE */
 
