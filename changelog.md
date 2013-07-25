@@ -1,26 +1,7 @@
-RELEASE BUILDS:
+2013-07-25 [AnchorBay Software](hello@anchorbaysoftware.com)
 
-BETA BUILDS:
---planned or in-progress features
-A results page at the end of a game
-Scores for players
-A help button on the game page that displays a translated markdown file with information about the current game type
-Play sounds corresponding to certain player actions
-Intelligently determine multiple messages and display them for the player at the end of the turn
-Randomly choose which player will start a game
-Improved Photon Bomb Run
-Improved AI
-Modified Scrap Harvester shot that behaves according to the specifications document
-
-0.2.6.dev
---in progress
-Implemented a light box that shows a simple how to page on the front screen
-Implemented a parity engine in the AI code base
-Implemented multiple shot results shown in turn end window
-Implemented 'smart' AI for mode 1
-
-0.2.5.dev
-04.12.12
+#0.2.5.dev
+##04.12.12
 Added GitHub logo for linking to project repository
 Added image link to GitHub repository on index and game pages
 Fixed draggable menu on index for FireFox
@@ -33,56 +14,55 @@ Fixed some styling
 Added white bullet marks to the stylesheet
 Added code to check if we are in a development version and display relevent development information on the index page
 
-0.2.4.dev
-04.12.12
+#0.2.4.dev
+##04.12.12
 Added this file and linked it to the version display
 Made the AI a little smarter in placing its ships
 Added a script to load the timestamp if available for the development version
 Tweaked ship placement subroutines
 Fixed random lockup bug on AI attempting an incorrect placement of a shipgia
 
-0.2.3.dev
-04.12.12
+#0.2.3.dev
+##04.12.12
 Fix for AI finishing game and the UI taking the player to the AI's player screen
 
-0.2.2.dev
-04.12.12
+#0.2.2.dev
+##04.12.12
 Changed history to include both players recent history
 Changed turn counter to act as a round counter instead of incrementing each turn
 Upgraded the logic behind the Plasma Salvo to automatically choose cells that are known to be hits before firing random shots
 Added some brains to the lazyAI to present more of a challenge during game play
 
-0.2.1.dev
-04.12.12
+#0.2.1.dev
+##04.12.12
 Fix for critical error in Chrome where users could not place a ship
 Optimized ship display code for placement, significantly improving performance
 Cleaned up randomization code in index.html
 
-0.2.0.dev
-03.12.12
+#0.2.0.dev
+##03.12.12
 First edition with player ship placement
 Fixed random crash when Photon Bombing Run was used near the right edge of the board
 
-ALPHA BUILDS:
-0.1d
-03.12.12
+#0.1d
+##03.12.12
 Added a forfeit button to the game page
 Started moving ship placement code into the UI and out of game.html
 Attempted implementation of minimum window size
 Fixed a spelling issue in the UI
 Reduced the number of alerts in single player mode
 
-0.1c
-03.12.12
+#0.1c
+##03.12.12
 Fixed footer on front page
 Added version indicator to the upper left corner of game and index
 
-0.1b
-03.12.12
+#0.1b
+##03.12.12
 Removed extra files from repository
 
-0.1a
-03.12.12
+#0.1a
+##03.12.12
 First official alpha release
 Ship placement randomized at startup
 First implementation of lazyAI which was an upgrade from the dumb AI where shots are simply fired at random
