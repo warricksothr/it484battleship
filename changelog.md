@@ -1,8 +1,14 @@
-* 0.2.6.dev (08.02.13)
+* 0.3.0.dev (30.10.13)
+  * -- In Progress
+
+* 0.2.6.dev (02.08.13)
   * Cleaned files
   * Made world beautiful
+  * Engine improvements
+  * 'smart' ai for mode 1
+  * Display improvements for multiple shots
 
-* 0.2.5.dev (04.12.12)
+* 0.2.5.dev (0412.12)
   * Added GitHub logo for linking to project repository
   * Added image link to GitHub repository on index and game pages
   * Fixed draggable menu on index for FireFox
